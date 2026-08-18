@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MISA — Danh mục SaaS · XaaS.vn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1120; --ink-soft:#4A5268;
+    --paper:#FFFFFF; --surface:#F3F5FC; --surface-line:#E5E8F5;
+    --iaas:#2454FF; --iaas-soft:#EAF0FF;
+    --paas:#7B3FF2; --paas-soft:#F1EBFF;
+    --saas:#0FA968; --saas-soft:#E4F9EF; --saas-2:#0C9260;
+    --ai-1:#FF6B35; --ai-2:#FF3D81;
+    --cat:var(--saas); --cat-soft:var(--saas-soft); --cat-2:var(--saas-2);
+    --maxw:1240px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Be Vietnam Pro',sans-serif;font-weight:800;letter-spacing:-0.02em;margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  button{font-family:inherit;}
+  a:focus-visible,button:focus-visible{outline:2.5px solid var(--cat);outline-offset:3px;border-radius:6px;}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}}
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--surface-line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;}
+  .logo{display:flex;align-items:center;gap:9px;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:21px;}
+  .logo .dot-x{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--iaas) 0%,var(--paas) 55%, var(--ai-2) 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:900;}
+  .logo .vn{color:var(--ink-soft);font-weight:600;font-size:15px;margin-left:2px;}
+  nav.links{display:flex;align-items:center;gap:34px;}
+  nav.links > a{font-weight:600;font-size:15px;color:var(--ink);}
+  nav.links > a:hover{color:var(--cat);}
+  .cta-btn{background:var(--ink);color:#fff;padding:11px 20px;border-radius:11px;font-weight:700;font-size:14px;border:none;cursor:pointer;}
+  .cta-btn:hover{background:#1a2340;}
+  .burger{display:none;background:none;border:none;cursor:pointer;padding:6px;}
+
+  .crumb{padding:20px 0 0;font-size:13.5px;color:var(--ink-soft);font-weight:500;}
+  .crumb a:hover{color:var(--cat);}
+  .crumb .sep{margin:0 8px;opacity:.5;}
+  .crumb .cur{color:var(--ink);font-weight:600;}
+
+  /* company hero */
+  .co-hero{padding:26px 0 40px;}
+  .co-hero-top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-start;}
+  .co-mark-lg{
+    width:84px;height:84px;border-radius:20px;flex:0 0 auto;
+    background:linear-gradient(120deg,var(--saas-2),var(--saas));
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:30px;
+    box-shadow:0 20px 34px -16px rgba(15,169,104,0.45);
+  }
+  .co-head{display:flex;gap:22px;}
+  .co-title h1{font-size:34px;margin-bottom:8px;}
+  .co-title .tagline{font-size:15.5px;color:var(--ink-soft);margin-bottom:14px;max-width:480px;line-height:1.55;}
+  .co-badges{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .tagchip{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:100px;}
+  .tag-saas{background:var(--saas-soft);color:var(--saas-2);}
+  .rating-pill{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13.5px;}
+  .rating-pill .stars{color:#F5A623;letter-spacing:1px;}
+  .verified{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--saas-2);}
+
+  .co-actions{display:flex;gap:12px;flex-direction:column;min-width:220px;}
+  .btn-primary{background:var(--ink);color:#fff;padding:14px 22px;border-radius:12px;font-weight:700;font-size:14.5px;text-align:center;transition:background .18s ease, transform .18s ease;}
+  .btn-primary:hover{background:#1a2340;transform:translateY(-2px);}
+  .btn-secondary{background:#fff;border:1.5px solid var(--surface-line);color:var(--ink);padding:14px 22px;border-radius:12px;font-weight:700;font-size:14.5px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .18s ease;}
+  .btn-secondary:hover{border-color:var(--cat);}
+
+  .quickstats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:34px;}
+  .qs{background:var(--surface);border:1px solid var(--surface-line);border-radius:14px;padding:16px 18px;}
+  .qs .lbl{font-size:12px;color:var(--ink-soft);font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;}
+  .qs .val{font-family:'Be Vietnam Pro',sans-serif;font-weight:700;font-size:16px;}
+
+  /* section tabs (in-page anchor nav) */
+  .page-tabs{position:sticky;top:73px;z-index:40;background:#fff;border-bottom:1px solid var(--surface-line);}
+  .page-tabs .wrap{display:flex;gap:6px;padding:0;overflow-x:auto;}
+  .page-tabs a{padding:16px 18px;font-weight:700;font-size:14px;color:var(--ink-soft);white-space:nowrap;border-bottom:2.5px solid transparent;}
+  .page-tabs a:hover{color:var(--ink);}
+  .page-tabs a.on{color:var(--cat);border-color:var(--cat);}
+
+  section.blk{padding:60px 0;border-bottom:1px solid var(--surface-line);}
+  section.blk:last-of-type{border-bottom:none;}
+  .blk-head{margin-bottom:30px;}
+  .blk-head .tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cat);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:block;}
+  .blk-head h2{font-size:27px;}
+
+  /* overview */
+  .overview-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:50px;}
+  .overview-grid p{font-size:15.5px;line-height:1.75;color:var(--ink-soft);margin:0 0 16px;}
+  .side-card{background:var(--surface);border:1px solid var(--surface-line);border-radius:16px;padding:22px;}
+  .side-card h4{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:16px;font-weight:700;}
+  .side-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--surface-line);font-size:13.5px;}
+  .side-row:last-child{border-bottom:none;}
+  .side-row .k{color:var(--ink-soft);font-weight:500;}
+  .side-row .v{font-weight:700;}
+
+  /* features */
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .feat-card{border:1px solid var(--surface-line);border-radius:16px;padding:22px;}
+  .feat-icon{width:42px;height:42px;border-radius:12px;background:var(--saas-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .feat-card h4{font-size:15.5px;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;margin-bottom:8px;}
+  .feat-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0;}
+
+  /* gallery */
+  .gallery{display:grid;grid-template-columns:1.5fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;height:380px;}
+  .g-tile{border-radius:16px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:16px;}
+  .g-tile span{color:#fff;font-weight:700;font-size:13px;background:rgba(11,17,32,0.35);padding:5px 10px;border-radius:8px;backdrop-filter:blur(4px);}
+  .g1{grid-row:span 2;background:linear-gradient(150deg,#0C9260,#0FA968 60%, #7CE8B8);}
+  .g2{background:linear-gradient(150deg,#1E43E0,#2454FF);}
+  .g3{background:linear-gradient(150deg,#6A2FE0,#7B3FF2);}
+  .g4{background:linear-gradient(150deg,#FF6B35,#FF3D81);}
+  .g5{background:linear-gradient(150deg,#0C9260,#7CE8B8);}
+
+  /* pricing */
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .price-card{border:1.5px solid var(--surface-line);border-radius:18px;padding:26px;}
+  .price-card.hi{border-color:var(--cat);background:var(--cat-soft);}
+  .price-card .pname{font-weight:700;font-size:15px;margin-bottom:6px;}
+  .price-card .pprice{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;margin-bottom:4px;}
+  .price-card .pprice span{font-size:13px;font-weight:500;color:var(--ink-soft);}
+  .price-card .pdesc{font-size:13px;color:var(--ink-soft);margin-bottom:18px;}
+  .price-card ul{list-style:none;padding:0;margin:0;}
+  .price-card li{font-size:13.5px;padding:8px 0;display:flex;gap:9px;align-items:flex-start;color:var(--ink-soft);}
+  .price-card li svg{flex:0 0 auto;margin-top:2px;}
+
+  /* featured products */
+  .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:56px;}
+  .prod-card{
+    border:1px solid var(--surface-line);border-radius:18px;padding:22px;cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;background:#fff;
+  }
+  .prod-card:hover{transform:translateY(-5px);box-shadow:0 20px 34px -20px rgba(11,17,32,0.22);border-color:var(--cat);}
+  .prod-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .prod-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--saas-soft);}
+  .prod-badge{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:100px;background:var(--surface);color:var(--ink-soft);}
+  .prod-card h4{font-size:15.5px;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;margin:0 0 6px;}
+  .prod-card p{font-size:13px;color:var(--ink-soft);line-height:1.55;margin:0 0 16px;}
+  .prod-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--surface-line);padding-top:14px;}
+  .prod-foot .from{font-size:12px;color:var(--ink-soft);}
+  .prod-foot .from b{font-family:'JetBrains Mono',monospace;color:var(--ink);font-weight:700;font-size:13.5px;}
+  .prod-foot .go{font-size:12.5px;font-weight:700;color:var(--cat);}
+
+  /* ajax price filter */
+  .price-filter-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:24px;}
+  .price-filter-head h3{font-size:19px;}
+  .price-filter-head .hint{font-size:12.5px;color:var(--ink-soft);}
+  .price-filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:30px;}
+  .pf-chip{
+    padding:9px 16px;border-radius:100px;border:1.5px solid var(--surface-line);background:#fff;
+    font-size:13px;font-weight:700;color:var(--ink-soft);cursor:pointer;transition:all .18s ease;
+    display:flex;align-items:center;gap:7px;
+  }
+  .pf-chip .cnt{font-family:'JetBrains Mono',monospace;font-size:10.5px;opacity:.7;}
+  .pf-chip:hover{border-color:var(--cat);color:var(--ink);}
+  .pf-chip.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+  .pf-chip.on .cnt{opacity:.85;}
+  .price-panel{position:relative;min-height:120px;}
+  .price-panel.loading .price-grid{opacity:.35;filter:blur(1.5px);pointer-events:none;}
+  .pf-spinner{
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    display:none;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--ink-soft);
+    background:#fff;border:1px solid var(--surface-line);padding:8px 14px;border-radius:100px;z-index:5;
+    box-shadow:0 10px 22px -12px rgba(11,17,32,0.25);
+  }
+  .price-panel.loading .pf-spinner{display:flex;}
+  .pf-spinner .ring{width:13px;height:13px;border-radius:50%;border:2px solid var(--surface-line);border-top-color:var(--cat);animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .price-grid{transition:opacity .2s ease, filter .2s ease;}
+  .price-active-name{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cat);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:block;}
+
+  /* reviews */
+  .rev-summary{display:flex;gap:50px;align-items:center;margin-bottom:40px;flex-wrap:wrap;}
+  .rev-score{text-align:center;}
+  .rev-score b{font-family:'Be Vietnam Pro',sans-serif;font-size:52px;display:block;}
+  .rev-score .stars{color:#F5A623;font-size:18px;letter-spacing:2px;}
+  .rev-score span{font-size:13px;color:var(--ink-soft);}
+  .rev-bars{flex:1;min-width:240px;}
+  .rev-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12.5px;color:var(--ink-soft);}
+  .rev-bar-row .track{flex:1;height:7px;background:var(--surface);border-radius:6px;overflow:hidden;}
+  .rev-bar-row .fill{height:100%;background:var(--saas);border-radius:6px;}
+  .rev-list{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .rev-card{border:1px solid var(--surface-line);border-radius:16px;padding:22px;}
+  .rev-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .rev-user{display:flex;align-items:center;gap:10px;}
+  .rev-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(120deg,var(--saas-2),var(--saas));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;}
+  .rev-user b{font-size:13.5px;display:block;}
+  .rev-user span{font-size:11.5px;color:var(--ink-soft);}
+  .rev-stars{color:#F5A623;font-size:13px;}
+  .rev-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.6;margin:0;}
+
+  /* similar */
+  .sim-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .sim-card{border:1px solid var(--surface-line);border-radius:16px;padding:18px;transition:transform .2s ease, box-shadow .2s ease;}
+  .sim-card:hover{transform:translateY(-4px);box-shadow:0 18px 30px -18px rgba(11,17,32,0.25);}
+  .sim-mark{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;font-family:'Be Vietnam Pro',sans-serif;margin-bottom:12px;}
+  .sim-card h5{font-size:14.5px;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;margin:0 0 4px;}
+  .sim-card p{font-size:12px;color:var(--ink-soft);margin:0;line-height:1.5;}
+
+  /* CTA band */
+  .join{
+    background:linear-gradient(120deg, var(--iaas) 0%, var(--paas) 50%, var(--ai-2) 100%);
+    border-radius:26px;padding:52px 50px;color:#fff;
+    display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;
+  }
+  .join h3{font-size:24px;color:#fff;max-width:420px;}
+  .join p{color:rgba(255,255,255,0.85);font-size:14px;margin:10px 0 0;max-width:400px;}
+  .join .btn-primary{background:#fff;color:var(--ink);}
+  .join .btn-primary:hover{background:#f2f2f2;}
+
+  footer{border-top:1px solid var(--surface-line);padding:56px 0 30px;margin-top:60px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:40px;margin-bottom:44px;}
+  .foot-logo{font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:20px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .foot-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.6;max-width:260px;}
+  .foot-col h5{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:16px;font-weight:700;}
+  .foot-col a{display:block;font-size:14px;font-weight:500;margin-bottom:11px;color:var(--ink);}
+  .foot-col a:hover{color:var(--cat);}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;border-top:1px solid var(--surface-line);font-size:13px;color:var(--ink-soft);flex-wrap:wrap;gap:12px;}
+
+  @media (max-width:980px){
+    .overview-grid{grid-template-columns:1fr;}
+    .feat-grid{grid-template-columns:1fr 1fr;}
+    .quickstats{grid-template-columns:1fr 1fr;}
+    .price-grid{grid-template-columns:1fr;}
+    .rev-list{grid-template-columns:1fr;}
+    .sim-grid{grid-template-columns:1fr 1fr;}
+    .gallery{grid-template-columns:1fr 1fr;height:auto;}
+    .g1{grid-row:span 1;height:180px;}
+    .g2,.g3,.g4,.g5{height:180px;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    nav.links{display:none;}
+    .burger{display:block;}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 20px;}
+    .co-head{flex-direction:column;}
+    .co-hero-top{flex-direction:column;}
+    .co-actions{width:100%;}
+    .quickstats{grid-template-columns:1fr 1fr;}
+    .feat-grid,.sim-grid{grid-template-columns:1fr;}
+    .gallery{grid-template-columns:1fr;}
+    .join{flex-direction:column;text-align:left;padding:36px 26px;}
+    .foot-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
+    <nav class="links">
+      <a href="#">Trang chủ</a>
+      <a href="#">Danh mục</a>
+      <a href="#">Doanh nghiệp</a>
+      <a href="#">Giới thiệu</a>
+    </nav>
+    <button class="cta-btn">Đăng doanh nghiệp</button>
+    <button class="burger" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap crumb">
+    <a href="index.html">Trang chủ</a><span class="sep">/</span><a href="category.html">Danh mục</a><span class="sep">/</span><a href="category.html" id="crumbCat">SaaS</a><span class="sep">/</span><span class="cur" id="crumbCur">MISA</span>
+  </div>
+
+  <section class="co-hero wrap reveal">
+    <div class="co-hero-top">
+      <div class="co-head">
+        <div class="co-mark-lg" id="coMark">MI</div>
+        <div class="co-title">
+          <h1 id="coName">MISA</h1>
+          <p class="tagline" id="coTagline">Phần mềm kế toán và quản trị doanh nghiệp được sử dụng bởi hơn 250.000 tổ chức tại Việt Nam, bao phủ từ hộ kinh doanh đến tập đoàn lớn.</p>
+          <div class="co-badges">
+            <span class="tagchip tag-saas" id="coCatChip">SaaS</span>
+            <span class="rating-pill" id="coRatingPill"><span class="stars">★★★★★</span>4.6/5</span>
+            <span class="verified" id="coVerifiedBadge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#0C9260" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#0C9260" stroke-width="1.8"/></svg>
+              Đã xác minh
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="co-actions">
+        <a href="#" id="btnWebsite" target="_blank" rel="noopener" class="btn-primary">Truy cập website ↗</a>
+        <a href="#" class="btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 3h12v18l-6-4-6 4V3z" stroke="#0B1120" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          Lưu vào danh sách
+        </a>
+      </div>
+    </div>
+
+    <div class="quickstats">
+      <div class="qs"><div class="lbl">Thành lập</div><div class="val" id="qsFounded">1994</div></div>
+      <div class="qs"><div class="lbl">Trụ sở</div><div class="val" id="qsHQ">Hà Nội, VN</div></div>
+      <div class="qs"><div class="lbl">Quy mô</div><div class="val" id="qsTeam">1.000+ nhân sự</div></div>
+      <div class="qs"><div class="lbl">Giá từ</div><div class="val" id="qsFromPrice">167.000₫/tháng</div></div>
+    </div>
+  </section>
+
+  <nav class="page-tabs">
+    <div class="wrap">
+      <a href="#tong-quan" class="on">Tổng quan</a>
+      <a href="#tinh-nang">Tính năng</a>
+      <a href="#hinh-anh">Hình ảnh</a>
+      <a href="#bang-gia">Bảng giá</a>
+      <a href="#danh-gia">Đánh giá</a>
+    </div>
+  </nav>
+
+  <section class="blk wrap" id="tong-quan">
+    <div class="blk-head reveal">
+      <span class="tag">Tổng quan</span>
+      <h2 id="overviewHeading">Về MISA</h2>
+    </div>
+    <div class="overview-grid">
+      <div class="reveal" id="overviewDesc">
+        <p>MISA là doanh nghiệp phần mềm Việt Nam thành lập năm 1994, tiên phong trong lĩnh vực phần mềm kế toán và quản trị doanh nghiệp. Sản phẩm chủ lực MISA AMIS phục vụ đầy đủ nghiệp vụ từ kế toán, hóa đơn điện tử, nhân sự đến quản lý bán hàng trên một nền tảng đám mây duy nhất.</p>
+      </div>
+      <div class="side-card reveal">
+        <h4>Thông tin nhanh</h4>
+        <div class="side-row"><span class="k">Danh mục</span><span class="v" id="sideCat">SaaS</span></div>
+        <div class="side-row"><span class="k">Trụ sở</span><span class="v" id="sideHQ">Hà Nội, VN</span></div>
+        <div class="side-row"><span class="k">Cập nhật</span><span class="v" id="sideUpdated">—</span></div>
+        <div class="side-row"><span class="k">Website</span><span class="v" style="color:var(--cat);" id="sideWebsite">misa.vn ↗</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk wrap" id="tinh-nang">
+    <div class="blk-head reveal">
+      <span class="tag">Tính năng nổi bật</span>
+      <h2 id="featHeading">MISA giải quyết những gì</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 19V5a1 1 0 011-1h11l4 4v11a1 1 0 01-1 1H5a1 1 0 01-1-1z" stroke="#0C9260" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 13h8M8 17h5" stroke="#0C9260" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <h4>Kế toán & hóa đơn điện tử</h4>
+        <p>Lập báo cáo tài chính, kê khai thuế và phát hành hóa đơn điện tử tuân thủ quy định mới nhất.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.2l-5.2 2.8 1-5.8-4.2-4.1 5.8-.8L12 3z" stroke="#0C9260" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <h4>Quản lý bán hàng</h4>
+        <p>Theo dõi đơn hàng, tồn kho và công nợ khách hàng theo thời gian thực trên một màn hình.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="#0C9260" stroke-width="1.8"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#0C9260" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="8" r="2.4" stroke="#0C9260" stroke-width="1.6"/></svg></div>
+        <h4>Nhân sự & tiền lương</h4>
+        <p>Quản lý chấm công, tính lương và bảo hiểm tự động cho toàn bộ nhân sự công ty.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="#0C9260" stroke-width="1.8"/><path d="M8 14l3-3 2 2 3-4" stroke="#0C9260" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h4>Báo cáo & phân tích</h4>
+        <p>Dashboard trực quan giúp lãnh đạo theo dõi dòng tiền và hiệu quả kinh doanh tức thời.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#0C9260" stroke-width="1.8"/><path d="M9 7h6M9 11h6M9 15h3" stroke="#0C9260" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <h4>Ứng dụng di động</h4>
+        <p>Duyệt chứng từ, xem báo cáo và quản lý công việc mọi lúc trên iOS và Android.</p>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l7 4v6c0 5-3 8-7 10-4-2-7-5-7-10V6l7-4z" stroke="#0C9260" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+        <h4>Bảo mật dữ liệu</h4>
+        <p>Mã hóa dữ liệu và sao lưu tự động, đạt chuẩn bảo mật cho doanh nghiệp niêm yết.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk wrap" id="hinh-anh">
+    <div class="blk-head reveal">
+      <span class="tag">Hình ảnh</span>
+      <h2>Giao diện sản phẩm</h2>
+    </div>
+    <div class="gallery reveal">
+      <div class="g-tile g1"><span>Dashboard tổng quan</span></div>
+      <div class="g-tile g2"><span>Hóa đơn điện tử</span></div>
+      <div class="g-tile g3"><span>Báo cáo tài chính</span></div>
+      <div class="g-tile g4"><span>Ứng dụng di động</span></div>
+      <div class="g-tile g5"><span>Quản lý bán hàng</span></div>
+    </div>
+  </section>
+
+  <section class="blk wrap" id="bang-gia">
+    <div class="blk-head reveal">
+      <span class="tag">Sản phẩm & bảng giá</span>
+      <h2 id="prodHeading">MISA có nhiều sản phẩm — chọn đúng cái bạn cần</h2>
+    </div>
+
+    <div class="prod-grid" id="prodGrid"><!-- filled by JS --></div>
+
+    <div class="price-filter-head reveal">
+      <h3>Bảng giá tham khảo</h3>
+      <span class="hint">Nhấn để lọc bảng giá theo sản phẩm</span>
+    </div>
+    <div class="price-filters" id="priceFilters"><!-- filled by JS --></div>
+
+    <div class="price-panel" id="pricePanel">
+      <div class="pf-spinner"><span class="ring"></span>Đang tải bảng giá…</div>
+      <span class="price-active-name" id="priceActiveName"></span>
+      <div class="price-grid" id="priceGrid"><!-- filled by JS --></div>
+    </div>
+  </section>
+
+  <section class="blk wrap" id="danh-gia" style="border-bottom:none;">
+    <div class="blk-head reveal">
+      <span class="tag">Đánh giá</span>
+      <h2 id="revHeading">Người dùng nói gì về MISA</h2>
+    </div>
+    <div class="rev-summary reveal" id="revSummary">
+      <div class="rev-score">
+        <b id="revAvg">4.6</b>
+        <div class="stars">★★★★★</div>
+        <span id="revCount">0 đánh giá</span>
+      </div>
+      <div class="rev-bars" id="revBars"></div>
+    </div>
+    <div class="rev-list" id="revList"></div>
+  </section>
+
+  <section class="wrap" style="padding:0 32px 70px;">
+    <div class="blk-head reveal" style="border-bottom:none;padding:0;margin-bottom:30px;">
+      <span class="tag">Có thể bạn quan tâm</span>
+      <h2 id="simHeading">Doanh nghiệp SaaS tương tự</h2>
+    </div>
+    <div class="sim-grid" id="simGrid"></div>
+  </section>
+
+  <section class="wrap" style="padding-bottom:70px;">
+    <div class="join reveal">
+      <div>
+        <h3 id="ctaHeading">Bạn đại diện cho MISA hoặc muốn cập nhật thông tin?</h3>
+        <p>Yêu cầu quyền quản lý trang doanh nghiệp để cập nhật mô tả, hình ảnh và trả lời đánh giá.</p>
+      </div>
+      <a href="#" class="btn-primary">Yêu cầu quản lý trang</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo"><span class="dot-x" style="width:26px;height:26px;font-size:13px;">X</span>XaaS.vn</div>
+        <p class="foot-desc">Thư mục tra cứu doanh nghiệp SaaS, PaaS, IaaS và AIaaS tại Việt Nam — giúp doanh nghiệp tìm đúng đối tác công nghệ.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Danh mục</h5>
+        <a href="#">IaaS</a><a href="#">PaaS</a><a href="#">SaaS</a><a href="#">AIaaS</a>
+      </div>
+      <div class="foot-col">
+        <h5>Công ty</h5>
+        <a href="#">Giới thiệu</a><a href="#">Liên hệ</a><a href="#">Đăng doanh nghiệp</a><a href="#">Điều khoản</a>
+      </div>
+      <div class="foot-col">
+        <h5>Kết nối</h5>
+        <a href="#">LinkedIn</a><a href="#">Facebook</a><a href="#">Email</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 XaaS.vn — Thư mục doanh nghiệp dịch vụ đám mây.</span>
+      <span class="mono">Made in Vietnam 🇻🇳</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  const tabs = document.querySelectorAll('.page-tabs a');
+  const sections = Array.from(tabs).map(t=>document.querySelector(t.getAttribute('href')));
+  const so = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id = '#'+e.target.id;
+        tabs.forEach(t=>t.classList.toggle('on', t.getAttribute('href')===id));
+      }
+    });
+  },{rootMargin:'-140px 0px -60% 0px'});
+  sections.forEach(s=>s && so.observe(s));
+
+  /* ============ LIVE DATA ============ */
+  const CAT_META = {
+    iaas:{name:'IaaS', tagclass:'tag-iaas', grad:'linear-gradient(120deg,#1E43E0,#2454FF)'},
+    paas:{name:'PaaS', tagclass:'tag-paas', grad:'linear-gradient(120deg,#6A2FE0,#7B3FF2)'},
+    saas:{name:'SaaS', tagclass:'tag-saas', grad:'linear-gradient(120deg,#0C9260,#0FA968)'},
+    ai:{name:'AIaaS', tagclass:'tag-ai', grad:'linear-gradient(100deg,#FF6B35,#FF3D81)'},
+  };
+  const PRODUCT_ICONS = ['📊','🛒','👥','🧾','⚙️','📈','🔒','💳'];
+
+  function svgCheck(){
+    return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0C9260" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  let COMPANY = null;
+  let PRODUCTS = [];
+
+  function renderProducts(){
+    const grid = document.getElementById('prodGrid');
+    if(!PRODUCTS.length){
+      grid.innerHTML = `<p style="color:var(--ink-soft);">Doanh nghiệp này chưa đăng sản phẩm nào.</p>`;
+      return;
+    }
+    grid.innerHTML = PRODUCTS.map((p,i)=>`
+      <div class="prod-card" data-goto="${p.id}">
+        <div class="prod-top"><div class="prod-icon" style="font-size:18px;">${PRODUCT_ICONS[i%PRODUCT_ICONS.length]}</div><span class="prod-badge">${p.tiers.length} gói giá</span></div>
+        <h4>${p.name}</h4>
+        <p></p>
+        <div class="prod-foot"><span class="from">Từ <b>${p.from||'Liên hệ'}</b></span><span class="go">Xem giá →</span></div>
+      </div>
+    `).join('');
+    grid.querySelectorAll('.prod-card').forEach(c=>{
+      c.addEventListener('click', ()=>{
+        document.getElementById('bang-gia').scrollIntoView({behavior:'smooth', block:'start'});
+        setTimeout(()=>selectProduct(c.dataset.goto), 350);
+      });
+    });
+  }
+
+  function renderFilters(activeId){
+    const wrap = document.getElementById('priceFilters');
+    wrap.innerHTML = PRODUCTS.map(p=>`
+      <button class="pf-chip ${p.id===activeId?'on':''}" data-id="${p.id}">${p.name} <span class="cnt">${p.tiers.length}</span></button>
+    `).join('');
+    wrap.querySelectorAll('.pf-chip').forEach(b=>{
+      b.addEventListener('click', ()=>selectProduct(b.dataset.id));
+    });
+  }
+
+  function renderPriceGrid(product){
+    document.getElementById('priceActiveName').textContent = product.name;
+    document.getElementById('priceGrid').innerHTML = product.tiers.map((t,i)=>`
+      <div class="price-card ${i===1?'hi':''}">
+        <div class="pname">${t.name}</div>
+        <div class="pprice">${t.price}</div>
+        <ul>${svgCheck()} <li style="display:inline;list-style:none;color:var(--ink-soft);font-size:13px;">Liên hệ để biết chi tiết gói</li></ul>
+      </div>
+    `).join('');
+  }
+
+  function selectProduct(id){
+    const panel = document.getElementById('pricePanel');
+    const product = PRODUCTS.find(p=>p.id===id) || PRODUCTS[0];
+    if(!product) return;
+    renderFilters(id);
+    panel.classList.add('loading');
+    setTimeout(()=>{
+      renderPriceGrid(product);
+      panel.classList.remove('loading');
+    }, 250);
+  }
+
+  function renderReviews(reviews){
+    const n = reviews.length;
+    const avg = n ? (reviews.reduce((a,r)=>a+r.rating,0)/n) : 0;
+    document.getElementById('revAvg').textContent = avg.toFixed(1);
+    document.getElementById('revCount').textContent = `${n} đánh giá`;
+
+    const bars = document.getElementById('revBars');
+    bars.innerHTML = [5,4,3,2,1].map(star=>{
+      const count = reviews.filter(r=>r.rating===star).length;
+      const pct = n ? Math.round((count/n)*100) : 0;
+      return `<div class="rev-bar-row"><span>${star} sao</span><div class="track"><div class="fill" style="width:${pct}%"></div></div><span>${pct}%</span></div>`;
+    }).join('');
+
+    const list = document.getElementById('revList');
+    list.innerHTML = n ? reviews.map(r=>`
+      <div class="rev-card reveal in">
+        <div class="rev-top">
+          <div class="rev-user"><div class="rev-avatar">${r.user.split(' ').map(w=>w[0]).slice(-2).join('')}</div><div><b>${r.user}</b></div></div>
+          <div class="rev-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+        </div>
+        <p>${r.text}</p>
+        ${r.reply ? `<div style="margin-top:10px;background:var(--surface);border-radius:10px;padding:10px 14px;font-size:13px;"><b style="color:var(--cat);display:block;font-size:12px;margin-bottom:3px;">Phản hồi từ doanh nghiệp</b>${r.reply}</div>` : ''}
+      </div>
+    `).join('') : `<p style="color:var(--ink-soft);">Chưa có đánh giá nào.</p>`;
+  }
+
+  async function renderSimilar(cat, excludeId){
+    try{
+      const companies = await (await fetch(`/api/public/companies?cat=${cat}&limit=5`)).json();
+      const others = companies.filter(c=>String(c.id)!==String(excludeId)).slice(0,4);
+      const grid = document.getElementById('simGrid');
+      grid.innerHTML = others.length ? others.map(c=>`
+        <a href="company-detail.html?id=${c.id}" class="sim-card reveal in">
+          <div class="sim-mark" style="background:${CAT_META[c.cat]?.grad || CAT_META.saas.grad};">${c.mark}</div>
+          <h5>${c.name}</h5>
+          <p>${(c.desc||'').slice(0,40)}${c.desc && c.desc.length>40 ? '…':''}</p>
+        </a>
+      `).join('') : `<p style="color:var(--ink-soft);">Chưa có doanh nghiệp tương tự.</p>`;
+    }catch(e){}
+  }
+
+  async function loadCompany(){
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id') || '1';
+
+    let data;
+    try{
+      const res = await fetch(`/api/public/companies/${id}`);
+      if(!res.ok) throw new Error('not found');
+      data = await res.json();
+    }catch(e){
+      document.querySelector('.co-hero').innerHTML = `<p style="padding:40px 0;color:var(--ink-soft);">Không tìm thấy doanh nghiệp này, hoặc doanh nghiệp chưa được duyệt công khai.</p>`;
+      return;
+    }
+
+    COMPANY = data;
+    PRODUCTS = data.products || [];
+    const m = CAT_META[data.cat] || CAT_META.saas;
+    document.documentElement.style.setProperty('--cat', getComputedStyle(document.documentElement).getPropertyValue('--saas'));
+
+    document.title = `${data.name} — Danh mục ${m.name} · XaaS.vn`;
+    document.getElementById('crumbCat').textContent = m.name;
+    document.getElementById('crumbCat').href = `category.html#${data.cat}`;
+    document.getElementById('crumbCur').textContent = data.name;
+
+    document.getElementById('coMark').textContent = data.mark;
+    document.getElementById('coMark').style.background = m.grad;
+    document.getElementById('coName').textContent = data.name;
+    document.getElementById('coTagline').textContent = data.desc || 'Doanh nghiệp chưa cập nhật mô tả.';
+    document.getElementById('coCatChip').textContent = m.name;
+    document.getElementById('coCatChip').className = `tagchip ${m.tagclass}`;
+    document.getElementById('coRatingPill').innerHTML = data.rating
+      ? `<span class="stars">${'★'.repeat(Math.round(data.rating))}${'☆'.repeat(5-Math.round(data.rating))}</span>${data.rating.toFixed(1)}/5`
+      : `<span style="color:var(--ink-soft);">Chưa có đánh giá</span>`;
+    document.getElementById('coVerifiedBadge').style.display = data.verified ? 'flex' : 'none';
+
+    document.getElementById('btnWebsite').href = data.website ? (data.website.startsWith('http') ? data.website : 'https://'+data.website) : '#';
+    document.getElementById('qsFounded').textContent = data.founded || 'Chưa cập nhật';
+    document.getElementById('qsHQ').textContent = data.headquarters || 'Chưa cập nhật';
+    document.getElementById('qsTeam').textContent = data.teamSize || 'Chưa cập nhật';
+    document.getElementById('qsFromPrice').textContent = PRODUCTS[0]?.from || 'Liên hệ';
+
+    document.getElementById('overviewHeading').textContent = `Về ${data.name}`;
+    document.getElementById('overviewDesc').innerHTML = `<p>${data.desc || 'Doanh nghiệp chưa cập nhật mô tả chi tiết.'}</p>`;
+    document.getElementById('sideCat').textContent = m.name;
+    document.getElementById('sideHQ').textContent = data.headquarters || 'Chưa cập nhật';
+    document.getElementById('sideUpdated').textContent = data.updated || '—';
+    const siteEl = document.getElementById('sideWebsite');
+    siteEl.textContent = (data.website || 'Chưa cập nhật') + (data.website ? ' ↗' : '');
+
+    document.getElementById('revHeading').textContent = `Người dùng nói gì về ${data.name}`;
+    document.getElementById('simHeading').textContent = `Doanh nghiệp ${m.name} tương tự`;
+    document.getElementById('featHeading').textContent = `${data.name} giải quyết những gì`;
+    document.getElementById('prodHeading').textContent = `${data.name} có nhiều sản phẩm — chọn đúng cái bạn cần`;
+    document.getElementById('ctaHeading').textContent = `Bạn đại diện cho ${data.name} hoặc muốn cập nhật thông tin?`;
+
+    renderProducts();
+    if(PRODUCTS.length){
+      renderFilters(PRODUCTS[0].id);
+      renderPriceGrid(PRODUCTS[0]);
+    } else {
+      document.getElementById('priceFilters').innerHTML = '';
+      document.getElementById('priceGrid').innerHTML = '';
+    }
+    renderReviews(data.reviews || []);
+    renderSimilar(data.cat, data.id);
+  }
+
+  loadCompany();
+</script>
+
+</body>
+</html>

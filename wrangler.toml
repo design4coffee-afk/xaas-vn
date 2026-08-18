@@ -1,0 +1,15 @@
+name = "xaas-vn"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"                     # accessed in Functions as env.DB
+database_name = "xaas_vn_db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# Secret used by /api/auth/bootstrap-admin to create the very first
+# admin account. Set with:
+#   wrangler pages secret put ADMIN_BOOTSTRAP_SECRET
+# Do NOT commit a real value here.
+[vars]
+ADMIN_BOOTSTRAP_SECRET = "change-me-before-deploying"

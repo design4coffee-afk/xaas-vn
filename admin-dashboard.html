@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bảng quản trị — XaaS.vn Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1120; --ink-soft:#4A5268; --ink-mute:#8991A8;
+    --paper:#FFFFFF; --surface:#F3F5FC; --surface-line:#E5E8F5;
+    --sidebar:#0B1120; --sidebar-soft:#8A93B8; --sidebar-line:#1E2740; --sidebar-hi:#171F38;
+    --iaas:#2454FF; --iaas-soft:#EAF0FF;
+    --paas:#7B3FF2; --paas-soft:#F1EBFF;
+    --saas:#0FA968; --saas-soft:#E4F9EF;
+    --ai-1:#FF6B35; --ai-2:#FF3D81; --ai-soft:#FFE9EF;
+    --ok:#0FA968; --ok-soft:#E4F9EF;
+    --warn:#F5A623; --warn-soft:#FFF4E0;
+    --danger:#E63946; --danger-soft:#FCE9EA;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4{font-family:'Be Vietnam Pro',sans-serif;font-weight:800;letter-spacing:-.01em;margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  button,input,select,textarea{font-family:inherit;}
+  a{color:inherit;text-decoration:none;}
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2.5px solid var(--iaas);outline-offset:2px;border-radius:6px;}
+
+  .app{display:grid;grid-template-columns:252px 1fr;min-height:100vh;}
+
+  /* ---------- sidebar ---------- */
+  .sidebar{background:var(--sidebar);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;}
+  .sb-logo{display:flex;align-items:center;gap:9px;padding:6px 10px 26px;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:18px;}
+  .sb-logo .dot-x{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--iaas),var(--paas) 55%,var(--ai-2));display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .sb-logo .vn{color:var(--sidebar-soft);font-weight:600;font-size:13px;}
+  .sb-section{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--sidebar-soft);font-weight:700;padding:16px 12px 8px;}
+  .sb-nav a{
+    display:flex;align-items:center;gap:11px;padding:10.5px 12px;border-radius:10px;
+    font-size:14px;font-weight:600;color:var(--sidebar-soft);margin-bottom:2px;transition:all .15s ease;
+  }
+  .sb-nav a svg{flex:0 0 auto;opacity:.85;}
+  .sb-nav a:hover{background:var(--sidebar-hi);color:#fff;}
+  .sb-nav a.on{background:var(--sidebar-hi);color:#fff;}
+  .sb-nav a.on svg{opacity:1;}
+  .sb-badge{margin-left:auto;background:var(--danger);color:#fff;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:100px;}
+  .sb-foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--sidebar-line);}
+  .sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;}
+  .sb-avatar{width:34px;height:34px;border-radius:10px;background:linear-gradient(120deg,var(--iaas),var(--paas));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:0 0 auto;}
+  .sb-user b{display:block;font-size:13px;}
+  .sb-user span{font-size:11.5px;color:var(--sidebar-soft);}
+
+  /* ---------- content shell ---------- */
+  .content{padding:26px 34px 60px;max-width:1320px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;gap:16px;flex-wrap:wrap;}
+  .topbar h1{font-size:24px;}
+  .topbar .sub{font-size:13.5px;color:var(--ink-soft);margin-top:4px;font-weight:500;}
+  .top-actions{display:flex;gap:10px;align-items:center;}
+  .icon-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--surface-line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;}
+  .icon-btn .dot{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--danger);}
+  .btn-primary{background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-weight:700;font-size:13.5px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;}
+  .btn-primary:hover{background:#1a2340;}
+  .btn-ghost{background:#fff;color:var(--ink);padding:10px 16px;border-radius:10px;font-weight:700;font-size:13.5px;border:1px solid var(--surface-line);cursor:pointer;}
+  .btn-ghost:hover{border-color:var(--iaas);}
+  .btn-danger-ghost{background:#fff;color:var(--danger);border:1px solid #F3C6CA;padding:10px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;}
+
+  .view{display:none;}
+  .view.on{display:block;}
+
+  /* ---------- stat cards ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+  .stat-card{background:#fff;border:1px solid var(--surface-line);border-radius:16px;padding:20px;}
+  .stat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+  .stat-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;}
+  .stat-trend{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:100px;}
+  .trend-up{background:var(--ok-soft);color:var(--ok);}
+  .trend-warn{background:var(--warn-soft);color:#B8790F;}
+  .stat-card b{display:block;font-family:'Be Vietnam Pro',sans-serif;font-size:26px;margin-bottom:2px;}
+  .stat-card span{font-size:12.5px;color:var(--ink-soft);font-weight:500;}
+
+  /* ---------- panels ---------- */
+  .panel{background:#fff;border:1px solid var(--surface-line);border-radius:16px;margin-bottom:20px;}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--surface-line);flex-wrap:wrap;gap:12px;}
+  .panel-head h3{font-size:16px;}
+  .panel-body{padding:20px 22px;}
+
+  .two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;}
+
+  /* chart bars */
+  .chart-bars{display:flex;align-items:flex-end;gap:16px;height:170px;padding-top:10px;}
+  .cb-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;height:100%;justify-content:flex-end;}
+  .cb-bar{width:100%;border-radius:8px 8px 0 0;transition:height .5s ease;}
+  .cb-col .lbl{font-size:11.5px;color:var(--ink-soft);font-weight:600;}
+  .cb-col .val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;}
+
+  /* activity list */
+  .act-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--surface-line);}
+  .act-row:last-child{border-bottom:none;}
+  .act-mark{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex:0 0 auto;}
+  .act-body{flex:1;min-width:0;}
+  .act-body b{font-size:13.5px;display:block;}
+  .act-body span{font-size:12px;color:var(--ink-soft);}
+  .act-actions{display:flex;gap:6px;}
+  .act-actions button{border:none;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer;}
+  .approve{background:var(--ok-soft);color:var(--ok);}
+  .reject{background:var(--danger-soft);color:var(--danger);}
+
+  /* ---------- toolbar / filters ---------- */
+  .table-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:16px 22px;border-bottom:1px solid var(--surface-line);}
+  .search-box{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--surface-line);border-radius:10px;padding:9px 13px;flex:1;min-width:200px;max-width:320px;}
+  .search-box input{border:none;background:none;outline:none;font-size:13.5px;width:100%;}
+  select.f-select{border:1px solid var(--surface-line);background:#fff;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:600;cursor:pointer;}
+
+  /* ---------- data table ---------- */
+  table{width:100%;border-collapse:collapse;}
+  thead th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);font-weight:700;padding:12px 22px;border-bottom:1px solid var(--surface-line);}
+  tbody td{padding:14px 22px;border-bottom:1px solid var(--surface-line);font-size:13.5px;vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FAFBFF;}
+  .co-cell{display:flex;align-items:center;gap:12px;}
+  .co-mark{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12.5px;flex:0 0 auto;}
+  .co-cell b{display:block;font-size:13.5px;}
+  .co-cell span{font-size:11.5px;color:var(--ink-soft);}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;display:inline-block;}
+  .b-iaas{background:var(--iaas-soft);color:var(--iaas);}
+  .b-paas{background:var(--paas-soft);color:var(--paas);}
+  .b-saas{background:var(--saas-soft);color:#0C9260;}
+  .b-ai{background:var(--ai-soft);color:#C43D6B;}
+  .status-pill{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:100px;display:inline-flex;align-items:center;gap:5px;}
+  .status-pill::before{content:"";width:6px;height:6px;border-radius:50%;}
+  .st-published{background:var(--ok-soft);color:var(--ok);}
+  .st-published::before{background:var(--ok);}
+  .st-pending{background:var(--warn-soft);color:#B8790F;}
+  .st-pending::before{background:var(--warn);}
+  .st-hidden{background:var(--surface);color:var(--ink-mute);}
+  .st-hidden::before{background:var(--ink-mute);}
+  .row-actions{display:flex;gap:6px;justify-content:flex-end;}
+  .ra-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--surface-line);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .ra-btn:hover{border-color:var(--iaas);}
+  .ra-btn.del:hover{border-color:var(--danger);}
+
+  .table-foot{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;font-size:12.5px;color:var(--ink-soft);}
+
+  /* ---------- verified badge (toggleable) ---------- */
+  .verified-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;border:none;cursor:pointer;font-family:inherit;transition:transform .12s ease;}
+  .verified-badge:hover{transform:translateY(-1px);}
+  .v-yes{background:var(--ok-soft);color:var(--ok);}
+  .v-no{background:var(--surface);color:var(--ink-mute);border:1px dashed var(--surface-line);}
+  .verified-badge svg{flex:0 0 auto;}
+
+  /* ---------- approved panel ---------- */
+  .appr-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--surface-line);}
+  .appr-row:last-child{border-bottom:none;}
+  .appr-body{flex:1;min-width:0;}
+  .appr-body b{font-size:13.5px;display:block;}
+  .appr-body span{font-size:12px;color:var(--ink-soft);}
+  .appr-actions{display:flex;gap:8px;align-items:center;}
+
+  /* ---------- preview modal ---------- */
+  .preview-hero{display:flex;gap:16px;align-items:flex-start;padding-bottom:6px;}
+  .preview-mark{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;flex:0 0 auto;}
+  .preview-title h3{font-size:19px;margin-bottom:8px;}
+  .preview-badges{display:flex;gap:8px;flex-wrap:wrap;}
+  .preview-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.6;background:var(--surface);border-radius:12px;padding:14px 16px;}
+  .preview-field{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--surface-line);font-size:13px;}
+  .preview-field:last-child{border-bottom:none;}
+  .preview-field .k{color:var(--ink-soft);font-weight:600;}
+
+  /* ---------- category cards ---------- */
+  .cat-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .cat-mgr-card{border:1px solid var(--surface-line);border-radius:16px;padding:20px;}
+  .cat-mgr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+  .cat-mgr-icon{width:44px;height:44px;border-radius:12px;color:#fff;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;}
+  .cat-mgr-card h4{font-size:16px;margin:0 0 4px;}
+  .cat-mgr-card .cnt{font-size:12.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .cat-mgr-card textarea{width:100%;border:1px solid var(--surface-line);border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;resize:vertical;min-height:60px;color:var(--ink-soft);}
+  .cat-mgr-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:12px;}
+
+  /* ---------- products view ---------- */
+  .co-select-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+  .co-select-row label{font-size:13px;font-weight:700;color:var(--ink-soft);}
+  select.co-select{border:1px solid var(--surface-line);background:#fff;border-radius:10px;padding:10px 14px;font-size:13.5px;font-weight:600;min-width:220px;cursor:pointer;}
+  .prod-mgr-card{border:1px solid var(--surface-line);border-radius:16px;margin-bottom:14px;overflow:hidden;}
+  .prod-mgr-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;cursor:pointer;background:#fff;}
+  .prod-mgr-head h4{font-size:14.5px;}
+  .prod-mgr-head .meta{font-size:12px;color:var(--ink-soft);margin-top:3px;font-weight:500;}
+  .prod-mgr-head .chev{transition:transform .2s ease;color:var(--ink-soft);}
+  .prod-mgr-card.open .chev{transform:rotate(180deg);}
+  .prod-mgr-body{display:none;padding:0 20px 20px;border-top:1px solid var(--surface-line);}
+  .prod-mgr-card.open .prod-mgr-body{display:block;}
+  .tier-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--surface-line);}
+  .tier-row:last-child{border-bottom:none;}
+  .tier-row input{border:1px solid var(--surface-line);border-radius:8px;padding:8px 10px;font-size:13px;width:100%;}
+  .tier-row .ra-btn{margin-left:auto;}
+
+  /* ---------- reviews ---------- */
+  .stars-mini{color:var(--warn);font-size:13px;letter-spacing:1px;}
+
+  /* ---------- settings ---------- */
+  .settings-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:720px;}
+  .field{display:flex;flex-direction:column;gap:7px;}
+  .field.full{grid-column:1/-1;}
+  .field label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .field input,.field textarea{border:1px solid var(--surface-line);border-radius:10px;padding:10px 13px;font-size:13.5px;font-family:inherit;}
+  .field textarea{min-height:80px;resize:vertical;}
+
+  /* ---------- modal ---------- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(11,17,32,0.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-overlay.on{display:flex;}
+  .modal{background:#fff;border-radius:18px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:20px 22px;border-bottom:1px solid var(--surface-line);}
+  .modal-head h3{font-size:17px;}
+  .modal-close{width:32px;height:32px;border-radius:9px;border:1px solid var(--surface-line);background:#fff;cursor:pointer;}
+  .modal-body{padding:22px;display:grid;gap:16px;}
+  .modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--surface-line);}
+
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:12px;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;z-index:200;opacity:0;transform:translateY(10px);transition:opacity .25s ease, transform .25s ease;pointer-events:none;}
+  .toast.on{opacity:1;transform:translateY(0);}
+
+  @media (max-width:1080px){
+    .app{grid-template-columns:1fr;}
+    .sidebar{display:none;}
+    .stat-grid{grid-template-columns:1fr 1fr;}
+    .two-col{grid-template-columns:1fr;}
+    .cat-cards{grid-template-columns:1fr;}
+  }
+  @media (max-width:640px){
+    .content{padding:20px 16px 50px;}
+    .stat-grid{grid-template-columns:1fr;}
+    thead{display:none;}
+    table,tbody,tr,td{display:block;width:100%;}
+    tbody td{border-bottom:none;padding:6px 0;}
+    tbody tr{padding:14px;border-bottom:1px solid var(--surface-line);}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="sb-logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></div>
+
+    <div class="sb-section">Chính</div>
+    <nav class="sb-nav">
+      <a href="#" class="on" data-view="overview">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="13" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="13" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.8"/></svg>
+        Tổng quan
+      </a>
+      <a href="#" data-view="companies">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.8"/></svg>
+        Doanh nghiệp
+        <span class="sb-badge" id="pendingBadge">3</span>
+      </a>
+      <a href="#" data-view="categories">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 6h7l2 3h7v9a1 1 0 01-1 1H5a1 1 0 01-1-1V6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        Danh mục
+      </a>
+      <a href="#" data-view="products">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 6.5L12 11l8-4.5M12 11v9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        Sản phẩm & Giá
+      </a>
+      <a href="#" data-view="reviews">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.2l-5.2 2.8 1-5.8-4.2-4.1 5.8-.8L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Đánh giá
+      </a>
+    </nav>
+
+    <div class="sb-section">Khác</div>
+    <nav class="sb-nav">
+      <a href="#" data-view="settings">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13a1.65 1.65 0 000-2l1.1-1-2-3.4-1.4.5a1.65 1.65 0 01-1.7-1L15 4h-4l-.4 1.5a1.65 1.65 0 01-1.7 1l-1.4-.5-2 3.4 1.1 1a1.65 1.65 0 000 2l-1.1 1 2 3.4 1.4-.5a1.65 1.65 0 011.7 1L11 20h4l.4-1.5a1.65 1.65 0 011.7-1l1.4.5 2-3.4-1.1-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        Cài đặt
+      </a>
+      <a href="#" onclick="logout();return false;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Đăng xuất
+      </a>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="sb-user">
+        <div class="sb-avatar" id="sbAvatar">AL</div>
+        <div><b id="sbName">Alex</b><span>Quản trị viên</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= CONTENT ================= -->
+  <main class="content">
+
+    <!-- ---------- OVERVIEW ---------- -->
+    <div class="view on" id="view-overview">
+      <div class="topbar">
+        <div><h1>Tổng quan</h1><div class="sub">Chào Alex, đây là tình hình thư mục hôm nay.</div></div>
+        <div class="top-actions">
+          <button class="icon-btn"><span class="dot"></span><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 8a6 6 0 1112 0c0 4 1.5 5.5 1.5 5.5H4.5S6 12 6 8z" stroke="#0B1120" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 19a2 2 0 004 0" stroke="#0B1120" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+          <button class="btn-primary" onclick="openCompanyModal()">+ Thêm doanh nghiệp</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-top"><div class="stat-icon" style="background:var(--iaas-soft)">🏢</div><span class="stat-trend trend-up">+8 tháng này</span></div>
+          <b id="statTotal">132</b><span>Tổng doanh nghiệp</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><div class="stat-icon" style="background:var(--warn-soft)">⏳</div><span class="stat-trend trend-warn">Cần duyệt</span></div>
+          <b id="statPending">3</b><span>Chờ phê duyệt</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><div class="stat-icon" style="background:var(--saas-soft)">👁</div><span class="stat-trend trend-up">+12%</span></div>
+          <b>48.2K</b><span>Lượt xem tháng này</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top"><div class="stat-icon" style="background:var(--ai-soft)">⭐</div><span class="stat-trend trend-up">+21 mới</span></div>
+          <b>4.5</b><span>Đánh giá trung bình</span>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><h3>Doanh nghiệp theo danh mục</h3></div>
+          <div class="panel-body">
+            <div class="chart-bars" id="chartBars"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Chờ phê duyệt</h3></div>
+          <div class="panel-body" id="pendingList"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Đã duyệt gần đây</h3><span style="font-size:12.5px;color:var(--ink-soft);">Bấm huy hiệu để đổi trạng thái xác minh</span></div>
+        <div class="panel-body" id="approvedList"></div>
+      </div>
+    </div>
+
+    <!-- ---------- COMPANIES ---------- -->
+    <div class="view" id="view-companies">
+      <div class="topbar">
+        <div><h1>Doanh nghiệp</h1><div class="sub">Quản lý toàn bộ doanh nghiệp trong thư mục.</div></div>
+        <button class="btn-primary" onclick="openCompanyModal()">+ Thêm doanh nghiệp</button>
+      </div>
+      <div class="panel">
+        <div class="table-toolbar">
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#4A5268" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="#4A5268" stroke-width="2" stroke-linecap="round"/></svg>
+            <input type="text" id="coSearch" placeholder="Tìm doanh nghiệp...">
+          </div>
+          <select class="f-select" id="coFilterCat">
+            <option value="">Tất cả danh mục</option>
+            <option value="iaas">IaaS</option><option value="paas">PaaS</option><option value="saas">SaaS</option><option value="ai">AIaaS</option>
+          </select>
+          <select class="f-select" id="coFilterStatus">
+            <option value="">Tất cả trạng thái</option>
+            <option value="published">Đã duyệt</option><option value="pending">Chờ duyệt</option><option value="hidden">Đã ẩn</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>Doanh nghiệp</th><th>Danh mục</th><th>Trạng thái</th><th>Xác minh</th><th>Đánh giá</th><th>Cập nhật</th><th></th></tr></thead>
+          <tbody id="coTableBody"></tbody>
+        </table>
+        <div class="table-foot"><span id="coCount">— doanh nghiệp</span><span class="mono">TRANG 1/1</span></div>
+      </div>
+    </div>
+
+    <!-- ---------- CATEGORIES ---------- -->
+    <div class="view" id="view-categories">
+      <div class="topbar">
+        <div><h1>Danh mục</h1><div class="sub">Quản lý 4 lớp dịch vụ XaaS hiển thị trên trang chủ.</div></div>
+        <button class="btn-primary" onclick="showToast('Đã thêm danh mục mới (demo)')">+ Thêm danh mục</button>
+      </div>
+      <div class="cat-cards" id="catCards"></div>
+    </div>
+
+    <!-- ---------- PRODUCTS & PRICING ---------- -->
+    <div class="view" id="view-products">
+      <div class="topbar">
+        <div><h1>Sản phẩm & Bảng giá</h1><div class="sub">Mỗi doanh nghiệp có thể có nhiều sản phẩm, mỗi sản phẩm có bảng giá riêng.</div></div>
+        <button class="btn-primary" onclick="showToast('Đã thêm sản phẩm mới (demo)')">+ Thêm sản phẩm</button>
+      </div>
+      <div class="co-select-row">
+        <label>Chọn doanh nghiệp:</label>
+        <select class="co-select" id="prodCoSelect"></select>
+      </div>
+      <div id="prodList"></div>
+    </div>
+
+    <!-- ---------- REVIEWS ---------- -->
+    <div class="view" id="view-reviews">
+      <div class="topbar">
+        <div><h1>Đánh giá</h1><div class="sub">Kiểm duyệt đánh giá từ người dùng trước khi hiển thị công khai.</div></div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Doanh nghiệp</th><th>Người dùng</th><th>Đánh giá</th><th>Nội dung</th><th>Trạng thái</th><th></th></tr></thead>
+          <tbody id="revTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- SETTINGS ---------- -->
+    <div class="view" id="view-settings">
+      <div class="topbar"><div><h1>Cài đặt</h1><div class="sub">Thông tin chung của thư mục XaaS.vn.</div></div></div>
+      <div class="panel"><div class="panel-body">
+        <div class="settings-form">
+          <div class="field"><label>Tên website</label><input type="text" value="XaaS.vn"></div>
+          <div class="field"><label>Email liên hệ</label><input type="text" value="hello@xaas.vn"></div>
+          <div class="field full"><label>Mô tả website</label><textarea>Thư mục tra cứu doanh nghiệp SaaS, PaaS, IaaS và AIaaS tại Việt Nam.</textarea></div>
+          <div class="field"><label>Ngôn ngữ mặc định</label><input type="text" value="Tiếng Việt"></div>
+          <div class="field"><label>Múi giờ</label><input type="text" value="GMT+7 — Hồ Chí Minh"></div>
+        </div>
+        <div style="margin-top:20px;"><button class="btn-primary" onclick="showToast('Đã lưu cài đặt')">Lưu thay đổi</button></div>
+      </div></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ================= COMPANY MODAL ================= -->
+<div class="modal-overlay" id="companyModal">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modalTitle">Thêm doanh nghiệp</h3><button class="modal-close" onclick="closeCompanyModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Tên doanh nghiệp</label><input type="text" id="mName" placeholder="VD: MISA"></div>
+      <div class="field"><label>Danh mục</label>
+        <select id="mCategory">
+          <option value="iaas">IaaS</option><option value="paas">PaaS</option><option value="saas" selected>SaaS</option><option value="ai">AIaaS</option>
+        </select>
+      </div>
+      <div class="field"><label>Website</label><input type="text" id="mWebsite" placeholder="vidu.vn"></div>
+      <div class="field"><label>Mô tả ngắn</label><textarea id="mDesc" placeholder="Mô tả một câu về doanh nghiệp..."></textarea></div>
+      <div class="field"><label>Trạng thái</label>
+        <select id="mStatus">
+          <option value="published">Đã duyệt</option><option value="pending">Chờ duyệt</option><option value="hidden">Đã ẩn</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-ghost" onclick="closeCompanyModal()">Hủy</button>
+      <button class="btn-primary" onclick="saveCompany()">Lưu doanh nghiệp</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PREVIEW MODAL ================= -->
+<div class="modal-overlay" id="previewModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-head"><h3>Xem trước trang doanh nghiệp</h3><button class="modal-close" onclick="closePreview()">✕</button></div>
+    <div class="modal-body">
+      <div class="preview-hero">
+        <div class="preview-mark" id="pvMark"></div>
+        <div class="preview-title">
+          <h3 id="pvName"></h3>
+          <div class="preview-badges" id="pvBadges"></div>
+        </div>
+      </div>
+      <div class="preview-desc" id="pvDesc"></div>
+      <div>
+        <div class="preview-field"><span class="k">Website</span><span id="pvWebsite"></span></div>
+        <div class="preview-field"><span class="k">Đánh giá</span><span id="pvRating"></span></div>
+        <div class="preview-field"><span class="k">Cập nhật</span><span id="pvUpdated"></span></div>
+      </div>
+    </div>
+    <div class="modal-foot" id="pvFoot"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Đã lưu thay đổi</div>
+
+<script>
+/* ============ API HELPERS ============ */
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  if (res.status === 401) { window.location.href = 'auth.html'; return null; }
+  if (!res.ok) {
+    let msg = 'Có lỗi xảy ra';
+    try { msg = (await res.json()).error || msg; } catch (e) {}
+    showToast(msg);
+    throw new Error(msg);
+  }
+  return res.status === 204 ? null : res.json();
+}
+const apiGet = (p) => api(p);
+const apiPost = (p, body) => api(p, { method: 'POST', body: JSON.stringify(body || {}) });
+const apiPut = (p, body) => api(p, { method: 'PUT', body: JSON.stringify(body || {}) });
+const apiDelete = (p) => api(p, { method: 'DELETE' });
+
+/* ============ SESSION ============ */
+let SESSION = null;
+async function logout() {
+  await apiPost('/api/auth/logout').catch(() => {});
+  window.location.href = 'auth.html';
+}
+
+/* ============ LOCAL UI STATE (populated from API) ============ */
+const CAT_META = {
+  iaas:{name:'IaaS', color:'#2454FF', color2:'#1E43E0', badge:'b-iaas'},
+  paas:{name:'PaaS', color:'#7B3FF2', color2:'#6A2FE0', badge:'b-paas'},
+  saas:{name:'SaaS', color:'#0FA968', color2:'#0C9260', badge:'b-saas'},
+  ai:{name:'AIaaS', color:'#FF3D81', color2:'#FF6B35', badge:'b-ai'},
+};
+let CATEGORIES = [
+  {id:'iaas', desc:'Máy chủ, lưu trữ, mạng và trung tâm dữ liệu.'},
+  {id:'paas', desc:'Môi trường triển khai và công cụ cho nhà phát triển.'},
+  {id:'saas', desc:'Phần mềm sẵn dùng cho vận hành doanh nghiệp.'},
+  {id:'ai',   desc:'Mô hình AI và API trí tuệ nhân tạo theo yêu cầu.'},
+];
+
+let COMPANIES = [];          // from GET /api/companies
+let REVIEWS = [];            // from GET /api/reviews
+let PRODUCTS_CACHE = {};     // companyId -> [{id,name,from,tiers:[{id,name,price}]}]
+let editingCompanyId = null;
+
+/* ============ helpers ============ */
+function companyById(id){ return COMPANIES.find(c=>c.id===id); }
+function catBadge(cat){ const m = CAT_META[cat]; return `<span class="badge ${m.badge}">${m.name}</span>`; }
+function statusPill(s){
+  const map = {published:['st-published','Đã duyệt'], pending:['st-pending','Chờ duyệt'], hidden:['st-hidden','Đã ẩn'], draft:['st-hidden','Nháp'], rejected:['st-hidden','Từ chối']};
+  const [cls,label] = map[s] || ['st-hidden', s];
+  return `<span class="status-pill ${cls}">${label}</span>`;
+}
+function markStyle(cat){ const m = CAT_META[cat]; return `background:linear-gradient(120deg,${m.color2},${m.color})`; }
+function verifiedBadge(c){
+  return c.verified
+    ? `<button class="verified-badge v-yes" title="Bấm để bỏ xác minh" onclick="toggleVerified(${c.id})"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Đã xác minh</button>`
+    : `<button class="verified-badge v-no" title="Bấm để xác minh" onclick="toggleVerified(${c.id})">Chưa xác minh</button>`;
+}
+async function toggleVerified(id){
+  const updated = await apiPost(`/api/companies/${id}/verify`);
+  if(!updated) return;
+  const idx = COMPANIES.findIndex(c=>c.id===id);
+  if(idx>-1) COMPANIES[idx] = updated;
+  renderOverview(); renderCompanies();
+  showToast(updated.verified ? `Đã xác minh ${updated.name}` : `Đã bỏ xác minh ${updated.name}`);
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>t.classList.remove('on'), 2200);
+}
+
+/* ============ nav switching ============ */
+document.querySelectorAll('.sb-nav a').forEach(a=>{
+  a.addEventListener('click', (e)=>{
+    if(!a.dataset.view) return; // e.g. logout link has its own handler
+    e.preventDefault();
+    document.querySelectorAll('.sb-nav a').forEach(x=>x.classList.remove('on'));
+    a.classList.add('on');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+    document.getElementById('view-'+a.dataset.view).classList.add('on');
+  });
+});
+
+/* ============ overview ============ */
+function renderOverview(){
+  document.getElementById('statTotal').textContent = COMPANIES.length + 20;
+  const pending = COMPANIES.filter(c=>c.status==='pending');
+  document.getElementById('statPending').textContent = pending.length;
+  document.getElementById('pendingBadge').textContent = pending.length;
+  document.getElementById('pendingBadge').style.display = pending.length ? 'inline-block' : 'none';
+
+  const bars = document.getElementById('chartBars');
+  const max = Math.max(...CATEGORIES.map(c=>COMPANIES.filter(x=>x.cat===c.id).length), 1);
+  bars.innerHTML = CATEGORIES.map(c=>{
+    const n = COMPANIES.filter(x=>x.cat===c.id).length;
+    const h = Math.max(14, Math.round((n/max)*140));
+    const m = CAT_META[c.id];
+    return `<div class="cb-col">
+      <span class="val">${n}</span>
+      <div class="cb-bar" style="height:${h}px;background:linear-gradient(180deg,${m.color},${m.color2})"></div>
+      <span class="lbl">${m.name}</span>
+    </div>`;
+  }).join('');
+
+  const pl = document.getElementById('pendingList');
+  pl.innerHTML = pending.length ? pending.map(c=>`
+    <div class="act-row">
+      <div class="act-mark" style="${markStyle(c.cat)}">${c.mark}</div>
+      <div class="act-body"><b>${c.name}</b><span>${CAT_META[c.cat].name} · gửi ${c.updated}</span></div>
+      <div class="act-actions">
+        <button class="btn-ghost" style="padding:7px 11px;font-size:12px;" onclick="openPreview(${c.id})">Xem preview</button>
+        <button class="approve" onclick="setStatus(${c.id},'published')">Duyệt</button>
+        <button class="reject" onclick="setStatus(${c.id},'hidden')">Từ chối</button>
+      </div>
+    </div>`).join('') : `<p style="color:var(--ink-soft);font-size:13.5px;">Không có doanh nghiệp nào chờ duyệt 🎉</p>`;
+
+  renderApprovedList();
+}
+
+function renderApprovedList(){
+  const approved = COMPANIES.filter(c=>c.status==='published').slice(0,6);
+  const al = document.getElementById('approvedList');
+  al.innerHTML = approved.length ? approved.map(c=>`
+    <div class="appr-row">
+      <div class="act-mark" style="${markStyle(c.cat)}">${c.mark}</div>
+      <div class="appr-body"><b>${c.name}</b><span>${CAT_META[c.cat].name} · duyệt ${c.updated}</span></div>
+      <div class="appr-actions">
+        ${verifiedBadge(c)}
+        <button class="ra-btn" title="Xem preview" onclick="openPreview(${c.id})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" stroke="#0B1120" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="#0B1120" stroke-width="1.6"/></svg>
+        </button>
+      </div>
+    </div>`).join('') : `<p style="color:var(--ink-soft);font-size:13.5px;">Chưa có doanh nghiệp nào được duyệt.</p>`;
+}
+
+/* ============ preview modal ============ */
+function openPreview(id){
+  const c = companyById(id);
+  if(!c) return;
+  document.getElementById('pvMark').textContent = c.mark;
+  document.getElementById('pvMark').setAttribute('style', markStyle(c.cat));
+  document.getElementById('pvName').textContent = c.name || '(Chưa đặt tên)';
+  document.getElementById('pvBadges').innerHTML = `${catBadge(c.cat)} ${statusPill(c.status)} ${verifiedBadge(c)}`;
+  document.getElementById('pvDesc').textContent = c.desc || 'Doanh nghiệp chưa có mô tả.';
+  document.getElementById('pvWebsite').textContent = c.website || '—';
+  document.getElementById('pvRating').textContent = c.rating ? '★ ' + c.rating.toFixed(1) : 'Chưa có đánh giá';
+  document.getElementById('pvUpdated').textContent = c.updated;
+
+  const foot = document.getElementById('pvFoot');
+  if(c.status==='pending'){
+    foot.innerHTML = `
+      <button class="btn-ghost" onclick="closePreview()">Đóng</button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-ghost" style="color:var(--danger);" onclick="setStatus(${c.id},'hidden');closePreview();">Từ chối</button>
+        <button class="btn-primary" onclick="setStatus(${c.id},'published');closePreview();">Duyệt doanh nghiệp</button>
+      </div>`;
+  } else {
+    foot.innerHTML = `
+      <button class="btn-ghost" onclick="closePreview()">Đóng</button>
+      <button class="btn-primary" onclick="closePreview();openCompanyModal(${c.id});">Sửa doanh nghiệp</button>`;
+  }
+  document.getElementById('previewModal').classList.add('on');
+}
+function closePreview(){ document.getElementById('previewModal').classList.remove('on'); }
+
+async function setStatus(id, status){
+  const updated = await apiPost(`/api/companies/${id}/status`, { status });
+  if(!updated) return;
+  const idx = COMPANIES.findIndex(c=>c.id===id);
+  if(idx>-1) COMPANIES[idx] = updated;
+  renderAll();
+  showToast(status==='published' ? `Đã duyệt ${updated.name}` : `Đã từ chối ${updated.name}`);
+}
+
+/* ============ companies table ============ */
+function renderCompanies(){
+  const q = document.getElementById('coSearch').value.trim().toLowerCase();
+  const fc = document.getElementById('coFilterCat').value;
+  const fs = document.getElementById('coFilterStatus').value;
+  const rows = COMPANIES.filter(c=>
+    (!q || c.name.toLowerCase().includes(q)) &&
+    (!fc || c.cat===fc) &&
+    (!fs || c.status===fs)
+  );
+  document.getElementById('coCount').textContent = `${rows.length} doanh nghiệp`;
+  document.getElementById('coTableBody').innerHTML = rows.map(c=>`
+    <tr>
+      <td><div class="co-cell"><div class="co-mark" style="${markStyle(c.cat)}">${c.mark}</div><div><b>${c.name}</b><span>${c.website}</span></div></div></td>
+      <td>${catBadge(c.cat)}</td>
+      <td>${statusPill(c.status)}</td>
+      <td>${verifiedBadge(c)}</td>
+      <td>${c.rating ? '★ '+c.rating.toFixed(1) : '—'}</td>
+      <td class="mono" style="color:var(--ink-soft);font-size:12.5px;">${c.updated}</td>
+      <td>
+        <div class="row-actions">
+          <button class="ra-btn" title="Xem preview" onclick="openPreview(${c.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" stroke="#0B1120" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="#0B1120" stroke-width="1.6"/></svg>
+          </button>
+          <button class="ra-btn" title="Sửa" onclick="openCompanyModal(${c.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z" stroke="#0B1120" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="ra-btn del" title="Xóa" onclick="deleteCompany(${c.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0v12a1 1 0 001 1h6a1 1 0 001-1V7" stroke="#E63946" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:30px;">Không tìm thấy doanh nghiệp phù hợp.</td></tr>`;
+}
+['coSearch','coFilterCat','coFilterStatus'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', renderCompanies);
+  document.getElementById(id).addEventListener('change', renderCompanies);
+});
+
+async function deleteCompany(id){
+  const c = companyById(id);
+  if(!confirm(`Xóa "${c.name}" khỏi thư mục?`)) return;
+  const ok = await apiDelete(`/api/companies/${id}`);
+  if(!ok) return;
+  COMPANIES = COMPANIES.filter(x=>x.id!==id);
+  renderAll();
+  showToast(`Đã xóa ${c.name}`);
+}
+
+/* ============ company modal ============ */
+function openCompanyModal(id){
+  editingCompanyId = id || null;
+  const c = id ? companyById(id) : null;
+  document.getElementById('modalTitle').textContent = c ? 'Sửa doanh nghiệp' : 'Thêm doanh nghiệp';
+  document.getElementById('mName').value = c ? c.name : '';
+  document.getElementById('mCategory').value = c ? c.cat : 'saas';
+  document.getElementById('mWebsite').value = c ? c.website : '';
+  document.getElementById('mDesc').value = c ? c.desc : '';
+  document.getElementById('mStatus').value = c ? c.status : 'pending';
+  document.getElementById('companyModal').classList.add('on');
+}
+function closeCompanyModal(){ document.getElementById('companyModal').classList.remove('on'); }
+async function saveCompany(){
+  const name = document.getElementById('mName').value.trim();
+  if(!name){ showToast('Vui lòng nhập tên doanh nghiệp'); return; }
+  const data = {
+    name, cat: document.getElementById('mCategory').value,
+    website: document.getElementById('mWebsite').value.trim() || '—',
+    desc: document.getElementById('mDesc').value.trim(),
+    status: document.getElementById('mStatus').value,
+  };
+  const result = editingCompanyId
+    ? await apiPut(`/api/companies/${editingCompanyId}`, data)
+    : await apiPost('/api/companies', data);
+  if(!result) return;
+  closeCompanyModal();
+  await refreshCompanies();
+  renderAll();
+  showToast('Đã lưu doanh nghiệp');
+}
+
+/* ============ categories (local metadata; counts computed from live COMPANIES) ============ */
+function renderCategories(){
+  document.getElementById('catCards').innerHTML = CATEGORIES.map(c=>{
+    const m = CAT_META[c.id];
+    const count = COMPANIES.filter(x=>x.cat===c.id).length;
+    return `<div class="cat-mgr-card">
+      <div class="cat-mgr-top">
+        <div class="cat-mgr-icon" style="background:linear-gradient(120deg,${m.color2},${m.color})">${m.name[0]}</div>
+        <button class="ra-btn del" title="Xóa danh mục" onclick="showToast('Không thể xóa danh mục gốc (demo)')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0v12a1 1 0 001 1h6a1 1 0 001-1V7" stroke="#E63946" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <h4>${m.name}</h4>
+      <div class="cnt">${count} doanh nghiệp</div>
+      <textarea onchange="CATEGORIES.find(x=>x.id==='${c.id}').desc=this.value">${c.desc}</textarea>
+      <div class="cat-mgr-foot"><button class="btn-ghost" onclick="showToast('Đã lưu danh mục ${m.name}')">Lưu</button></div>
+    </div>`;
+  }).join('');
+}
+
+/* ============ products & pricing ============ */
+function renderProductCoSelect(){
+  const sel = document.getElementById('prodCoSelect');
+  const prev = sel.value;
+  sel.innerHTML = COMPANIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  sel.value = prev && COMPANIES.some(c=>String(c.id)===prev) ? prev : (COMPANIES[0] ? COMPANIES[0].id : '');
+}
+async function loadProductsFor(coId){
+  if(!coId) return [];
+  if(PRODUCTS_CACHE[coId]) return PRODUCTS_CACHE[coId];
+  const products = await apiGet(`/api/companies/${coId}/products`);
+  PRODUCTS_CACHE[coId] = products || [];
+  return PRODUCTS_CACHE[coId];
+}
+async function renderProducts(){
+  const coId = document.getElementById('prodCoSelect').value;
+  if(!coId){ document.getElementById('prodList').innerHTML = ''; return; }
+  const products = await loadProductsFor(coId);
+  const list = document.getElementById('prodList');
+  if(!products.length){
+    list.innerHTML = `<div class="panel"><div class="panel-body" style="text-align:center;color:var(--ink-soft);">Doanh nghiệp này chưa có sản phẩm nào. Bấm "+ Thêm sản phẩm" để tạo mới.</div></div>`;
+    return;
+  }
+  list.innerHTML = products.map((p,i)=>`
+    <div class="prod-mgr-card ${i===0?'open':''}">
+      <div class="prod-mgr-head" onclick="this.parentElement.classList.toggle('open')">
+        <div><h4>${p.name}</h4><div class="meta">${p.tiers.length} gói giá · từ ${p.from}</div></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#4A5268" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="prod-mgr-body">
+        ${p.tiers.map(t=>`
+          <div class="tier-row">
+            <input value="${t.name}" onchange="t_updateTier('${coId}','${p.id}','${t.id}','name',this.value)">
+            <input value="${t.price}" onchange="t_updateTier('${coId}','${p.id}','${t.id}','price',this.value)">
+            <span class="mono" style="color:var(--ink-soft);font-size:12px;">gói giá</span>
+            <button class="ra-btn del" onclick="showToast('Đã xóa gói (demo)')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0v12a1 1 0 001 1h6a1 1 0 001-1V7" stroke="#E63946" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        `).join('')}
+        <div style="padding-top:14px;"><button class="btn-ghost" onclick="showToast('Đã thêm gói giá mới (demo)')">+ Thêm gói giá</button></div>
+      </div>
+    </div>
+  `).join('');
+}
+async function t_updateTier(coId, prodId, tierId, field, val){
+  const products = PRODUCTS_CACHE[coId] || [];
+  const p = products.find(x=>x.id===prodId);
+  const t = p && p.tiers.find(x=>x.id===tierId);
+  if(!t) return;
+  t[field] = val;
+  await apiPut(`/api/products/${prodId}`, { name: p.name, tiers: p.tiers });
+  showToast('Đã lưu gói giá');
+}
+document.getElementById('prodCoSelect')?.addEventListener?.('change', renderProducts);
+
+/* ============ reviews ============ */
+function renderReviews(){
+  document.getElementById('revTableBody').innerHTML = REVIEWS.map(r=>`
+    <tr>
+      <td><div class="co-cell"><div class="co-mark" style="${markStyle(r.cat)}">${r.mark}</div><b>${r.co}</b></div></td>
+      <td>${r.user}</td>
+      <td><span class="stars-mini">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></td>
+      <td style="max-width:280px;color:var(--ink-soft);">${r.text}${r.reply?`<div style="margin-top:6px;font-size:12px;color:var(--iaas);">↳ Đã trả lời bởi doanh nghiệp</div>`:''}</td>
+      <td>${statusPill(r.status)}</td>
+      <td>
+        <div class="row-actions">
+          ${r.status!=='published' ? `<button class="ra-btn" title="Duyệt" onclick="setReview(${r.id},'published')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0FA968" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>` : ''}
+          ${r.status!=='hidden' ? `<button class="ra-btn del" title="Ẩn" onclick="setReview(${r.id},'hidden')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M6.6 6.7C4.5 8.1 3 10 3 12c0 0 3.5 7 9 7 1.8 0 3.4-.6 4.7-1.5M9.9 4.2A9.7 9.7 0 0112 4c5.5 0 9 7 9 7-.4.8-1.1 1.9-2.1 3" stroke="#E63946" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+async function setReview(id, status){
+  const ok = await apiPost(`/api/reviews/${id}/status`, { status });
+  if(!ok) return;
+  const r = REVIEWS.find(x=>x.id===id);
+  if(r) r.status = status;
+  renderReviews();
+  showToast('Đã cập nhật đánh giá');
+}
+
+/* ============ data loading & render orchestration ============ */
+async function refreshCompanies(){ COMPANIES = await apiGet('/api/companies') || []; }
+async function refreshReviews(){ REVIEWS = await apiGet('/api/reviews') || []; }
+
+async function renderAll(){
+  if(SESSION){
+    document.getElementById('sbName').textContent = SESSION.name || 'Quản trị viên';
+    document.getElementById('sbAvatar').textContent = (SESSION.name||'AL').split(' ').map(w=>w[0]).slice(-2).join('').toUpperCase();
+  }
+  renderOverview();
+  renderCompanies();
+  renderCategories();
+  renderProductCoSelect();
+  await renderProducts();
+  renderReviews();
+}
+
+(async function init(){
+  SESSION = await apiGet('/api/auth/me');
+  if(!SESSION || SESSION.role !== 'admin'){ window.location.href = 'auth.html'; return; }
+  await refreshCompanies();
+  await refreshReviews();
+  await renderAll();
+})();
+</script>
+
+</body>
+</html>

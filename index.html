@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XaaS.vn — Thư mục doanh nghiệp SaaS · PaaS · IaaS · AIaaS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1120;
+    --ink-soft:#4A5268;
+    --paper:#FFFFFF;
+    --surface:#F3F5FC;
+    --surface-line:#E5E8F5;
+    --iaas:#2454FF;
+    --iaas-soft:#EAF0FF;
+    --paas:#7B3FF2;
+    --paas-soft:#F1EBFF;
+    --saas:#0FA968;
+    --saas-soft:#E4F9EF;
+    --ai-1:#FF6B35;
+    --ai-2:#FF3D81;
+    --radius:18px;
+    --maxw:1240px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Be Vietnam Pro',sans-serif;
+    font-weight:800;
+    letter-spacing:-0.02em;
+    margin:0;
+  }
+  .mono{
+    font-family:'JetBrains Mono',monospace;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  img,svg{display:block;}
+
+  /* ---------- focus & motion ---------- */
+  a:focus-visible,button:focus-visible{outline:2.5px solid var(--iaas);outline-offset:3px;border-radius:6px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;scroll-behavior:auto !important;}
+  }
+
+  /* ---------- reveal-on-scroll ---------- */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--surface-line);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 0;
+  }
+  .logo{
+    display:flex;align-items:center;gap:9px;
+    font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:21px;
+  }
+  .logo .dot-x{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,var(--iaas) 0%,var(--paas) 55%, var(--ai-2) 100%);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:15px;font-weight:900;
+  }
+  .logo .vn{color:var(--ink-soft);font-weight:600;font-size:15px;margin-left:2px;}
+  nav.links{display:flex;align-items:center;gap:34px;}
+  nav.links > a{font-weight:600;font-size:15px;color:var(--ink);position:relative;padding:6px 0;}
+  nav.links > a:hover{color:var(--iaas);}
+  .has-dd{position:relative;}
+  .dd{
+    position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(6px);
+    background:#fff;border:1px solid var(--surface-line);border-radius:14px;
+    box-shadow:0 20px 45px -18px rgba(11,17,32,0.28);
+    padding:10px;min-width:210px;
+    opacity:0;visibility:hidden;transition:opacity .18s ease, transform .18s ease;
+  }
+  .has-dd:hover .dd{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}
+  .dd a{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;border-radius:9px;font-size:14px;font-weight:600;color:var(--ink);
+  }
+  .dd a:hover{background:var(--surface);}
+  .dd .sw{width:8px;height:8px;border-radius:3px;flex:0 0 auto;}
+  .cta-btn{
+    background:var(--ink);color:#fff;
+    padding:11px 20px;border-radius:11px;
+    font-weight:700;font-size:14px;
+    border:none;cursor:pointer;
+  }
+  .cta-btn:hover{background:#1a2340;}
+  .burger{display:none;background:none;border:none;cursor:pointer;padding:6px;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:76px 0 40px;
+    background:
+      radial-gradient(720px 420px at 88% -10%, var(--iaas-soft) 0%, transparent 60%),
+      radial-gradient(600px 380px at 5% 10%, var(--paas-soft) 0%, transparent 60%);
+  }
+  .hero-grid{display:grid;grid-template-columns:1.02fr 0.98fr;gap:56px;align-items:center;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;
+    letter-spacing:0.06em;text-transform:uppercase;color:var(--paas);
+    background:var(--paas-soft);border:1px solid #E2D4FF;
+    padding:7px 13px;border-radius:100px;margin-bottom:22px;
+  }
+  .eyebrow .pulse{width:6px;height:6px;border-radius:50%;background:var(--paas);animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .hero h1{font-size:52px;line-height:1.06;}
+  .hero h1 .grad{
+    background:linear-gradient(100deg,var(--iaas), var(--paas) 55%, var(--ai-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.lede{
+    font-size:18px;line-height:1.65;color:var(--ink-soft);
+    margin:22px 0 30px;max-width:480px;
+  }
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:38px;}
+  .btn-primary{
+    background:var(--ink);color:#fff;padding:15px 26px;border-radius:13px;
+    font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:9px;
+    transition:transform .18s ease, background .18s ease;
+  }
+  .btn-primary:hover{background:#1a2340;transform:translateY(-2px);}
+  .btn-secondary{
+    background:#fff;color:var(--ink);padding:15px 26px;border-radius:13px;
+    font-weight:700;font-size:15px;border:1.5px solid var(--surface-line);
+    transition:border-color .18s ease, transform .18s ease;
+  }
+  .btn-secondary:hover{border-color:var(--iaas);transform:translateY(-2px);}
+  .hero-stats{display:flex;gap:30px;}
+  .hero-stats .st b{
+    display:block;font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--ink);
+  }
+  .hero-stats .st span{font-size:13px;color:var(--ink-soft);font-weight:500;}
+
+  /* ---------- signature: layer stack ---------- */
+  .stack-card{
+    background:var(--surface);
+    border:1px solid var(--surface-line);
+    border-radius:24px;
+    padding:26px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stack-card .stack-label{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);
+    display:flex;justify-content:space-between;margin-bottom:16px;letter-spacing:0.03em;
+  }
+  .stack{
+    position:relative;
+    display:flex;flex-direction:column-reverse;gap:10px;
+  }
+  .layer{
+    position:relative;
+    border-radius:14px;
+    padding:18px 20px;
+    cursor:pointer;
+    color:#fff;
+    transition:transform .25s ease, box-shadow .25s ease, padding .25s ease;
+    overflow:hidden;
+  }
+  .layer:hover, .layer.active{transform:translateX(6px);box-shadow:0 16px 30px -12px rgba(11,17,32,0.35);}
+  .layer .l-top{display:flex;align-items:center;justify-content:space-between;}
+  .layer .l-name{font-family:'Be Vietnam Pro',sans-serif;font-weight:800;font-size:17px;}
+  .layer .l-full{font-size:12.5px;opacity:.85;font-weight:500;}
+  .layer .l-chips{
+    display:flex;gap:8px;flex-wrap:wrap;
+    max-height:0;opacity:0;margin-top:0;
+    transition:max-height .3s ease, opacity .25s ease, margin-top .3s ease;
+  }
+  .layer:hover .l-chips, .layer.active .l-chips{max-height:60px;opacity:1;margin-top:12px;}
+  .layer .l-chips span{
+    background:rgba(255,255,255,0.2);
+    border:1px solid rgba(255,255,255,0.3);
+    padding:4px 10px;border-radius:100px;font-size:12px;font-weight:600;
+  }
+  .l-iaas{background:linear-gradient(120deg,#1E43E0,var(--iaas));}
+  .l-paas{background:linear-gradient(120deg,#6A2FE0,var(--paas));}
+  .l-saas{background:linear-gradient(120deg,#0C9260,var(--saas));}
+  .l-ai{
+    background:linear-gradient(100deg,var(--ai-1),var(--ai-2));
+    margin-top:2px;
+  }
+  .l-ai::after{
+    content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(-45deg, rgba(255,255,255,0.14) 0 2px, transparent 2px 10px);
+    pointer-events:none;
+  }
+  .stack-foot{
+    margin-top:16px;font-size:12.5px;color:var(--ink-soft);line-height:1.5;
+    border-top:1px dashed var(--surface-line);padding-top:14px;
+  }
+
+  /* ---------- section shell ---------- */
+  section{padding:88px 0;}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:44px;flex-wrap:wrap;}
+  .sec-head .tag{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--iaas);font-weight:600;
+    text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;display:block;
+  }
+  .sec-head h2{font-size:34px;line-height:1.15;max-width:560px;}
+  .sec-head p{color:var(--ink-soft);font-size:15.5px;max-width:380px;margin:0;}
+
+  /* ---------- category grid ---------- */
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .cat-card{
+    background:#fff;border:1px solid var(--surface-line);border-radius:20px;
+    padding:26px 24px 24px;transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+  }
+  .cat-card:hover{transform:translateY(-6px);box-shadow:0 24px 40px -20px rgba(11,17,32,0.22);}
+  .cat-icon{
+    width:48px;height:48px;border-radius:13px;
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+  }
+  .cat-card h3{font-size:19px;margin-bottom:8px;}
+  .cat-card .full-name{font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-bottom:12px;}
+  .cat-card p{font-size:14px;color:var(--ink-soft);line-height:1.55;margin:0 0 18px;}
+  .cat-card .count{
+    font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;
+    display:flex;align-items:center;justify-content:space-between;
+    border-top:1px solid var(--surface-line);padding-top:14px;
+  }
+  .card-iaas .cat-icon{background:var(--iaas-soft);}
+  .card-paas .cat-icon{background:var(--paas-soft);}
+  .card-saas .cat-icon{background:var(--saas-soft);}
+  .card-ai .cat-icon{background:linear-gradient(120deg,#FFE8DC,#FFDCEA);}
+
+  /* ---------- big tech ---------- */
+  .bt-section{background:var(--surface);}
+  .bt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .bt-card{
+    background:#fff;border:1px solid var(--surface-line);border-radius:16px;
+    padding:20px;transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .bt-card:hover{transform:translateY(-4px);box-shadow:0 18px 32px -18px rgba(11,17,32,0.25);}
+  .bt-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .bt-mark{
+    width:38px;height:38px;border-radius:10px;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:800;font-size:14px;font-family:'Be Vietnam Pro',sans-serif;
+  }
+  .bt-card h4{font-size:15.5px;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;margin:0;}
+  .bt-card p{font-size:13px;color:var(--ink-soft);line-height:1.5;margin:0 0 12px;}
+  .tagchip{
+    display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+    padding:4px 9px;border-radius:100px;letter-spacing:0.02em;
+  }
+  .tag-iaas{background:var(--iaas-soft);color:var(--iaas);}
+  .tag-paas{background:var(--paas-soft);color:var(--paas);}
+  .tag-saas{background:var(--saas-soft);color:var(--saas);}
+  .tag-ai{background:linear-gradient(120deg,#FFE8DC,#FFDCEA);color:#C43D6B;}
+
+  /* ---------- featured local ---------- */
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .feat-card{
+    border:1px solid var(--surface-line);border-radius:20px;overflow:hidden;
+    transition:transform .22s ease, box-shadow .22s ease;
+  }
+  .feat-card:hover{transform:translateY(-6px);box-shadow:0 24px 40px -20px rgba(11,17,32,0.22);}
+  .feat-banner{
+    height:86px;position:relative;
+    display:flex;align-items:flex-end;padding:14px 18px;
+  }
+  .feat-banner .bt-mark{position:absolute;bottom:-19px;left:18px;box-shadow:0 8px 16px -6px rgba(11,17,32,0.35);border:3px solid #fff;}
+  .feat-body{padding:30px 18px 20px;}
+  .feat-body h4{font-size:16.5px;font-family:'Be Vietnam Pro',sans-serif;font-weight:700;margin-bottom:6px;}
+  .feat-body p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0 0 14px;}
+  .feat-meta{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-soft);}
+  .feat-meta .loc{display:flex;align-items:center;gap:5px;font-weight:600;}
+
+  /* ---------- stats band ---------- */
+  .stats-band{
+    background:var(--ink);color:#fff;border-radius:26px;
+    padding:44px 40px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  }
+  .stats-band .st b{display:block;font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;}
+  .stats-band .st span{font-size:13.5px;color:#9AA3C0;}
+
+  /* ---------- CTA band ---------- */
+  .join{
+    background:linear-gradient(120deg, var(--iaas) 0%, var(--paas) 50%, var(--ai-2) 100%);
+    border-radius:28px;padding:64px 56px;color:#fff;
+    display:flex;justify-content:space-between;align-items:center;gap:40px;
+    position:relative;overflow:hidden;
+  }
+  .join::before{
+    content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;
+    border-radius:50%;background:rgba(255,255,255,0.12);
+  }
+  .join h2{font-size:30px;color:#fff;max-width:460px;line-height:1.2;position:relative;}
+  .join p{color:rgba(255,255,255,0.85);font-size:15px;margin:12px 0 0;max-width:440px;position:relative;}
+  .join .btn-primary{background:#fff;color:var(--ink);position:relative;}
+  .join .btn-primary:hover{background:#f2f2f2;}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--surface-line);padding:56px 0 30px;}
+  .foot-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:40px;margin-bottom:44px;}
+  .foot-logo{font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:20px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .foot-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.6;max-width:260px;}
+  .foot-col h5{font-size:12.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-soft);margin-bottom:16px;font-weight:700;}
+  .foot-col a{display:block;font-size:14px;font-weight:500;margin-bottom:11px;color:var(--ink);}
+  .foot-col a:hover{color:var(--iaas);}
+  .foot-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    padding-top:26px;border-top:1px solid var(--surface-line);
+    font-size:13px;color:var(--ink-soft);flex-wrap:wrap;gap:12px;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .cat-grid{grid-template-columns:repeat(2,1fr);}
+    .bt-grid{grid-template-columns:repeat(2,1fr);}
+    .feat-grid{grid-template-columns:repeat(2,1fr);}
+    .stats-band{grid-template-columns:repeat(2,1fr);}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    nav.links{display:none;}
+    .burger{display:block;}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 20px;}
+    .hero{padding:52px 0 30px;}
+    .hero h1{font-size:36px;}
+    .cat-grid,.bt-grid,.feat-grid{grid-template-columns:1fr;}
+    .stats-band{grid-template-columns:1fr 1fr;padding:32px 24px;}
+    .join{flex-direction:column;text-align:left;padding:40px 28px;}
+    .foot-grid{grid-template-columns:1fr;}
+    .sec-head{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
+    <nav class="links">
+      <a href="#top">Trang chủ</a>
+      <div class="has-dd">
+        <a href="#danh-muc">Danh mục ▾</a>
+        <div class="dd">
+          <a href="#danh-muc"><span class="sw" style="background:var(--iaas)"></span>IaaS — Hạ tầng</a>
+          <a href="#danh-muc"><span class="sw" style="background:var(--paas)"></span>PaaS — Nền tảng</a>
+          <a href="#danh-muc"><span class="sw" style="background:var(--saas)"></span>SaaS — Phần mềm</a>
+          <a href="#danh-muc"><span class="sw" style="background:linear-gradient(120deg,var(--ai-1),var(--ai-2))"></span>AIaaS — Trí tuệ nhân tạo</a>
+        </div>
+      </div>
+      <a href="#doanh-nghiep">Doanh nghiệp</a>
+      <a href="#gioi-thieu">Giới thiệu</a>
+    </nav>
+    <button class="cta-btn">Đăng doanh nghiệp</button>
+    <button class="burger" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="padding-top:76px;">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span>THƯ MỤC DOANH NGHIỆP XaaS TẠI VIỆT NAM</div>
+        <h1>Mọi lớp dịch vụ<br>đám mây, <span class="grad">một điểm<br>tra cứu.</span></h1>
+        <p class="lede">Từ hạ tầng máy chủ đến phần mềm người dùng cuối — khám phá và so sánh doanh nghiệp cung cấp SaaS, PaaS, IaaS và AIaaS đang hoạt động tại Việt Nam và toàn cầu.</p>
+        <div class="hero-ctas">
+          <a href="#danh-muc" class="btn-primary">Khám phá danh mục
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#" class="btn-secondary">Đăng doanh nghiệp của bạn</a>
+        </div>
+        <div class="hero-stats">
+          <div class="st"><b>120+</b><span>doanh nghiệp</span></div>
+          <div class="st"><b>4</b><span>lớp dịch vụ</span></div>
+          <div class="st"><b>18</b><span>ngành ứng dụng</span></div>
+        </div>
+      </div>
+
+      <!-- SIGNATURE: interactive layer stack -->
+      <div class="stack-card reveal">
+        <div class="stack-label"><span>NGĂN XẾP DỊCH VỤ</span><span>DI CHUỘT ĐỂ XEM VÍ DỤ</span></div>
+        <div class="stack">
+          <div class="layer l-ai">
+            <div class="l-top"><span class="l-name">AIaaS</span><span class="l-full">thấm vào mọi lớp bên dưới</span></div>
+            <div class="l-chips"><span>OpenAI</span><span>Anthropic</span><span>Google AI</span></div>
+          </div>
+          <div class="layer l-saas">
+            <div class="l-top"><span class="l-name">SaaS</span><span class="l-full">Phần mềm — người dùng cuối</span></div>
+            <div class="l-chips"><span>MISA</span><span>KiotViet</span><span>Salesforce</span></div>
+          </div>
+          <div class="layer l-paas">
+            <div class="l-top"><span class="l-name">PaaS</span><span class="l-full">Nền tảng — cho nhà phát triển</span></div>
+            <div class="l-chips"><span>Vercel</span><span>Heroku</span><span>Firebase</span></div>
+          </div>
+          <div class="layer l-iaas">
+            <div class="l-top"><span class="l-name">IaaS</span><span class="l-full">Hạ tầng — máy chủ, mạng, lưu trữ</span></div>
+            <div class="l-chips"><span>AWS</span><span>FPT Cloud</span><span>Azure</span></div>
+          </div>
+        </div>
+        <div class="stack-foot">AIaaS không nằm trên cùng một trục — nó là lớp trí tuệ cắt ngang IaaS, PaaS và SaaS, tăng cường năng lực cho cả ba.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORY GRID -->
+  <section id="danh-muc" class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="tag">04 danh mục chính</span>
+        <h2>Chọn đúng lớp dịch vụ cho nhu cầu của bạn</h2>
+      </div>
+      <p>Mỗi danh mục là một trang lưu trữ riêng, tổng hợp doanh nghiệp, bài đánh giá và so sánh trong lớp dịch vụ đó.</p>
+    </div>
+    <div class="cat-grid">
+      <a href="category.html#iaas" class="cat-card card-iaas reveal" style="display:block;">
+        <div class="cat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="5" rx="1.4" stroke="#2454FF" stroke-width="1.8"/><rect x="4" y="10.5" width="16" height="5" rx="1.4" stroke="#2454FF" stroke-width="1.8"/><rect x="4" y="17" width="16" height="3.5" rx="1.2" stroke="#2454FF" stroke-width="1.8"/><circle cx="7" cy="6.5" r="0.9" fill="#2454FF"/></svg>
+        </div>
+        <h3>IaaS</h3>
+        <div class="full-name">Hạ tầng dưới dạng dịch vụ</div>
+        <p>Máy chủ, lưu trữ, mạng và trung tâm dữ liệu cho ứng dụng của bạn.</p>
+        <div class="count"><span id="cntIaas">— doanh nghiệp</span><span style="color:var(--iaas)">Xem →</span></div>
+      </a>
+      <a href="category.html#paas" class="cat-card card-paas reveal" style="display:block;">
+        <div class="cat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1.6" stroke="#7B3FF2" stroke-width="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.6" stroke="#7B3FF2" stroke-width="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.6" stroke="#7B3FF2" stroke-width="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.6" fill="#7B3FF2"/></svg>
+        </div>
+        <h3>PaaS</h3>
+        <div class="full-name">Nền tảng dưới dạng dịch vụ</div>
+        <p>Môi trường triển khai, cơ sở dữ liệu và công cụ cho nhà phát triển.</p>
+        <div class="count"><span id="cntPaas">— doanh nghiệp</span><span style="color:var(--paas)">Xem →</span></div>
+      </a>
+      <a href="category.html#saas" class="cat-card card-saas reveal" style="display:block;">
+        <div class="cat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="13" rx="2" stroke="#0FA968" stroke-width="1.8"/><path d="M3.5 8.5h17" stroke="#0FA968" stroke-width="1.8"/><circle cx="6" cy="6.7" r="0.7" fill="#0FA968"/></svg>
+        </div>
+        <h3>SaaS</h3>
+        <div class="full-name">Phần mềm dưới dạng dịch vụ</div>
+        <p>Ứng dụng sẵn dùng cho kế toán, bán hàng, nhân sự và vận hành.</p>
+        <div class="count"><span id="cntSaas">— doanh nghiệp</span><span style="color:var(--saas)">Xem →</span></div>
+      </a>
+      <a href="category.html#ai" class="cat-card card-ai reveal" style="display:block;">
+        <div class="cat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z" stroke="#C43D6B" stroke-width="1.6" stroke-linejoin="round"/><circle cx="18.5" cy="17.5" r="1.6" stroke="#C43D6B" stroke-width="1.6"/></svg>
+        </div>
+        <h3>AIaaS</h3>
+        <div class="full-name">Trí tuệ nhân tạo dưới dạng dịch vụ</div>
+        <p>Mô hình ngôn ngữ, thị giác máy tính và API AI theo yêu cầu.</p>
+        <div class="count"><span id="cntAi">— doanh nghiệp</span><span style="color:#C43D6B">Xem →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- BIG TECH -->
+  <section class="bt-section">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="tag">Nền tảng toàn cầu</span>
+          <h2>Ông lớn công nghệ đứng sau hạ tầng số</h2>
+        </div>
+        <p>Những nhà cung cấp XaaS có mặt trong phần lớn ngăn xếp công nghệ hiện nay.</p>
+      </div>
+      <div class="bt-grid">
+        <div class="bt-card reveal">
+          <div class="bt-top"><div class="bt-mark" style="background:#232F3E;">AWS</div><h4>Amazon Web Services</h4></div>
+          <p>Hạ tầng điện toán đám mây quy mô toàn cầu, hơn 200 dịch vụ.</p>
+          <span class="tagchip tag-iaas">IaaS</span>
+        </div>
+        <div class="bt-card reveal">
+          <div class="bt-top"><div class="bt-mark" style="background:#0078D4;">Az</div><h4>Microsoft Azure</h4></div>
+          <p>Nền tảng đám mây doanh nghiệp, tích hợp sâu hệ sinh thái Microsoft.</p>
+          <span class="tagchip tag-iaas">IaaS</span>
+        </div>
+        <div class="bt-card reveal">
+          <div class="bt-top"><div class="bt-mark" style="background:#1A73E8;">GC</div><h4>Google Cloud</h4></div>
+          <p>Mạnh về dữ liệu lớn, machine learning và Kubernetes.</p>
+          <span class="tagchip tag-paas">PaaS</span>
+        </div>
+        <div class="bt-card reveal">
+          <div class="bt-top"><div class="bt-mark" style="background:#00A1E0;">SF</div><h4>Salesforce</h4></div>
+          <p>Nền tảng CRM và quản trị quan hệ khách hàng hàng đầu thế giới.</p>
+          <span class="tagchip tag-saas">SaaS</span>
+        </div>
+        <div class="bt-card reveal">
+          <div class="bt-top"><div class="bt-mark" style="background:#F80000;">Or</div><h4>Oracle Cloud</h4></div>
+          <p>Cơ sở dữ liệu doanh nghiệp và ứng dụng ERP quy mô lớn.</p>
+          <span class="tagchip tag-iaas">IaaS</span>
+        </div>
+        <div class="bt-card reveal">
+          <div class="bt-top"><div class="bt-mark" style="background:#0F62FE;">IB</div><h4>IBM Cloud</h4></div>
+          <p>Giải pháp đám mây lai và AI doanh nghiệp với Watson.</p>
+          <span class="tagchip tag-ai">AIaaS</span>
+        </div>
+        <div class="bt-card reveal">
+          <div class="bt-top"><div class="bt-mark" style="background:#0FAAFF;">Al</div><h4>Alibaba Cloud</h4></div>
+          <p>Hạ tầng đám mây dẫn đầu khu vực châu Á - Thái Bình Dương.</p>
+          <span class="tagchip tag-iaas">IaaS</span>
+        </div>
+        <div class="bt-card reveal">
+          <div class="bt-top"><div class="bt-mark" style="background:#EE1C25;">SA</div><h4>SAP</h4></div>
+          <p>Phần mềm hoạch định nguồn lực doanh nghiệp (ERP) toàn diện.</p>
+          <span class="tagchip tag-saas">SaaS</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED LOCAL -->
+  <section id="doanh-nghiep" class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="tag">Nổi bật tại Việt Nam</span>
+        <h2>Doanh nghiệp XaaS trong nước đáng chú ý</h2>
+      </div>
+      <p>Cập nhật liên tục từ đội ngũ biên tập và đóng góp của cộng đồng.</p>
+    </div>
+    <div class="feat-grid" id="featGrid">
+      <div class="feat-card reveal">
+        <div class="feat-banner" style="background:linear-gradient(120deg,#0C9260,#0FA968);">
+          <div class="bt-mark" style="background:#0B1120;">MI</div>
+        </div>
+        <div class="feat-body">
+          <h4>MISA</h4>
+          <p>Phần mềm kế toán và quản trị doanh nghiệp phổ biến nhất Việt Nam.</p>
+          <div class="feat-meta"><span class="tagchip tag-saas">SaaS</span><span class="loc">Hà Nội</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAND -->
+  <section class="wrap" style="padding-top:0;">
+    <div class="stats-band reveal">
+      <div class="st"><b>120+</b><span>Doanh nghiệp được thu thập</span></div>
+      <div class="st"><b>4</b><span>Lớp dịch vụ XaaS</span></div>
+      <div class="st"><b>18</b><span>Ngành ứng dụng khác nhau</span></div>
+      <div class="st"><b>2026</b><span>Cập nhật liên tục</span></div>
+    </div>
+  </section>
+
+  <!-- JOIN CTA -->
+  <section class="wrap" id="gioi-thieu">
+    <div class="join reveal">
+      <div>
+        <h2>Doanh nghiệp của bạn cung cấp dịch vụ XaaS?</h2>
+        <p>Đăng ký miễn phí để xuất hiện trong danh mục và tiếp cận đúng khách hàng đang tìm kiếm giải pháp của bạn.</p>
+      </div>
+      <a href="#" class="btn-primary">Đăng doanh nghiệp ngay</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo"><span class="dot-x" style="width:26px;height:26px;font-size:13px;">X</span>XaaS.vn</div>
+        <p class="foot-desc">Thư mục tra cứu doanh nghiệp SaaS, PaaS, IaaS và AIaaS tại Việt Nam — giúp doanh nghiệp tìm đúng đối tác công nghệ.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Danh mục</h5>
+        <a href="#danh-muc">IaaS</a>
+        <a href="#danh-muc">PaaS</a>
+        <a href="#danh-muc">SaaS</a>
+        <a href="#danh-muc">AIaaS</a>
+      </div>
+      <div class="foot-col">
+        <h5>Công ty</h5>
+        <a href="#gioi-thieu">Giới thiệu</a>
+        <a href="#">Liên hệ</a>
+        <a href="#">Đăng doanh nghiệp</a>
+        <a href="#">Điều khoản</a>
+      </div>
+      <div class="foot-col">
+        <h5>Kết nối</h5>
+        <a href="#">LinkedIn</a>
+        <a href="#">Facebook</a>
+        <a href="#">Email</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 XaaS.vn — Thư mục doanh nghiệp dịch vụ đám mây.</span>
+      <span class="mono">Made in Vietnam 🇻🇳</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // stack layer click-to-pin (mobile-friendly alt to hover)
+  document.querySelectorAll('.layer').forEach(l=>{
+    l.addEventListener('click', ()=>{
+      const already = l.classList.contains('active');
+      document.querySelectorAll('.layer').forEach(x=>x.classList.remove('active'));
+      if(!already) l.classList.add('active');
+    });
+  });
+
+  /* ============ LIVE DATA from backend ============ */
+  const CAT_TAG_CLASS = { iaas:'tag-iaas', paas:'tag-paas', saas:'tag-saas', ai:'tag-ai' };
+  const CAT_LABEL = { iaas:'IaaS', paas:'PaaS', saas:'SaaS', ai:'AIaaS' };
+  const CAT_GRAD = {
+    iaas:'linear-gradient(120deg,#1E43E0,#2454FF)',
+    paas:'linear-gradient(120deg,#6A2FE0,#7B3FF2)',
+    saas:'linear-gradient(120deg,#0C9260,#0FA968)',
+    ai:'linear-gradient(100deg,#FF6B35,#FF3D81)',
+  };
+
+  async function loadCategoryCounts(){
+    try{
+      const cats = await (await fetch('/api/public/categories')).json();
+      const map = { iaas:'cntIaas', paas:'cntPaas', saas:'cntSaas', ai:'cntAi' };
+      cats.forEach(c=>{
+        const el = document.getElementById(map[c.id]);
+        if(el) el.textContent = `${c.count} doanh nghiệp`;
+      });
+    }catch(e){ /* API chưa sẵn sàng — giữ nguyên placeholder */ }
+  }
+
+  async function loadFeatured(){
+    try{
+      const companies = await (await fetch('/api/public/companies?sort=rating&limit=6')).json();
+      if(!Array.isArray(companies) || !companies.length) return;
+      const grid = document.getElementById('featGrid');
+      grid.innerHTML = companies.map(c=>`
+        <a href="company-detail.html?id=${c.id}" class="feat-card reveal in" style="display:block;">
+          <div class="feat-banner" style="background:${CAT_GRAD[c.cat]||CAT_GRAD.saas};">
+            <div class="bt-mark" style="background:#0B1120;">${c.mark}</div>
+          </div>
+          <div class="feat-body">
+            <h4>${c.name}</h4>
+            <p>${c.desc || ''}</p>
+            <div class="feat-meta"><span class="tagchip ${CAT_TAG_CLASS[c.cat]||'tag-saas'}">${CAT_LABEL[c.cat]||c.cat}</span><span class="loc">${c.headquarters || 'Việt Nam'}</span></div>
+          </div>
+        </a>
+      `).join('');
+    }catch(e){ /* API chưa sẵn sàng — giữ card demo tĩnh */ }
+  }
+
+  loadCategoryCounts();
+  loadFeatured();
+</script>
+
+</body>
+</html>

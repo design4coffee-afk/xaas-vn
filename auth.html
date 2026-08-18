@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng nhập — XaaS.vn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1120; --ink-soft:#4A5268; --ink-mute:#8991A8;
+    --paper:#FFFFFF; --surface:#F3F5FC; --surface-line:#E5E8F5;
+    --iaas:#2454FF; --iaas-soft:#EAF0FF;
+    --paas:#7B3FF2; --paas-soft:#F1EBFF;
+    --saas:#0FA968; --saas-soft:#E4F9EF;
+    --ai-1:#FF6B35; --ai-2:#FF3D81;
+    --danger:#E63946; --danger-soft:#FCE9EA;
+    --ok:#0FA968; --ok-soft:#E4F9EF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Be Vietnam Pro',sans-serif;font-weight:800;letter-spacing:-.01em;margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  button,input,select{font-family:inherit;}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:2.5px solid var(--iaas);outline-offset:2px;border-radius:6px;}
+
+  .shell{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+
+  /* ---------- left brand panel ---------- */
+  .brand-panel{
+    background:var(--ink);color:#fff;padding:52px 56px;display:flex;flex-direction:column;
+    position:relative;overflow:hidden;
+  }
+  .brand-panel::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(560px 400px at 15% 10%, rgba(36,84,255,0.35), transparent 60%),
+               radial-gradient(520px 420px at 85% 90%, rgba(255,61,129,0.25), transparent 60%);
+  }
+  .bp-logo{position:relative;display:flex;align-items:center;gap:9px;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:19px;}
+  .bp-logo .dot-x{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--iaas),var(--paas) 55%,var(--ai-2));display:flex;align-items:center;justify-content:center;font-size:14px;}
+  .bp-logo .vn{color:#8A93B8;font-weight:600;font-size:14px;}
+
+  .bp-mid{position:relative;margin-top:auto;margin-bottom:auto;padding:60px 0;max-width:440px;}
+  .bp-mid h2{font-size:32px;line-height:1.22;margin-bottom:16px;}
+  .bp-mid p{font-size:15px;color:#B7BEDA;line-height:1.6;margin:0;}
+
+  .bp-stack{position:relative;display:flex;flex-direction:column-reverse;gap:8px;margin-top:32px;}
+  .bp-layer{border-radius:11px;padding:12px 16px;font-weight:700;font-size:13px;color:#fff;}
+  .bp-l1{background:linear-gradient(120deg,#1E43E0,#2454FF);}
+  .bp-l2{background:linear-gradient(120deg,#6A2FE0,#7B3FF2);}
+  .bp-l3{background:linear-gradient(120deg,#0C9260,#0FA968);}
+  .bp-l4{background:linear-gradient(100deg,#FF6B35,#FF3D81);}
+
+  .bp-features{position:relative;display:flex;flex-direction:column;gap:14px;}
+  .bp-feat{display:flex;align-items:flex-start;gap:12px;font-size:13.5px;color:#D7DBEE;}
+  .bp-feat svg{flex:0 0 auto;margin-top:2px;}
+
+  /* ---------- right form panel ---------- */
+  .form-panel{display:flex;align-items:center;justify-content:center;padding:40px;}
+  .form-wrap{width:100%;max-width:400px;}
+  .fw-head{margin-bottom:28px;}
+  .fw-head h1{font-size:26px;margin-bottom:8px;}
+  .fw-head p{font-size:14px;color:var(--ink-soft);margin:0;}
+
+  .tabs{display:flex;background:var(--surface);border-radius:12px;padding:4px;margin-bottom:26px;}
+  .tab-btn{flex:1;text-align:center;padding:10px;border:none;background:none;border-radius:9px;font-weight:700;font-size:13.5px;color:var(--ink-soft);cursor:pointer;}
+  .tab-btn.on{background:#fff;color:var(--ink);box-shadow:0 4px 10px -4px rgba(11,17,32,0.15);}
+
+  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+  .field label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .field input,.field select{border:1px solid var(--surface-line);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;}
+  .field input:focus,.field select:focus{border-color:var(--iaas);}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .field-hint{font-size:12px;color:var(--ink-mute);margin-top:-4px;}
+
+  .row-between{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:13px;}
+  .check-row{display:flex;align-items:center;gap:8px;color:var(--ink-soft);}
+  .check-row input{width:15px;height:15px;}
+  .link-btn{color:var(--iaas);font-weight:600;}
+  .link-btn:hover{text-decoration:underline;}
+
+  .btn-primary{
+    width:100%;background:var(--ink);color:#fff;padding:13px;border-radius:11px;font-weight:700;font-size:14.5px;
+    border:none;cursor:pointer;transition:background .18s ease;
+  }
+  .btn-primary:hover{background:#1a2340;}
+
+  .divider{display:flex;align-items:center;gap:12px;margin:22px 0;color:var(--ink-mute);font-size:12px;font-weight:600;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--surface-line);}
+
+  .demo-row{display:flex;gap:10px;}
+  .demo-btn{
+    flex:1;border:1.5px solid var(--surface-line);background:#fff;border-radius:11px;padding:11px;
+    font-size:12.5px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center;transition:border-color .18s ease;
+  }
+  .demo-btn:hover{border-color:var(--iaas);}
+  .demo-btn .role{display:block;font-size:11px;color:var(--ink-soft);font-weight:600;margin-top:2px;}
+
+  .err-msg{
+    background:var(--danger-soft);color:var(--danger);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;
+    margin-bottom:16px;display:none;
+  }
+  .err-msg.on{display:block;}
+  .ok-msg{
+    background:var(--ok-soft);color:var(--ok);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;
+    margin-bottom:16px;display:none;
+  }
+  .ok-msg.on{display:block;}
+
+  .form-view{display:none;}
+  .form-view.on{display:block;}
+
+  .terms-note{font-size:12px;color:var(--ink-mute);line-height:1.6;margin-top:14px;background:var(--surface);border-radius:10px;padding:12px 14px;}
+
+  @media (max-width:920px){
+    .shell{grid-template-columns:1fr;}
+    .brand-panel{display:none;}
+    .form-panel{padding:32px 22px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- ================= BRAND PANEL ================= -->
+  <aside class="brand-panel">
+    <div class="bp-logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></div>
+
+    <div class="bp-mid">
+      <h2>Đưa doanh nghiệp của bạn lên bản đồ dịch vụ đám mây Việt Nam.</h2>
+      <p>Đăng nhập để quản lý trang doanh nghiệp, sản phẩm, bảng giá và đánh giá khách hàng của bạn.</p>
+
+      <div class="bp-stack">
+        <div class="bp-layer bp-l4">AIaaS</div>
+        <div class="bp-layer bp-l3">SaaS</div>
+        <div class="bp-layer bp-l2">PaaS</div>
+        <div class="bp-layer bp-l1">IaaS</div>
+      </div>
+    </div>
+
+    <div class="bp-features">
+      <div class="bp-feat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0FA968" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Đăng không giới hạn sản phẩm và gói giá
+      </div>
+      <div class="bp-feat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0FA968" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Theo dõi trạng thái duyệt theo thời gian thực
+      </div>
+      <div class="bp-feat">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0FA968" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Trả lời đánh giá trực tiếp từ khách hàng
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= FORM PANEL ================= -->
+  <main class="form-panel">
+    <div class="form-wrap">
+
+      <div class="tabs">
+        <button class="tab-btn on" data-tab="login">Đăng nhập</button>
+        <button class="tab-btn" data-tab="register">Đăng ký doanh nghiệp</button>
+      </div>
+
+      <!-- ---------- LOGIN ---------- -->
+      <div class="form-view on" id="view-login">
+        <div class="fw-head">
+          <h1>Chào mừng trở lại</h1>
+          <p>Đăng nhập bằng tài khoản doanh nghiệp hoặc quản trị viên.</p>
+        </div>
+        <div class="err-msg" id="loginErr"></div>
+        <div class="field"><label>Email</label><input type="text" id="liEmail" placeholder="ban@congty.vn"></div>
+        <div class="field"><label>Mật khẩu</label><input type="password" id="liPassword" placeholder="••••••••"></div>
+        <div class="row-between">
+          <label class="check-row"><input type="checkbox" checked> Ghi nhớ đăng nhập</label>
+          <a href="#" class="link-btn" onclick="event.preventDefault();showToast('Tính năng khôi phục mật khẩu sẽ sớm ra mắt')">Quên mật khẩu?</a>
+        </div>
+        <button class="btn-primary" onclick="doLogin()">Đăng nhập →</button>
+
+        <div class="divider">HOẶC DÙNG TÀI KHOẢN DEMO</div>
+        <div class="demo-row">
+          <button class="demo-btn" onclick="loginAs('user')">Doanh nghiệp<span class="role">Nguyễn Văn A — MISA</span></button>
+          <button class="demo-btn" onclick="loginAs('admin')">Quản trị viên<span class="role">Alex — Admin</span></button>
+        </div>
+      </div>
+
+      <!-- ---------- REGISTER ---------- -->
+      <div class="form-view" id="view-register">
+        <div class="fw-head">
+          <h1>Tạo tài khoản doanh nghiệp</h1>
+          <p>Đăng ký để đưa doanh nghiệp của bạn lên thư mục XaaS.vn.</p>
+        </div>
+        <div class="err-msg" id="regErr"></div>
+        <div class="field-row">
+          <div class="field"><label>Họ tên</label><input type="text" id="reName" placeholder="Nguyễn Văn A"></div>
+          <div class="field"><label>Tên doanh nghiệp</label><input type="text" id="reCompany" placeholder="VD: MISA"></div>
+        </div>
+        <div class="field"><label>Email</label><input type="text" id="reEmail" placeholder="ban@congty.vn"></div>
+        <div class="field-row">
+          <div class="field"><label>Mật khẩu</label><input type="password" id="rePassword" placeholder="Tối thiểu 6 ký tự"></div>
+          <div class="field"><label>Xác nhận mật khẩu</label><input type="password" id="rePassword2" placeholder="Nhập lại mật khẩu"></div>
+        </div>
+        <div class="field">
+          <label>Danh mục dự kiến</label>
+          <select id="reCategory">
+            <option value="iaas">IaaS</option><option value="paas">PaaS</option><option value="saas" selected>SaaS</option><option value="ai">AIaaS</option>
+          </select>
+        </div>
+        <label class="check-row" style="margin-bottom:18px;"><input type="checkbox" id="reTerms"> Tôi đồng ý với Điều khoản dịch vụ của XaaS.vn</label>
+        <button class="btn-primary" onclick="doRegister()">Tạo tài khoản →</button>
+        <div class="terms-note">Tài khoản mới được tạo ở dạng <b>Chủ doanh nghiệp</b>. Doanh nghiệp bạn thêm sau khi đăng ký sẽ cần quản trị viên XaaS.vn duyệt trước khi hiển thị công khai.</div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" style="position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:14px 20px;border-radius:12px;font-size:13.5px;font-weight:600;z-index:200;opacity:0;transform:translateY(10px);transition:opacity .25s ease, transform .25s ease;pointer-events:none;">Đã lưu</div>
+
+<script>
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  let body = null;
+  try { body = await res.json(); } catch (e) {}
+  return { ok: res.ok, status: res.status, body };
+}
+
+function goToDashboard(role){
+  window.location.href = role==='admin' ? 'admin-dashboard.html' : 'user-dashboard.html';
+}
+
+// already logged in? skip straight to dashboard
+(async function autoRedirect(){
+  const { ok, body } = await api('/api/auth/me');
+  if(ok && body && body.role) goToDashboard(body.role);
+})();
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>t.classList.remove('on'), 2400);
+}
+
+/* ---------- tab switching ---------- */
+document.querySelectorAll('.tab-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.querySelectorAll('.form-view').forEach(v=>v.classList.remove('on'));
+    document.getElementById('view-'+b.dataset.tab).classList.add('on');
+  });
+});
+
+/* ---------- login ---------- */
+async function loginWith(email, pass){
+  const err = document.getElementById('loginErr');
+  const { ok, body } = await api('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password: pass }) });
+  if(!ok){
+    err.textContent = (body && body.error) || 'Email hoặc mật khẩu không đúng.';
+    err.classList.add('on');
+    return;
+  }
+  err.classList.remove('on');
+  goToDashboard(body.role);
+}
+function doLogin(){
+  const email = document.getElementById('liEmail').value.trim();
+  const pass = document.getElementById('liPassword').value;
+  loginWith(email, pass);
+}
+function loginAs(role){
+  // Demo accounts — see backend README "Tạo tài khoản quản trị viên đầu tiên"
+  // and the "Đăng ký doanh nghiệp" tab to actually create these on a fresh DB.
+  if(role === 'admin') loginWith('admin@xaas.vn', 'admin123');
+  else loginWith('vana@misa.vn', 'demo123');
+}
+
+/* ---------- register (business owner accounts only) ---------- */
+async function doRegister(){
+  const name = document.getElementById('reName').value.trim();
+  const company = document.getElementById('reCompany').value.trim();
+  const email = document.getElementById('reEmail').value.trim();
+  const pass = document.getElementById('rePassword').value;
+  const pass2 = document.getElementById('rePassword2').value;
+  const terms = document.getElementById('reTerms').checked;
+  const err = document.getElementById('regErr');
+
+  if(!name || !email || !pass){ err.textContent = 'Vui lòng điền đầy đủ họ tên, email và mật khẩu.'; err.classList.add('on'); return; }
+  if(pass.length < 6){ err.textContent = 'Mật khẩu cần tối thiểu 6 ký tự.'; err.classList.add('on'); return; }
+  if(pass !== pass2){ err.textContent = 'Mật khẩu xác nhận không khớp.'; err.classList.add('on'); return; }
+  if(!terms){ err.textContent = 'Vui lòng đồng ý với Điều khoản dịch vụ để tiếp tục.'; err.classList.add('on'); return; }
+
+  const { ok, body } = await api('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({ name, company, email, password: pass }),
+  });
+  if(!ok){
+    err.textContent = (body && body.error) || 'Không thể tạo tài khoản, vui lòng thử lại.';
+    err.classList.add('on');
+    return;
+  }
+  err.classList.remove('on');
+  showToast('Tạo tài khoản thành công — đang chuyển vào bảng điều khiển...');
+  setTimeout(()=>goToDashboard('user'), 700);
+}
+</script>
+
+</body>
+</html>
