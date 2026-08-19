@@ -5,7 +5,7 @@ pages_build_output_dir = "."
 [[d1_databases]]
 binding = "DB"                     # accessed in Functions as env.DB
 database_name = "xaas_vn_db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "8bb5c056-7596-4b9e-a01b-6a6e30cec886"
 
 # Secret used by /api/auth/bootstrap-admin to create the very first
 # admin account. Set with:
