@@ -12,13 +12,13 @@
 // schema.sql already applied, ADMIN_BOOTSTRAP_SECRET already set.
 //
 // Usage:
-//   node scripts/bootstrap.mjs --url https://xaas.vn --secret 8f3a1c9e2b7d4f6a
+//   node scripts/bootstrap.mjs --url https://xaas.vn --secret 1234zxcv
 //
 // Optional flags:
 //   --db <name>        D1 database name       (default: xaas_vn_db)
 //   --local            run wrangler against the local dev DB instead of --remote
-//   --admin-email       (default: admin@xaas.vn)
-//   --admin-password    (default: admin123 — CHANGE THIS for anything real)
+//   --admin-email       (default: xaphucom@gamil.com)
+//   --admin-password    (default: 1234zxcv — CHANGE THIS for anything real)
 //   --admin-name         (default: Alex)
 //   --user-email        (default: vana@misa.vn)
 //   --user-password      (default: demo123 — CHANGE THIS for anything real)
