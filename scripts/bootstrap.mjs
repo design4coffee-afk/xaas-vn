@@ -17,7 +17,7 @@
 // Optional flags:
 //   --db <name>        D1 database name       (default: xaas_vn_db)
 //   --local            run wrangler against the local dev DB instead of --remote
-//   --admin-email       (default: xaphucom@gamil.com)
+//   --admin-email       (default: xaphucom@gmail.com)
 //   --admin-password    (default: 1234zxcv — CHANGE THIS for anything real)
 //   --admin-name         (default: Alex)
 //   --user-email        (default: vana@misa.vn)
