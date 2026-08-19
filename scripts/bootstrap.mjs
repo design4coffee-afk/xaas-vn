@@ -20,8 +20,8 @@
 //   --admin-email       (default: xaphucom@gmail.com)
 //   --admin-password    (default: 1234zxcv — CHANGE THIS for anything real)
 //   --admin-name         (default: Alex)
-//   --user-email        (default: vana@misa.vn)
-//   --user-password      (default: demo123 — CHANGE THIS for anything real)
+//   --user-email        (default: design4coffee@gmail.com)
+//   --user-password      (default: 1234demo — CHANGE THIS for anything real)
 //   --user-name          (default: Nguyễn Văn A)
 //   --user-company       (default: MISA)
 // ============================================================
@@ -48,12 +48,12 @@ const SECRET = args.secret;
 const DB_NAME = args.db || 'xaas_vn_db';
 const REMOTE_FLAG = args.local ? '--local' : '--remote';
 
-const ADMIN_EMAIL = args['admin-email'] || 'admin@xaas.vn';
-const ADMIN_PASSWORD = args['admin-password'] || 'admin123';
+const ADMIN_EMAIL = args['admin-email'] || 'xaphucom@gmail.com';
+const ADMIN_PASSWORD = args['admin-password'] || '1234zxcv';
 const ADMIN_NAME = args['admin-name'] || 'Alex';
 
-const USER_EMAIL = args['user-email'] || 'vana@misa.vn';
-const USER_PASSWORD = args['user-password'] || 'demo123';
+const USER_EMAIL = args['user-email'] || 'design4coffee@gmail.com';
+const USER_PASSWORD = args['user-password'] || '1234demo';
 const USER_NAME = args['user-name'] || 'Nguyễn Văn A';
 const USER_COMPANY = args['user-company'] || 'MISA';
 
