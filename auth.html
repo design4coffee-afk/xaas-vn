@@ -91,6 +91,7 @@
   .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--surface-line);}
 
   .demo-row{display:flex;gap:10px;}
+  .demo-row .demo-btn{max-width:260px;margin:0 auto;}
   .demo-btn{
     flex:1;border:1.5px solid var(--surface-line);background:#fff;border-radius:11px;padding:11px;
     font-size:12.5px;font-weight:700;color:var(--ink);cursor:pointer;text-align:center;transition:border-color .18s ease;
@@ -182,8 +183,7 @@
 
         <div class="divider">HOẶC DÙNG TÀI KHOẢN DEMO</div>
         <div class="demo-row">
-          <button class="demo-btn" onclick="loginAs('user')">Doanh nghiệp<span class="role">Nguyễn Văn A — MISA</span></button>
-          <button class="demo-btn" onclick="loginAs('admin')">Quản trị viên<span class="role">Alex — Admin</span></button>
+          <button class="demo-btn" onclick="loginAs('user')">Doanh nghiệp demo<span class="role">Nguyễn Văn A — MISA</span></button>
         </div>
       </div>
 
@@ -277,10 +277,10 @@ function doLogin(){
   loginWith(email, pass);
 }
 function loginAs(role){
-  // Demo accounts — see backend README "Tạo tài khoản quản trị viên đầu tiên"
-  // and the "Đăng ký doanh nghiệp" tab to actually create these on a fresh DB.
-  if(role === 'admin') loginWith('admin@xaas.vn', 'admin123');
-  else loginWith('vana@misa.vn', 'demo123');
+  // Chỉ còn tài khoản demo phía doanh nghiệp — KHÔNG có nút đăng nhập nhanh
+  // cho admin (đã gỡ bỏ vì lý do bảo mật: ai cũng bấm được nếu để công khai).
+  // Xem README "Tạo tài khoản quản trị viên đầu tiên" để tạo & đăng nhập admin thật.
+  loginWith('vana@misa.vn', 'demo123');
 }
 
 /* ---------- register (business owner accounts only) ---------- */

@@ -143,6 +143,15 @@ Dùng database local thay vì production: thêm `--local`.
 
 **⚠️ Đổi mật khẩu mặc định** (`admin123`, `demo123`) trước khi dùng cho môi
 trường thật — đây chỉ là mật khẩu demo để test nhanh luồng end-to-end.
+Đổi ngay trong dashboard: đăng nhập admin → **Cài đặt → "Tài khoản quản trị
+viên"** (hoặc user → **Hồ sơ tài khoản → "Thông tin đăng nhập"**) → nhập
+mật khẩu hiện tại + email/mật khẩu mới → Lưu. Không cần chạm vào database.
+
+**Lưu ý bảo mật:** `auth.html` KHÔNG còn nút "đăng nhập nhanh demo admin"
+(đã gỡ bỏ) — nút đó từng cho phép bất kỳ ai vào thẳng quyền admin chỉ bằng
+1 click mà không cần mật khẩu, rất nguy hiểm nếu để công khai. Chỉ còn nút
+demo phía doanh nghiệp (`vana@misa.vn`). Đăng nhập admin luôn phải qua form
+email/mật khẩu thật.
 
 ### Cách làm thủ công (nếu không muốn dùng script)
 
@@ -180,6 +189,7 @@ wrangler d1 execute xaas_vn_db --remote \
 | POST   | `/api/auth/login`                  | công khai                       |
 | POST   | `/api/auth/logout`                 | đã đăng nhập                    |
 | GET    | `/api/auth/me`                     | đã đăng nhập                    |
+| PUT    | `/api/auth/me`                     | đã đăng nhập — đổi tên/email/mật khẩu của chính mình |
 | GET    | `/api/companies`                   | đã đăng nhập (user: chỉ của mình)|
 | POST   | `/api/companies`                   | đã đăng nhập                    |
 | GET/PUT/DELETE | `/api/companies/:id`       | chủ sở hữu hoặc admin (xóa: chỉ admin) |

@@ -281,10 +281,23 @@
     <!-- ---------- PROFILE ---------- -->
     <div class="view" id="view-profile">
       <div class="topbar"><div><h1>Hồ sơ tài khoản</h1><div class="sub">Thông tin liên hệ dùng khi quản trị viên cần xác minh doanh nghiệp.</div></div></div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Thông tin đăng nhập</h3></div>
+        <div class="panel-body">
+          <div id="acctErr" style="display:none;background:var(--danger-soft);color:var(--danger);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:16px;"></div>
+          <div class="settings-form">
+            <div class="field"><label>Họ tên</label><input type="text" id="acctName"></div>
+            <div class="field"><label>Email đăng nhập</label><input type="text" id="acctEmail"></div>
+            <div class="field"><label>Mật khẩu hiện tại</label><input type="password" id="acctCurPass" placeholder="Bắt buộc nếu đổi email hoặc mật khẩu"></div>
+            <div class="field"><label>Mật khẩu mới (để trống nếu không đổi)</label><input type="password" id="acctNewPass" placeholder="Tối thiểu 6 ký tự"></div>
+          </div>
+          <div style="margin-top:20px;"><button class="btn-primary" onclick="saveAccount()">Lưu thông tin đăng nhập</button></div>
+        </div>
+      </div>
+
       <div class="panel"><div class="panel-body">
         <div class="settings-form">
-          <div class="field"><label>Họ tên</label><input type="text" value="Nguyễn Văn A"></div>
-          <div class="field"><label>Email</label><input type="text" value="vana@misa.vn"></div>
           <div class="field"><label>Số điện thoại</label><input type="text" value="090 123 4567"></div>
           <div class="field"><label>Chức vụ</label><input type="text" value="Trưởng phòng Marketing"></div>
           <div class="field full"><label>Ghi chú cho quản trị viên</label><textarea placeholder="VD: giấy phép kinh doanh, thông tin xác minh..."></textarea></div>
@@ -579,12 +592,51 @@ async function renderAll(){
     document.getElementById('sbName').textContent = SESSION.name || 'Chủ doanh nghiệp';
     document.getElementById('sbAvatar').textContent = (SESSION.name||'NA').split(' ').map(w=>w[0]).slice(-2).join('').toUpperCase();
     document.getElementById('greetName').textContent = `Chào ${SESSION.name||''} 👋`;
+    document.getElementById('acctName').value = SESSION.name || '';
+    document.getElementById('acctEmail').value = SESSION.email || '';
   }
   renderOverview();
   renderListings();
   renderProductCoSelect();
   await renderProducts();
   renderReviews();
+}
+
+async function saveAccount(){
+  const err = document.getElementById('acctErr');
+  err.style.display = 'none';
+  const name = document.getElementById('acctName').value.trim();
+  const email = document.getElementById('acctEmail').value.trim();
+  const currentPassword = document.getElementById('acctCurPass').value;
+  const newPassword = document.getElementById('acctNewPass').value;
+
+  const emailChanged = email.toLowerCase() !== (SESSION.email || '').toLowerCase();
+  if((emailChanged || newPassword) && !currentPassword){
+    err.textContent = 'Nhập mật khẩu hiện tại để xác nhận đổi email hoặc mật khẩu.';
+    err.style.display = 'block';
+    return;
+  }
+  if(newPassword && newPassword.length < 6){
+    err.textContent = 'Mật khẩu mới cần tối thiểu 6 ký tự.';
+    err.style.display = 'block';
+    return;
+  }
+
+  const res = await fetch('/api/auth/me', {
+    method: 'PUT', credentials: 'include', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ name, email, currentPassword: currentPassword || undefined, newPassword: newPassword || undefined }),
+  });
+  const body = await res.json().catch(()=>null);
+  if(!res.ok){
+    err.textContent = (body && body.error) || 'Không thể lưu, vui lòng thử lại.';
+    err.style.display = 'block';
+    return;
+  }
+  SESSION = body;
+  document.getElementById('acctCurPass').value = '';
+  document.getElementById('acctNewPass').value = '';
+  document.getElementById('sbName').textContent = SESSION.name;
+  showToast('Đã cập nhật thông tin đăng nhập');
 }
 
 (async function init(){
