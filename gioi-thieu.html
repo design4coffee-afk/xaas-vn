@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giới thiệu — XaaS.vn</title>
+<meta name="description" content="XaaS.vn là thư mục tra cứu doanh nghiệp SaaS, PaaS, IaaS và AIaaS tại Việt Nam. Tìm hiểu sứ mệnh, cách hoạt động và cách đăng doanh nghiệp của bạn.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1120; --ink-soft:#4A5268;
+    --paper:#FFFFFF; --surface:#F3F5FC; --surface-line:#E5E8F5;
+    --iaas:#2454FF; --iaas-soft:#EAF0FF;
+    --paas:#7B3FF2; --paas-soft:#F1EBFF;
+    --saas:#0FA968; --saas-soft:#E4F9EF;
+    --ai-1:#FF6B35; --ai-2:#FF3D81;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Be Vietnam Pro',sans-serif;font-weight:800;letter-spacing:-.02em;margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--surface-line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px;}
+  .logo{display:flex;align-items:center;gap:9px;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:21px;}
+  .logo .dot-x{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--iaas) 0%,var(--paas) 55%, var(--ai-2) 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:900;}
+  .logo .vn{color:var(--ink-soft);font-weight:600;font-size:15px;margin-left:2px;}
+  nav.links{display:flex;align-items:center;gap:34px;}
+  nav.links > a{font-weight:600;font-size:15px;color:var(--ink);}
+  nav.links > a:hover{color:var(--iaas);}
+  nav.links > a.on{color:var(--iaas);}
+  .cta-btn{background:var(--ink);color:#fff;padding:11px 20px;border-radius:11px;font-weight:700;font-size:14px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+  .cta-btn:hover{background:#1a2340;}
+
+  .hero{padding:70px 0 50px;text-align:center;background:radial-gradient(700px 400px at 50% -10%, var(--paas-soft) 0%, transparent 65%);}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--paas);background:var(--paas-soft);border:1px solid #E2D4FF;padding:7px 14px;border-radius:100px;display:inline-block;margin-bottom:20px;}
+  .hero h1{font-size:44px;line-height:1.12;max-width:720px;margin:0 auto 18px;}
+  .hero h1 .grad{background:linear-gradient(100deg,var(--iaas),var(--paas) 55%,var(--ai-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p{font-size:17px;color:var(--ink-soft);max-width:560px;margin:0 auto;line-height:1.6;}
+
+  section{padding:64px 0;}
+  .sec-head{text-align:center;max-width:600px;margin:0 auto 46px;}
+  .sec-head .tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--iaas);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:block;}
+  .sec-head h2{font-size:30px;margin-bottom:12px;}
+  .sec-head p{color:var(--ink-soft);font-size:15.5px;margin:0;}
+
+  .mission-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .mission-card{background:var(--surface);border:1px solid var(--surface-line);border-radius:18px;padding:28px;}
+  .mission-card .ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:20px;}
+  .mission-card h3{font-size:17px;margin-bottom:8px;}
+  .mission-card p{font-size:14px;color:var(--ink-soft);line-height:1.6;margin:0;}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;position:relative;}
+  .step{text-align:center;padding:0 10px;}
+  .step .num{width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Be Vietnam Pro',sans-serif;font-weight:800;font-size:18px;margin:0 auto 18px;}
+  .step h3{font-size:16.5px;margin-bottom:8px;}
+  .step p{font-size:13.5px;color:var(--ink-soft);line-height:1.6;margin:0;}
+
+  .stats-band{background:var(--ink);color:#fff;border-radius:26px;padding:44px 40px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .stats-band .st b{display:block;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;}
+  .stats-band .st span{font-size:13px;color:#9AA3C0;}
+
+  .values-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .value-row{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--surface-line);border-radius:16px;padding:20px;}
+  .value-row .ico{width:36px;height:36px;border-radius:10px;background:var(--saas-soft);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .value-row h4{font-size:15px;margin-bottom:5px;}
+  .value-row p{font-size:13.5px;color:var(--ink-soft);margin:0;line-height:1.55;}
+
+  .join{
+    background:linear-gradient(120deg, var(--iaas) 0%, var(--paas) 50%, var(--ai-2) 100%);
+    border-radius:28px;padding:56px;color:#fff;text-align:center;
+  }
+  .join h2{font-size:28px;color:#fff;margin-bottom:12px;}
+  .join p{color:rgba(255,255,255,0.85);font-size:15px;margin:0 auto 26px;max-width:440px;}
+  .join-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn-white{background:#fff;color:var(--ink);padding:14px 26px;border-radius:12px;font-weight:700;font-size:14.5px;}
+  .btn-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.5);padding:14px 26px;border-radius:12px;font-weight:700;font-size:14.5px;}
+
+  footer{border-top:1px solid var(--surface-line);padding:40px 0;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+  @media (max-width:900px){
+    .mission-grid,.steps,.values-grid,.stats-band{grid-template-columns:1fr 1fr;}
+    nav.links{display:none;}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 20px;}
+    .hero h1{font-size:30px;}
+    .mission-grid,.steps,.values-grid,.stats-band{grid-template-columns:1fr;}
+    .join{padding:40px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="index.html" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
+    <nav class="links">
+      <a href="index.html">Trang chủ</a>
+      <a href="category.html">Danh mục</a>
+      <a href="gioi-thieu.html" class="on">Giới thiệu</a>
+    </nav>
+    <a href="auth.html?tab=register" class="cta-btn">Đăng doanh nghiệp</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">VỀ XaaS.vn</span>
+      <h1>Bản đồ đáng tin cậy cho <span class="grad">hệ sinh thái XaaS Việt Nam</span></h1>
+      <p>Chúng tôi giúp doanh nghiệp tìm đúng đối tác công nghệ — và giúp các nhà cung cấp SaaS, PaaS, IaaS, AIaaS được tìm thấy bởi đúng khách hàng.</p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="sec-head">
+      <span class="tag">Sứ mệnh</span>
+      <h2>Vì sao chúng tôi làm XaaS.vn</h2>
+      <p>Thị trường dịch vụ đám mây tại Việt Nam đang phát triển nhanh nhưng phân mảnh — rất khó để so sánh nhà cung cấp giữa hàng trăm lựa chọn khác nhau.</p>
+    </div>
+    <div class="mission-grid">
+      <div class="mission-card">
+        <div class="ico" style="background:var(--iaas-soft);">🔎</div>
+        <h3>Minh bạch</h3>
+        <p>Mọi thông tin về doanh nghiệp, sản phẩm và bảng giá đều công khai, không thiên vị nhà tài trợ nào.</p>
+      </div>
+      <div class="mission-card">
+        <div class="ico" style="background:var(--paas-soft);">✅</div>
+        <h3>Đã xác minh</h3>
+        <p>Đội ngũ biên tập kiểm duyệt từng doanh nghiệp trước khi hiển thị công khai, kèm huy hiệu xác minh riêng.</p>
+      </div>
+      <div class="mission-card">
+        <div class="ico" style="background:var(--saas-soft);">🇻🇳</div>
+        <h3>Góc nhìn Việt Nam</h3>
+        <p>Không chỉ liệt kê ông lớn toàn cầu — ưu tiên giới thiệu doanh nghiệp công nghệ Việt đang phục vụ thị trường trong nước.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" style="background:var(--surface);border-radius:28px;">
+    <div class="sec-head">
+      <span class="tag">Cách hoạt động</span>
+      <h2>Từ đăng ký đến xuất hiện trong thư mục</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Đăng ký tài khoản</h3>
+        <p>Tạo tài khoản doanh nghiệp miễn phí, điền thông tin cơ bản và danh mục dịch vụ của bạn.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Đội ngũ duyệt hồ sơ</h3>
+        <p>Quản trị viên XaaS.vn xem xét thông tin, có thể yêu cầu bổ sung trước khi duyệt.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Xuất hiện & nhận đánh giá</h3>
+        <p>Doanh nghiệp của bạn hiển thị công khai, nhận đánh giá thật từ khách hàng và có thể phản hồi trực tiếp.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="stats-band">
+      <div class="st"><b>120+</b><span>Doanh nghiệp trong thư mục</span></div>
+      <div class="st"><b>4</b><span>Lớp dịch vụ XaaS</span></div>
+      <div class="st"><b>18</b><span>Ngành ứng dụng khác nhau</span></div>
+      <div class="st"><b>2026</b><span>Cập nhật liên tục</span></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="sec-head">
+      <span class="tag">Nguyên tắc</span>
+      <h2>Điều chúng tôi cam kết</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-row">
+        <div class="ico">🚫</div>
+        <div><h4>Không bán thứ hạng</h4><p>Vị trí hiển thị không thể mua bằng tiền — chỉ dựa trên chất lượng thông tin và đánh giá thật.</p></div>
+      </div>
+      <div class="value-row">
+        <div class="ico">🔒</div>
+        <div><h4>Bảo mật dữ liệu</h4><p>Mật khẩu được mã hóa, không chia sẻ thông tin liên hệ của doanh nghiệp cho bên thứ ba.</p></div>
+      </div>
+      <div class="value-row">
+        <div class="ico">💬</div>
+        <div><h4>Đánh giá thật</h4><p>Mọi đánh giá đều được kiểm duyệt để loại bỏ spam, nhưng không chỉnh sửa nội dung góp ý.</p></div>
+      </div>
+      <div class="value-row">
+        <div class="ico">🆓</div>
+        <div><h4>Miễn phí cơ bản</h4><p>Đăng ký và hiển thị doanh nghiệp trên XaaS.vn hoàn toàn miễn phí ở gói cơ bản.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="join">
+      <h2>Sẵn sàng đưa doanh nghiệp của bạn lên XaaS.vn?</h2>
+      <p>Chỉ mất vài phút để đăng ký — đội ngũ của chúng tôi sẽ xem xét và phản hồi sớm.</p>
+      <div class="join-actions">
+        <a href="auth.html?tab=register" class="btn-white">Đăng doanh nghiệp ngay</a>
+        <a href="category.html" class="btn-outline">Khám phá thư mục</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2026 XaaS.vn — Thư mục doanh nghiệp dịch vụ đám mây tại Việt Nam.
+</footer>
+
+</body>
+</html>

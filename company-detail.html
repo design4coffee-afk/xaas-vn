@@ -72,7 +72,8 @@
   .co-actions{display:flex;gap:12px;flex-direction:column;min-width:220px;}
   .btn-primary{background:var(--ink);color:#fff;padding:14px 22px;border-radius:12px;font-weight:700;font-size:14.5px;text-align:center;transition:background .18s ease, transform .18s ease;}
   .btn-primary:hover{background:#1a2340;transform:translateY(-2px);}
-  .btn-secondary{background:#fff;border:1.5px solid var(--surface-line);color:var(--ink);padding:14px 22px;border-radius:12px;font-weight:700;font-size:14.5px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .18s ease;}
+  .btn-secondary{background:#fff;border:1.5px solid var(--surface-line);color:var(--ink);padding:14px 22px;border-radius:12px;font-weight:700;font-size:14.5px;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .18s ease;cursor:pointer;font-family:inherit;}
+  .btn-secondary.saved{background:var(--saas-soft);border-color:var(--saas);color:var(--saas-2);}
   .btn-secondary:hover{border-color:var(--cat);}
 
   .quickstats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:34px;}
@@ -261,9 +262,9 @@
       <a href="#">Trang chủ</a>
       <a href="#">Danh mục</a>
       <a href="#">Doanh nghiệp</a>
-      <a href="#">Giới thiệu</a>
+      <a href="gioi-thieu.html">Giới thiệu</a>
     </nav>
-    <button class="cta-btn">Đăng doanh nghiệp</button>
+    <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Đăng doanh nghiệp</a>
     <button class="burger" aria-label="Menu">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
@@ -294,10 +295,14 @@
       </div>
       <div class="co-actions">
         <a href="#" id="btnWebsite" target="_blank" rel="noopener" class="btn-primary">Truy cập website ↗</a>
-        <a href="#" class="btn-secondary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 3h12v18l-6-4-6 4V3z" stroke="#0B1120" stroke-width="1.8" stroke-linejoin="round"/></svg>
-          Lưu vào danh sách
-        </a>
+        <button id="btnSave" class="btn-secondary" onclick="toggleSaved()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" id="saveIcon"><path d="M6 3h12v18l-6-4-6 4V3z" stroke="#0B1120" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span id="saveLabel">Lưu vào danh sách</span>
+        </button>
+        <button id="btnShare" class="btn-secondary" onclick="shareCompany()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5" r="2.6" stroke="#0B1120" stroke-width="1.8"/><circle cx="6" cy="12" r="2.6" stroke="#0B1120" stroke-width="1.8"/><circle cx="18" cy="19" r="2.6" stroke="#0B1120" stroke-width="1.8"/><path d="M8.3 10.7l7.4-4.2M8.3 13.3l7.4 4.2" stroke="#0B1120" stroke-width="1.8"/></svg>
+          <span id="shareLabel">Chia sẻ</span>
+        </button>
       </div>
     </div>
 
@@ -460,7 +465,7 @@
       </div>
       <div class="foot-col">
         <h5>Công ty</h5>
-        <a href="#">Giới thiệu</a><a href="#">Liên hệ</a><a href="#">Đăng doanh nghiệp</a><a href="#">Điều khoản</a>
+        <a href="gioi-thieu.html">Giới thiệu</a><a href="#">Liên hệ</a><a href="auth.html?tab=register">Đăng doanh nghiệp</a><a href="#">Điều khoản</a>
       </div>
       <div class="foot-col">
         <h5>Kết nối</h5>
@@ -596,7 +601,7 @@
       const grid = document.getElementById('simGrid');
       grid.innerHTML = others.length ? others.map(c=>`
         <a href="company-detail.html?id=${c.id}" class="sim-card reveal in">
-          <div class="sim-mark" style="background:${CAT_META[c.cat]?.grad || CAT_META.saas.grad};">${c.mark}</div>
+          ${c.logoUrl ? `<img src="${c.logoUrl}" class="sim-mark" style="object-fit:cover;">` : `<div class="sim-mark" style="background:${CAT_META[c.cat]?.grad || CAT_META.saas.grad};">${c.mark}</div>`}
           <h5>${c.name}</h5>
           <p>${(c.desc||'').slice(0,40)}${c.desc && c.desc.length>40 ? '…':''}</p>
         </a>
@@ -628,8 +633,14 @@
     document.getElementById('crumbCat').href = `category.html#${data.cat}`;
     document.getElementById('crumbCur').textContent = data.name;
 
-    document.getElementById('coMark').textContent = data.mark;
-    document.getElementById('coMark').style.background = m.grad;
+    if(data.logoUrl){
+      document.getElementById('coMark').innerHTML = `<img src="${data.logoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:20px;">`;
+      document.getElementById('coMark').style.background = 'none';
+      document.getElementById('coMark').style.boxShadow = 'none';
+    } else {
+      document.getElementById('coMark').textContent = data.mark;
+      document.getElementById('coMark').style.background = m.grad;
+    }
     document.getElementById('coName').textContent = data.name;
     document.getElementById('coTagline').textContent = data.desc || 'Doanh nghiệp chưa cập nhật mô tả.';
     document.getElementById('coCatChip').textContent = m.name;
@@ -669,6 +680,57 @@
     }
     renderReviews(data.reviews || []);
     renderSimilar(data.cat, data.id);
+    updateSaveButton();
+  }
+
+  /* ============ Save-to-list (browser-local, no account needed) ============ */
+  const SAVED_KEY = 'xaas_vn_saved_companies';
+  function getSavedIds(){
+    try{ return JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); }catch(e){ return []; }
+  }
+  function setSavedIds(ids){ localStorage.setItem(SAVED_KEY, JSON.stringify(ids)); }
+  function isSaved(id){ return getSavedIds().includes(String(id)); }
+
+  function updateSaveButton(){
+    if(!COMPANY) return;
+    const saved = isSaved(COMPANY.id);
+    document.getElementById('btnSave').classList.toggle('saved', saved);
+    document.getElementById('saveLabel').textContent = saved ? 'Đã lưu ✓' : 'Lưu vào danh sách';
+    document.getElementById('saveIcon').innerHTML = saved
+      ? '<path d="M6 3h12v18l-6-4-6 4V3z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>'
+      : '<path d="M6 3h12v18l-6-4-6 4V3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>';
+  }
+
+  function toggleSaved(){
+    if(!COMPANY) return;
+    const ids = getSavedIds();
+    const idStr = String(COMPANY.id);
+    const already = ids.includes(idStr);
+    setSavedIds(already ? ids.filter(x=>x!==idStr) : [...ids, idStr]);
+    updateSaveButton();
+  }
+
+  /* ============ Share (nice OG-friendly /company/:id link) ============ */
+  async function shareCompany(){
+    if(!COMPANY) return;
+    const shareUrl = `${location.origin}/company/${COMPANY.id}`;
+    const label = document.getElementById('shareLabel');
+
+    if(navigator.share){
+      try{
+        await navigator.share({ title: COMPANY.name, text: COMPANY.desc || '', url: shareUrl });
+        return;
+      }catch(e){ /* user cancelled or share failed — fall back to copy */ }
+    }
+
+    try{
+      await navigator.clipboard.writeText(shareUrl);
+      label.textContent = 'Đã copy link ✓';
+      setTimeout(()=>{ label.textContent = 'Chia sẻ'; }, 2000);
+    }catch(e){
+      // clipboard API unavailable (e.g. insecure context) — show the link so they can copy manually
+      window.prompt('Copy link chia sẻ:', shareUrl);
+    }
   }
 
   loadCompany();

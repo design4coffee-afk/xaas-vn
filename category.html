@@ -194,9 +194,9 @@
       <a href="#">Trang chủ</a>
       <a href="#" class="active">Danh mục</a>
       <a href="#">Doanh nghiệp</a>
-      <a href="#">Giới thiệu</a>
+      <a href="gioi-thieu.html">Giới thiệu</a>
     </nav>
-    <button class="cta-btn">Đăng doanh nghiệp</button>
+    <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Đăng doanh nghiệp</a>
     <button class="burger" aria-label="Menu">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
@@ -298,7 +298,7 @@
       </div>
       <div class="foot-col">
         <h5>Công ty</h5>
-        <a href="#">Giới thiệu</a><a href="#">Liên hệ</a><a href="#">Đăng doanh nghiệp</a><a href="#">Điều khoản</a>
+        <a href="gioi-thieu.html">Giới thiệu</a><a href="#">Liên hệ</a><a href="auth.html?tab=register">Đăng doanh nghiệp</a><a href="#">Điều khoản</a>
       </div>
       <div class="foot-col">
         <h5>Kết nối</h5>
@@ -384,6 +384,7 @@ const DATA = {
 };
 
 let currentView = 'grid';
+let currentCat = 'saas';
 let CATS_LIVE = null; // cache of /api/public/categories response
 
 async function loadCatsLive(){
@@ -393,7 +394,44 @@ async function loadCatsLive(){
   return CATS_LIVE;
 }
 
+async function loadGrid(cat, search){
+  const d = DATA[cat];
+  const cats = await loadCatsLive();
+  const liveCat = cats.find(c=>c.id===cat);
+  const liveCount = liveCat ? liveCat.count : d.count;
+
+  const grid = document.getElementById('coGrid');
+  grid.className = 'grid' + (currentView==='list' ? ' list-view' : '');
+  grid.innerHTML = `<p style="grid-column:1/-1;color:var(--ink-soft);padding:20px 0;">Đang tải...</p>`;
+  document.getElementById('resultsCount').innerHTML = `Đang tải doanh nghiệp...`;
+
+  let companies = [];
+  try{
+    const q = search ? `&search=${encodeURIComponent(search)}` : '';
+    companies = await (await fetch(`/api/public/companies?cat=${cat}${q}&limit=30`)).json();
+  }
+  catch(e){ companies = []; }
+
+  document.getElementById('resultsCount').innerHTML = search
+    ? `Tìm thấy ${companies.length} kết quả cho "${search}"`
+    : `Hiển thị ${companies.length} trên <b>${liveCount}</b> doanh nghiệp`;
+
+  grid.innerHTML = companies.length ? companies.map(c=>`
+    <a href="company-detail.html?id=${c.id}" class="co-card" style="display:block;">
+      ${c.logoUrl ? `<img src="${c.logoUrl}" class="co-mark" style="object-fit:cover;background:#fff;border:1px solid var(--surface-line);">` : `<div class="co-mark" style="background:linear-gradient(120deg,${d.color2},${d.color})">${c.mark}</div>`}
+      <div class="co-body">
+        <div class="co-top"><span></span><span class="co-rating">${c.rating ? '★ '+c.rating.toFixed(1) : 'Chưa có đánh giá'}</span></div>
+        <h4>${c.name}</h4>
+        <p>${c.desc || ''}</p>
+        <div class="co-tags">${c.verified ? '<span class="tagchip">✓ Đã xác minh</span>' : ''}</div>
+        <div class="co-foot"><span class="loc">${c.headquarters || 'Việt Nam'}</span><span class="link">Xem chi tiết →</span></div>
+      </div>
+    </a>
+  `).join('') : `<p style="grid-column:1/-1;color:var(--ink-soft);padding:20px 0;">${search ? 'Không tìm thấy doanh nghiệp nào khớp từ khóa.' : 'Chưa có doanh nghiệp nào được duyệt trong danh mục này.'}</p>`;
+}
+
 async function render(cat){
+  currentCat = cat;
   const d = DATA[cat];
   document.documentElement.style.setProperty('--cat', d.color);
   document.documentElement.style.setProperty('--cat-2', d.color2);
@@ -404,6 +442,7 @@ async function render(cat){
   document.getElementById('catFull').textContent = d.full;
   document.getElementById('catDesc').textContent = d.desc;
   document.getElementById('catBadge').textContent = d.badge;
+  document.getElementById('searchInput').value = '';
   document.getElementById('searchInput').placeholder = `Tìm kiếm trong danh mục ${d.label}...`;
   document.title = `Danh mục ${d.label} — XaaS.vn`;
 
@@ -434,30 +473,7 @@ async function render(cat){
     </a>`;
   }).join('');
 
-  // live company grid
-  const grid = document.getElementById('coGrid');
-  grid.className = 'grid' + (currentView==='list' ? ' list-view' : '');
-  grid.innerHTML = `<p style="grid-column:1/-1;color:var(--ink-soft);padding:20px 0;">Đang tải...</p>`;
-  document.getElementById('resultsCount').innerHTML = `Đang tải doanh nghiệp...`;
-
-  let companies = [];
-  try{ companies = await (await fetch(`/api/public/companies?cat=${cat}&limit=30`)).json(); }
-  catch(e){ companies = []; }
-
-  document.getElementById('resultsCount').innerHTML = `Hiển thị ${companies.length} trên <b>${liveCount}</b> doanh nghiệp`;
-
-  grid.innerHTML = companies.length ? companies.map(c=>`
-    <a href="company-detail.html?id=${c.id}" class="co-card" style="display:block;">
-      <div class="co-mark" style="background:linear-gradient(120deg,${d.color2},${d.color})">${c.mark}</div>
-      <div class="co-body">
-        <div class="co-top"><span></span><span class="co-rating">${c.rating ? '★ '+c.rating.toFixed(1) : 'Chưa có đánh giá'}</span></div>
-        <h4>${c.name}</h4>
-        <p>${c.desc || ''}</p>
-        <div class="co-tags">${c.verified ? '<span class="tagchip">✓ Đã xác minh</span>' : ''}</div>
-        <div class="co-foot"><span class="loc">${c.headquarters || 'Việt Nam'}</span><span class="link">Xem chi tiết →</span></div>
-      </div>
-    </a>
-  `).join('') : `<p style="grid-column:1/-1;color:var(--ink-soft);padding:20px 0;">Chưa có doanh nghiệp nào được duyệt trong danh mục này.</p>`;
+  await loadGrid(cat, '');
 }
 
 document.querySelectorAll('.cat-tab').forEach(t=>{
@@ -470,6 +486,13 @@ document.querySelectorAll('.view-toggle button').forEach(b=>{
     b.classList.add('on');
     document.getElementById('coGrid').className = 'grid' + (currentView==='list' ? ' list-view' : '');
   });
+});
+
+let searchDebounce = null;
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  clearTimeout(searchDebounce);
+  const val = e.target.value.trim();
+  searchDebounce = setTimeout(()=>loadGrid(currentCat, val), 300);
 });
 
 const initialCat = (location.hash || '#saas').replace('#','');

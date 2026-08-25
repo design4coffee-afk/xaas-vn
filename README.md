@@ -1,68 +1,85 @@
 # XaaS.vn — Toàn bộ project (site tĩnh + backend thật)
 
-Đây là bản tổng hợp đầy đủ mọi thứ đã làm cho XaaS.vn: 6 trang giao diện
-+ backend thật chạy trên Cloudflare Pages Functions + D1. Toàn bộ nằm
+Đây là bản tổng hợp đầy đủ mọi thứ đã làm cho XaaS.vn: 7 trang giao diện
++ backend thật chạy trên Cloudflare Pages Functions + D1 + R2. Toàn bộ nằm
 chung 1 thư mục gốc — deploy 1 lần là có cả site lẫn API.
 
 ## Danh sách trang (ở gốc thư mục)
 
 | File | Trang | Ghi chú |
 |---|---|---|
-| `index.html` | Trang chủ | Demo stack diagram, danh mục, big tech, doanh nghiệp nổi bật |
-| `category.html` | Danh mục (archive) | 1 template dùng chung cho cả IaaS/PaaS/SaaS/AIaaS, chuyển tab đổi màu |
-| `company-detail.html` | Chi tiết công ty | Demo MISA — tổng quan, tính năng, sản phẩm nổi bật + bảng giá lọc AJAX, đánh giá |
-| `auth.html` | Đăng nhập / Đăng ký | Gọi API thật, tự chuyển vào dashboard theo role |
-| `admin-dashboard.html` | Bảng quản trị | Toàn quyền: duyệt/từ chối, xác minh, preview, sản phẩm & giá, kiểm duyệt đánh giá |
-| `user-dashboard.html` | Bảng điều khiển doanh nghiệp | Chỉ quản lý listing của chính mình: tạo/sửa/gửi duyệt, trả lời đánh giá |
+| `index.html` | Trang chủ | Stack diagram, danh mục (số liệu thật), doanh nghiệp nổi bật (dữ liệu thật) |
+| `category.html` | Danh mục (archive) | 1 template dùng chung cho cả IaaS/PaaS/SaaS/AIaaS, tìm kiếm thật, dữ liệu thật |
+| `company-detail.html` | Chi tiết công ty | Đọc `?id=`, dữ liệu thật: mô tả, sản phẩm + bảng giá lọc AJAX, đánh giá, lưu/chia sẻ |
+| `gioi-thieu.html` | Giới thiệu | Sứ mệnh, cách hoạt động, cam kết, CTA đăng ký |
+| `auth.html` | Đăng nhập / Đăng ký | Gọi API thật, hỗ trợ `?tab=register`, quên mật khẩu, tự chuyển vào dashboard theo role |
+| `reset-password.html` | Đặt lại mật khẩu | Trang đích của link trong email quên mật khẩu |
+| `admin-dashboard.html` | Bảng quản trị | Toàn quyền: duyệt/từ chối, xác minh, preview, upload logo, sản phẩm & giá, kiểm duyệt đánh giá, đổi tài khoản |
+| `user-dashboard.html` | Bảng điều khiển doanh nghiệp | Chỉ quản lý listing của chính mình: tạo/sửa/gửi duyệt, upload logo, trả lời đánh giá, đổi tài khoản |
 
-`index.html`, `category.html`, `company-detail.html` giờ đã nối API công khai
-thật (`/api/public/...`, không cần đăng nhập) — 3 trang còn lại đã nối API
-riêng theo role từ trước. Toàn bộ 6 trang đều đọc dữ liệu thật từ D1.
+Toàn bộ 7 trang đều đọc/ghi dữ liệu thật từ D1 — không còn trang nào dùng
+mock data hay `localStorage` cho dữ liệu nghiệp vụ (riêng "Lưu vào danh
+sách" trên trang chi tiết vẫn dùng `localStorage` có chủ đích, vì đó là
+tính năng ẩn danh không cần tài khoản).
 
-## Backend (Cloudflare Pages Functions + D1)
+## Backend (Cloudflare Pages Functions + D1 + R2)
 
 Backend thay thế hoàn toàn `localStorage` bằng database D1 thật + API
-chạy trên cùng domain Cloudflare Pages với site tĩnh.
+chạy trên cùng domain Cloudflare Pages với site tĩnh, cộng thêm R2 để
+lưu logo doanh nghiệp.
 
 ## Cấu trúc
 
 ```
 xaas-vn-complete/
-├── index.html, category.html, company-detail.html    # trang tĩnh (demo data)
-├── auth.html, admin-dashboard.html, user-dashboard.html   # đã nối API thật
+├── index.html, category.html, company-detail.html, gioi-thieu.html   # trang công khai (dữ liệu thật)
+├── auth.html, reset-password.html                                    # xác thực
+├── admin-dashboard.html, user-dashboard.html                         # đã nối API thật
+├── robots.txt                     # cho phép crawl + trỏ sitemap
 ├── schema.sql                     # database schema + seed data
-├── wrangler.toml                  # cấu hình Pages + D1 binding
+├── wrangler.toml                  # cấu hình Pages + D1 + R2 binding
 ├── scripts/bootstrap.mjs          # script tạo admin + demo account + gán owner (1 lệnh)
 └── functions/
     ├── _middleware.js             # gắn session vào mọi request
-    ├── _lib/helpers.js            # hash mật khẩu, session, response helpers
+    ├── _lib/helpers.js            # hash mật khẩu, session, rate-limit, reset password, response helpers
+    ├── sitemap.xml.js             # GET /sitemap.xml — tự sinh từ danh sách công ty đã duyệt
+    ├── company/[id].js            # GET /company/:id — trang chia sẻ có OG tags + JSON-LD, redirect vào company-detail.html
     └── api/
         ├── auth/
-        │   ├── register.js        # POST   /api/auth/register
-        │   ├── login.js           # POST   /api/auth/login
-        │   ├── logout.js          # POST   /api/auth/logout
-        │   ├── me.js               # GET    /api/auth/me
-        │   └── bootstrap-admin.js # POST   /api/auth/bootstrap-admin (dùng 1 lần)
+        │   ├── register.js         # POST /api/auth/register
+        │   ├── login.js            # POST /api/auth/login (có rate-limit)
+        │   ├── logout.js           # POST /api/auth/logout
+        │   ├── me.js                # GET/PUT /api/auth/me (đổi tên/email/mật khẩu)
+        │   ├── forgot-password.js  # POST /api/auth/forgot-password
+        │   ├── reset-password.js  # POST /api/auth/reset-password
+        │   └── bootstrap-admin.js # POST /api/auth/bootstrap-admin (dùng 1 lần)
         ├── companies/
-        │   ├── index.js           # GET/POST /api/companies
-        │   ├── [id].js            # GET/PUT/DELETE /api/companies/:id
+        │   ├── index.js            # GET/POST /api/companies
+        │   ├── [id].js             # GET/PUT/DELETE /api/companies/:id
         │   └── [id]/
-        │       ├── status.js      # POST /api/companies/:id/status   (admin)
-        │       ├── verify.js      # POST /api/companies/:id/verify  (admin)
-        │       └── products.js    # GET/POST /api/companies/:id/products
+        │       ├── status.js       # POST /api/companies/:id/status   (admin)
+        │       ├── verify.js       # POST /api/companies/:id/verify  (admin)
+        │       ├── products.js     # GET/POST /api/companies/:id/products
+        │       └── logo.js         # POST /api/companies/:id/logo (upload ảnh vào R2)
         ├── products/
-        │   └── [id].js            # PUT/DELETE /api/products/:id
+        │   └── [id].js             # PUT/DELETE /api/products/:id
+        ├── images/
+        │   └── [[path]].js         # GET /api/images/* — phục vụ ảnh từ R2
+        ├── public/
+        │   ├── categories.js       # GET /api/public/categories
+        │   └── companies/
+        │       ├── index.js        # GET /api/public/companies
+        │       └── [id].js         # GET /api/public/companies/:id
         └── reviews/
-            ├── index.js           # GET /api/reviews
+            ├── index.js            # GET /api/reviews
             └── [id]/
-                ├── reply.js       # POST /api/reviews/:id/reply
-                └── status.js      # POST /api/reviews/:id/status    (admin)
+                ├── reply.js        # POST /api/reviews/:id/reply
+                └── status.js       # POST /api/reviews/:id/status    (admin)
 ```
 
 Đặt thư mục `functions/` này ở **gốc repo**, cùng cấp với các file HTML tĩnh
-(`index.html`, `auth.html`, `admin-dashboard.html`, `user-dashboard.html`,
-`category.html`, `company-detail.html`...) — Cloudflare Pages sẽ tự nhận diện
-và deploy cả static site lẫn API cùng lúc, cùng domain, không cần lo CORS.
+— Cloudflare Pages sẽ tự nhận diện và deploy cả static site lẫn API cùng
+lúc, cùng domain, không cần lo CORS.
 
 ## 1. Cài Wrangler & đăng nhập
 
@@ -90,14 +107,38 @@ wrangler d1 execute xaas_vn_db --remote --file=./schema.sql
 wrangler d1 execute xaas_vn_db --local --file=./schema.sql
 ```
 
-## 4. Đặt secret cho bootstrap admin
+## 4. Tạo R2 bucket cho logo doanh nghiệp
+
+```bash
+wrangler r2 bucket create xaas-vn-logos
+```
+
+Không cần copy id nào cả — `wrangler.toml` đã trỏ sẵn `bucket_name =
+"xaas-vn-logos"` khớp với tên trên. Bỏ qua bước này nếu tạm thời chưa cần
+tính năng upload logo (site vẫn chạy bình thường, chỉ là nút upload logo
+sẽ báo lỗi "Chưa cấu hình R2 bucket").
+
+## 5. Đặt secret cho bootstrap admin (+ email, tùy chọn)
 
 ```bash
 wrangler pages secret put ADMIN_BOOTSTRAP_SECRET
 # nhập một chuỗi bí mật bất kỳ, ví dụ: 8f3a1c9e2b7d4f6a
 ```
 
-## 5. Deploy lên Cloudflare Pages
+**Tùy chọn — để email "quên mật khẩu" thật sự được gửi đi:**
+Tạo tài khoản miễn phí tại [resend.com](https://resend.com), lấy API key,
+rồi:
+```bash
+wrangler pages secret put RESEND_API_KEY
+wrangler pages secret put EMAIL_FROM
+# ví dụ giá trị EMAIL_FROM: XaaS.vn <no-reply@xaas.vn>
+# (cần xác minh domain gửi email trên Resend trước khi dùng địa chỉ @xaas.vn)
+```
+Nếu bỏ qua bước này, tính năng quên mật khẩu vẫn hoạt động về mặt logic
+(tạo token, người dùng có thể tự lấy link từ bảng `password_resets` qua
+`wrangler d1 execute` để test) nhưng sẽ **không gửi email thật**.
+
+## 6. Deploy lên Cloudflare Pages
 
 Nếu project Pages đã nối với repo GitHub (theo đúng flow bạn đang dùng cho
 các site XaaS.vn khác), chỉ cần push code lên GitHub — Cloudflare Pages tự
@@ -109,12 +150,15 @@ wrangler pages deploy . --project-name=xaas-vn
 ```
 
 **Quan trọng:** vào Cloudflare dashboard → project Pages → Settings →
-Functions → D1 database bindings → thêm binding `DB` trỏ tới `xaas_vn_db`
+Functions → thêm 2 binding:
+- **D1 database bindings** → binding `DB` trỏ tới `xaas_vn_db`
+- **R2 bucket bindings** → binding `LOGOS` trỏ tới `xaas-vn-logos`
+
 (bước này KHÔNG tự động xảy ra chỉ nhờ `wrangler.toml` khi deploy qua Git
 integration — cần gắn tay trên dashboard, hoặc dùng `wrangler pages deploy`
 với `wrangler.toml` đã cấu hình đúng).
 
-## 6. Tạo tài khoản admin + tài khoản demo + gán chủ sở hữu — chỉ 1 lệnh
+## 7. Tạo tài khoản admin + tài khoản demo + gán chủ sở hữu — chỉ 1 lệnh
 
 Thay vì làm thủ công từng bước (bootstrap admin → đăng ký user demo → gán
 `owner_id`), chạy script có sẵn:
@@ -185,9 +229,14 @@ wrangler d1 execute xaas_vn_db --remote \
 | GET    | `/api/public/categories`           | công khai — dùng cho trang chủ & danh mục |
 | GET    | `/api/public/companies`            | công khai — chỉ trả doanh nghiệp `published`; hỗ trợ `?cat=`, `?search=`, `?sort=`, `?limit=` |
 | GET    | `/api/public/companies/:id`        | công khai — chi tiết 1 công ty (kèm sản phẩm + đánh giá `published`), 404 nếu chưa duyệt |
+| GET    | `/api/images/*`                    | công khai — phục vụ logo từ R2 |
+| GET    | `/sitemap.xml`                     | công khai — tự sinh từ danh sách công ty đã duyệt |
+| GET    | `/company/:id`                     | công khai — trang chia sẻ có OG tags, redirect vào `company-detail.html` |
 | POST   | `/api/auth/register`               | công khai                       |
-| POST   | `/api/auth/login`                  | công khai                       |
+| POST   | `/api/auth/login`                  | công khai — khóa 15 phút sau 5 lần sai |
 | POST   | `/api/auth/logout`                 | đã đăng nhập                    |
+| POST   | `/api/auth/forgot-password`        | công khai — luôn trả lời chung chung (chống dò email) |
+| POST   | `/api/auth/reset-password`         | công khai — cần token hợp lệ từ email |
 | GET    | `/api/auth/me`                     | đã đăng nhập                    |
 | PUT    | `/api/auth/me`                     | đã đăng nhập — đổi tên/email/mật khẩu của chính mình |
 | GET    | `/api/companies`                   | đã đăng nhập (user: chỉ của mình)|
@@ -195,15 +244,15 @@ wrangler d1 execute xaas_vn_db --remote \
 | GET/PUT/DELETE | `/api/companies/:id`       | chủ sở hữu hoặc admin (xóa: chỉ admin) |
 | POST   | `/api/companies/:id/status`        | admin                           |
 | POST   | `/api/companies/:id/verify`        | admin                           |
+| POST   | `/api/companies/:id/logo`          | chủ sở hữu hoặc admin — upload logo (multipart, tối đa 2MB) |
 | GET/POST | `/api/companies/:id/products`    | chủ sở hữu hoặc admin           |
 | PUT/DELETE | `/api/products/:id`            | chủ sở hữu hoặc admin           |
 | GET    | `/api/reviews`                     | đã đăng nhập (user: chỉ của mình)|
 | POST   | `/api/reviews/:id/reply`           | chủ sở hữu hoặc admin           |
 | POST   | `/api/reviews/:id/status`          | admin                           |
 
-Ba endpoint `/api/public/...` đầu bảng không cần cookie/session — dùng cho
-`index.html`, `category.html`, `company-detail.html` để hiển thị dữ liệu
-công khai cho khách truy cập chưa đăng nhập.
+Các endpoint `/api/public/...`, `/api/images/*`, `/sitemap.xml`, `/company/:id`
+không cần cookie/session — dùng cho khách truy cập chưa đăng nhập.
 
 Session lưu qua cookie `xaas_session` (HttpOnly, Secure, SameSite=Lax, 7
 ngày) — không cần header `Authorization` thủ công, `fetch(..., {credentials:
@@ -217,11 +266,34 @@ ngày) — không cần header `Authorization` thủ công, `fetch(..., {credent
 - Mọi endpoint ghi dữ liệu đều kiểm tra quyền sở hữu (`owner_id`) hoặc vai trò
   `admin` trước khi cho phép.
 - `bootstrap-admin` tự khóa sau lần dùng đầu tiên.
+- Đăng nhập sai quá 5 lần liên tiếp → khóa tài khoản 15 phút (`login_attempts`).
+- Quên mật khẩu: token dùng 1 lần, hết hạn sau 30 phút, không tiết lộ email
+  có tồn tại hay không; đặt lại mật khẩu thành công sẽ đăng xuất mọi session
+  cũ của tài khoản đó.
+- Không còn nút đăng nhập nhanh nào bỏ qua mật khẩu — kể cả tài khoản demo.
+
+## SEO đã áp dụng
+
+- `sitemap.xml` tự sinh từ danh sách công ty `published` + các trang tĩnh
+  chính, cập nhật `lastmod` theo dữ liệu thật.
+- `robots.txt` cho phép crawl trang công khai, chặn dashboard/`/api/`.
+- `/company/:id` là URL chia sẻ đẹp, server-render `<title>`, `og:title`,
+  `og:description`, `og:image` (logo nếu có), Twitter Card, và JSON-LD
+  `schema.org/Organization` — để link chia sẻ trên Facebook/Zalo/Twitter
+  hiện đúng ảnh/tiêu đề thay vì trang trắng. Người dùng thật được redirect
+  ngay vào `company-detail.html?id=X` để xem bản tương tác đầy đủ.
+- Nút "Chia sẻ" trên trang chi tiết công ty copy đúng link `/company/:id`
+  này (dùng Web Share API trên di động nếu trình duyệt hỗ trợ).
 
 ## Còn thiếu (nên làm tiếp nếu lên production thật)
 
-- Rate limiting cho `/api/auth/login` (chống brute-force).
-- Endpoint "quên mật khẩu" (hiện chỉ có nút placeholder ở frontend).
-- Kiểm tra `Origin`/CSRF token nếu sau này API được gọi từ domain khác.
-- Ảnh/logo doanh nghiệp: hiện schema chưa có cột lưu ảnh — cần thêm
-  Cloudflare Images hoặc R2 nếu muốn upload ảnh thật.
+- Domain thật (`xaas.vn`) chưa gắn — vào Cloudflare Pages project → Custom
+  domains → Add domain, rồi trỏ DNS theo hướng dẫn hiện trên dashboard.
+- Cloudflare Web Analytics chưa bật — vào dashboard → Analytics & Logs →
+  Web Analytics → Add site → lấy đoạn script → dán vào trước `</body>` của
+  cả 8 trang HTML (hiện dùng số liệu "lượt xem" demo, chưa phải số thật).
+- Kiểm tra `Origin`/CSRF token nếu sau này API được gọi từ domain khác
+  ngoài chính site này.
+- Sao lưu D1 định kỳ: `wrangler d1 export xaas_vn_db --remote --output=backup.sql`.
+- "Đăng doanh nghiệp" hiện chỉ tạo được đúng 1 doanh nghiệp mỗi request qua
+  form — nếu cần nhập hàng loạt (bulk import) sẽ cần thêm endpoint riêng.

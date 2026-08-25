@@ -448,6 +448,14 @@
       </div>
       <div class="field"><label>Website</label><input type="text" id="mWebsite" placeholder="vidu.vn"></div>
       <div class="field"><label>Mô tả ngắn</label><textarea id="mDesc" placeholder="Mô tả một câu về doanh nghiệp..."></textarea></div>
+      <div class="field">
+        <label>Logo (PNG/JPG/WebP/SVG, tối đa 2MB)</label>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div id="mLogoPreview" style="width:52px;height:52px;border-radius:12px;background:var(--surface);border:1px solid var(--surface-line);display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 auto;font-weight:700;color:var(--ink-mute);font-size:11px;">—</div>
+          <input type="file" id="mLogoFile" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="flex:1;font-size:12.5px;">
+        </div>
+        <div class="hint" id="mLogoHint" style="margin-top:6px;"></div>
+      </div>
       <div class="field"><label>Trạng thái</label>
         <select id="mStatus">
           <option value="published">Đã duyệt</option><option value="pending">Chờ duyệt</option><option value="hidden">Đã ẩn</option>
@@ -543,6 +551,10 @@ function statusPill(s){
   return `<span class="status-pill ${cls}">${label}</span>`;
 }
 function markStyle(cat){ const m = CAT_META[cat]; return `background:linear-gradient(120deg,${m.color2},${m.color})`; }
+function avatarHtml(c, cls){
+  if(c.logoUrl) return `<img src="${c.logoUrl}" class="${cls}" style="object-fit:cover;background:#fff;border:1px solid var(--surface-line);">`;
+  return `<div class="${cls}" style="${markStyle(c.cat)}">${c.mark}</div>`;
+}
 function verifiedBadge(c){
   return c.verified
     ? `<button class="verified-badge v-yes" title="Bấm để bỏ xác minh" onclick="toggleVerified(${c.id})"><svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Đã xác minh</button>`
@@ -599,7 +611,7 @@ function renderOverview(){
   const pl = document.getElementById('pendingList');
   pl.innerHTML = pending.length ? pending.map(c=>`
     <div class="act-row">
-      <div class="act-mark" style="${markStyle(c.cat)}">${c.mark}</div>
+      ${avatarHtml(c, "act-mark")}
       <div class="act-body"><b>${c.name}</b><span>${CAT_META[c.cat].name} · gửi ${c.updated}</span></div>
       <div class="act-actions">
         <button class="btn-ghost" style="padding:7px 11px;font-size:12px;" onclick="openPreview(${c.id})">Xem preview</button>
@@ -616,7 +628,7 @@ function renderApprovedList(){
   const al = document.getElementById('approvedList');
   al.innerHTML = approved.length ? approved.map(c=>`
     <div class="appr-row">
-      <div class="act-mark" style="${markStyle(c.cat)}">${c.mark}</div>
+      ${avatarHtml(c, "act-mark")}
       <div class="appr-body"><b>${c.name}</b><span>${CAT_META[c.cat].name} · duyệt ${c.updated}</span></div>
       <div class="appr-actions">
         ${verifiedBadge(c)}
@@ -631,8 +643,11 @@ function renderApprovedList(){
 function openPreview(id){
   const c = companyById(id);
   if(!c) return;
-  document.getElementById('pvMark').textContent = c.mark;
-  document.getElementById('pvMark').setAttribute('style', markStyle(c.cat));
+  document.getElementById('pvMark').textContent = c.logoUrl ? '' : c.mark;
+  document.getElementById('pvMark').innerHTML = c.logoUrl
+    ? `<img src="${c.logoUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">`
+    : c.mark;
+  document.getElementById('pvMark').setAttribute('style', c.logoUrl ? '' : markStyle(c.cat));
   document.getElementById('pvName').textContent = c.name || '(Chưa đặt tên)';
   document.getElementById('pvBadges').innerHTML = `${catBadge(c.cat)} ${statusPill(c.status)} ${verifiedBadge(c)}`;
   document.getElementById('pvDesc').textContent = c.desc || 'Doanh nghiệp chưa có mô tả.';
@@ -679,7 +694,7 @@ function renderCompanies(){
   document.getElementById('coCount').textContent = `${rows.length} doanh nghiệp`;
   document.getElementById('coTableBody').innerHTML = rows.map(c=>`
     <tr>
-      <td><div class="co-cell"><div class="co-mark" style="${markStyle(c.cat)}">${c.mark}</div><div><b>${c.name}</b><span>${c.website}</span></div></div></td>
+      <td><div class="co-cell">${avatarHtml(c, "co-mark")}<div><b>${c.name}</b><span>${c.website}</span></div></div></td>
       <td>${catBadge(c.cat)}</td>
       <td>${statusPill(c.status)}</td>
       <td>${verifiedBadge(c)}</td>
@@ -726,9 +741,31 @@ function openCompanyModal(id){
   document.getElementById('mWebsite').value = c ? c.website : '';
   document.getElementById('mDesc').value = c ? c.desc : '';
   document.getElementById('mStatus').value = c ? c.status : 'pending';
+  document.getElementById('mLogoFile').value = '';
+  document.getElementById('mLogoHint').textContent = '';
+  const preview = document.getElementById('mLogoPreview');
+  preview.innerHTML = c && c.logoUrl ? `<img src="${c.logoUrl}" style="width:100%;height:100%;object-fit:cover;">` : '—';
   document.getElementById('companyModal').classList.add('on');
 }
 function closeCompanyModal(){ document.getElementById('companyModal').classList.remove('on'); }
+document.getElementById('mLogoFile')?.addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ document.getElementById('mLogoPreview').innerHTML = `<img src="${reader.result}" style="width:100%;height:100%;object-fit:cover;">`; };
+  reader.readAsDataURL(file);
+});
+async function uploadLogoIfSelected(companyId){
+  const fileInput = document.getElementById('mLogoFile');
+  const file = fileInput.files[0];
+  if(!file) return null;
+  const fd = new FormData();
+  fd.append('file', file);
+  const res = await fetch(`/api/companies/${companyId}/logo`, { method: 'POST', credentials: 'include', body: fd });
+  const body = await res.json().catch(()=>null);
+  if(!res.ok){ showToast((body && body.error) || 'Không thể tải ảnh lên'); return null; }
+  return body;
+}
 async function saveCompany(){
   const name = document.getElementById('mName').value.trim();
   if(!name){ showToast('Vui lòng nhập tên doanh nghiệp'); return; }
@@ -742,6 +779,7 @@ async function saveCompany(){
     ? await apiPut(`/api/companies/${editingCompanyId}`, data)
     : await apiPost('/api/companies', data);
   if(!result) return;
+  await uploadLogoIfSelected(result.id);
   closeCompanyModal();
   await refreshCompanies();
   renderAll();
@@ -803,12 +841,12 @@ async function renderProducts(){
             <input value="${t.name}" onchange="t_updateTier('${coId}','${p.id}','${t.id}','name',this.value)">
             <input value="${t.price}" onchange="t_updateTier('${coId}','${p.id}','${t.id}','price',this.value)">
             <span class="mono" style="color:var(--ink-soft);font-size:12px;">gói giá</span>
-            <button class="ra-btn del" onclick="showToast('Đã xóa gói (demo)')">
+            <button class="ra-btn del" onclick="t_deleteTier('${coId}','${p.id}','${t.id}')">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0v12a1 1 0 001 1h6a1 1 0 001-1V7" stroke="#E63946" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
           </div>
         `).join('')}
-        <div style="padding-top:14px;"><button class="btn-ghost" onclick="showToast('Đã thêm gói giá mới (demo)')">+ Thêm gói giá</button></div>
+        <div style="padding-top:14px;"><button class="btn-ghost" onclick="t_addTier('${coId}','${p.id}')">+ Thêm gói giá</button></div>
       </div>
     </div>
   `).join('');
@@ -821,6 +859,28 @@ async function t_updateTier(coId, prodId, tierId, field, val){
   t[field] = val;
   await apiPut(`/api/products/${prodId}`, { name: p.name, tiers: p.tiers });
   showToast('Đã lưu gói giá');
+}
+async function t_addTier(coId, prodId){
+  const products = PRODUCTS_CACHE[coId] || [];
+  const p = products.find(x=>x.id===prodId);
+  if(!p) return;
+  p.tiers.push({ id: 't_' + Math.random().toString(16).slice(2,8), name: 'Gói mới', price: 'Liên hệ' });
+  const updated = await apiPut(`/api/products/${prodId}`, { name: p.name, tiers: p.tiers });
+  if(updated) PRODUCTS_CACHE[coId] = products.map(x=>x.id===prodId ? updated : x);
+  await renderProducts();
+  showToast('Đã thêm gói giá mới');
+}
+async function t_deleteTier(coId, prodId, tierId){
+  const products = PRODUCTS_CACHE[coId] || [];
+  const p = products.find(x=>x.id===prodId);
+  if(!p) return;
+  if(p.tiers.length <= 1){ showToast('Sản phẩm cần ít nhất 1 gói giá'); return; }
+  if(!confirm('Xóa gói giá này?')) return;
+  p.tiers = p.tiers.filter(t=>t.id!==tierId);
+  const updated = await apiPut(`/api/products/${prodId}`, { name: p.name, tiers: p.tiers });
+  if(updated) PRODUCTS_CACHE[coId] = products.map(x=>x.id===prodId ? updated : x);
+  await renderProducts();
+  showToast('Đã xóa gói giá');
 }
 document.getElementById('prodCoSelect')?.addEventListener?.('change', renderProducts);
 

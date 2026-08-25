@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS password_resets;
+DROP TABLE IF EXISTS login_attempts;
 DROP TABLE IF EXISTS sessions;
 DROP TABLE IF EXISTS accounts;
 
@@ -32,6 +34,21 @@ CREATE TABLE sessions (
   expires_at  TEXT NOT NULL
 );
 CREATE INDEX idx_sessions_account ON sessions(account_id);
+
+-- ---------- login rate limiting ----------
+CREATE TABLE login_attempts (
+  email        TEXT PRIMARY KEY,
+  fail_count   INTEGER NOT NULL DEFAULT 0,
+  locked_until TEXT
+);
+
+-- ---------- password reset ----------
+CREATE TABLE password_resets (
+  token       TEXT PRIMARY KEY,
+  account_id  TEXT NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  expires_at  TEXT NOT NULL
+);
+CREATE INDEX idx_resets_account ON password_resets(account_id);
 
 -- ---------- categories ----------
 CREATE TABLE categories (
@@ -62,6 +79,7 @@ CREATE TABLE companies (
   founded     TEXT,                         -- optional: "1994"
   headquarters TEXT,                        -- optional: "Hà Nội, VN"
   team_size   TEXT,                         -- optional: "1.000+ nhân sự"
+  logo_url    TEXT,                          -- optional: /api/images/<key> (R2-backed)
   owner_id    TEXT REFERENCES accounts(id),
   reason      TEXT,                          -- rejection reason, if any
   updated_at  TEXT NOT NULL DEFAULT (datetime('now'))

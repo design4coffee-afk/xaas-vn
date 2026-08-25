@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin-dashboard.html
+Disallow: /user-dashboard.html
+Disallow: /auth.html
+Disallow: /reset-password.html
+Disallow: /api/
+
+Sitemap: https://xaas.vn/sitemap.xml

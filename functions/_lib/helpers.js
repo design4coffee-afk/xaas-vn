@@ -100,10 +100,79 @@ function companyRowToJson(row) {
     founded: row.founded || null,
     headquarters: row.headquarters || null,
     teamSize: row.team_size || null,
+    logoUrl: row.logo_url || null,
     owner: row.owner_id,
     reason: row.reason,
     updated: row.updated_at,
   };
+}
+
+// ---------- login rate limiting ----------
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCKOUT_MINUTES = 15;
+
+async function checkLoginLock(db, email) {
+  const row = await db.prepare('SELECT fail_count, locked_until FROM login_attempts WHERE email = ?').bind(email).first();
+  if (!row) return { locked: false };
+  if (row.locked_until && new Date(row.locked_until) > new Date()) {
+    const minutesLeft = Math.ceil((new Date(row.locked_until) - new Date()) / 60000);
+    return { locked: true, minutesLeft };
+  }
+  return { locked: false };
+}
+
+async function recordFailedLogin(db, email) {
+  const row = await db.prepare('SELECT fail_count FROM login_attempts WHERE email = ?').bind(email).first();
+  const nextCount = (row?.fail_count || 0) + 1;
+  const lockedUntil = nextCount >= MAX_FAILED_ATTEMPTS
+    ? new Date(Date.now() + LOCKOUT_MINUTES * 60000).toISOString()
+    : null;
+  await db.prepare(
+    `INSERT INTO login_attempts (email, fail_count, locked_until) VALUES (?, ?, ?)
+     ON CONFLICT(email) DO UPDATE SET fail_count = excluded.fail_count, locked_until = excluded.locked_until`
+  ).bind(email, nextCount, lockedUntil).run();
+  return { lockedUntil };
+}
+
+async function clearLoginAttempts(db, email) {
+  await db.prepare('DELETE FROM login_attempts WHERE email = ?').bind(email).run();
+}
+
+// ---------- password reset ----------
+async function createPasswordReset(db, accountId) {
+  const token = randomHex(24);
+  const expires = new Date(Date.now() + 30 * 60000).toISOString(); // 30 minutes
+  await db.prepare('INSERT INTO password_resets (token, account_id, expires_at) VALUES (?, ?, ?)')
+    .bind(token, accountId, expires).run();
+  return token;
+}
+
+async function consumePasswordReset(db, token) {
+  const row = await db.prepare(
+    `SELECT pr.account_id, pr.expires_at FROM password_resets pr WHERE pr.token = ?`
+  ).bind(token).first();
+  if (!row) return null;
+  if (new Date(row.expires_at) < new Date()) return null;
+  return row.account_id;
+}
+
+async function deletePasswordReset(db, token) {
+  await db.prepare('DELETE FROM password_resets WHERE token = ?').bind(token).run();
+}
+
+// Sends a transactional email via Resend (https://resend.com), if RESEND_API_KEY
+// is configured. Silently no-ops otherwise (dev/local without an email provider).
+async function sendEmail(env, { to, subject, html }) {
+  if (!env.RESEND_API_KEY) return { sent: false, reason: 'RESEND_API_KEY not set' };
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: env.EMAIL_FROM || 'XaaS.vn <no-reply@xaas.vn>',
+      to: [to], subject, html,
+    }),
+  });
+  return { sent: res.ok, status: res.status };
 }
 
 export {
@@ -111,4 +180,6 @@ export {
   json, badRequest, unauthorized, forbidden, notFound,
   sessionCookieHeader, clearSessionCookieHeader, createSession, getSessionAccount,
   companyRowToJson,
+  checkLoginLock, recordFailedLogin, clearLoginAttempts,
+  createPasswordReset, consumePasswordReset, deletePasswordReset, sendEmail,
 };

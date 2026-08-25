@@ -364,9 +364,9 @@
         </div>
       </div>
       <a href="#doanh-nghiep">Doanh nghiệp</a>
-      <a href="#gioi-thieu">Giới thiệu</a>
+      <a href="gioi-thieu.html">Giới thiệu</a>
     </nav>
-    <button class="cta-btn">Đăng doanh nghiệp</button>
+    <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Đăng doanh nghiệp</a>
     <button class="burger" aria-label="Menu">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
@@ -386,7 +386,7 @@
           <a href="#danh-muc" class="btn-primary">Khám phá danh mục
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
-          <a href="#" class="btn-secondary">Đăng doanh nghiệp của bạn</a>
+          <a href="auth.html?tab=register" class="btn-secondary">Đăng doanh nghiệp của bạn</a>
         </div>
         <div class="hero-stats">
           <div class="st"><b>120+</b><span>doanh nghiệp</span></div>
@@ -565,7 +565,7 @@
         <h2>Doanh nghiệp của bạn cung cấp dịch vụ XaaS?</h2>
         <p>Đăng ký miễn phí để xuất hiện trong danh mục và tiếp cận đúng khách hàng đang tìm kiếm giải pháp của bạn.</p>
       </div>
-      <a href="#" class="btn-primary">Đăng doanh nghiệp ngay</a>
+      <a href="auth.html?tab=register" class="btn-primary">Đăng doanh nghiệp ngay</a>
     </div>
   </section>
 
@@ -587,9 +587,9 @@
       </div>
       <div class="foot-col">
         <h5>Công ty</h5>
-        <a href="#gioi-thieu">Giới thiệu</a>
+        <a href="gioi-thieu.html">Giới thiệu</a>
         <a href="#">Liên hệ</a>
-        <a href="#">Đăng doanh nghiệp</a>
+        <a href="auth.html?tab=register">Đăng doanh nghiệp</a>
         <a href="#">Điều khoản</a>
       </div>
       <div class="foot-col">
@@ -650,7 +650,7 @@
       grid.innerHTML = companies.map(c=>`
         <a href="company-detail.html?id=${c.id}" class="feat-card reveal in" style="display:block;">
           <div class="feat-banner" style="background:${CAT_GRAD[c.cat]||CAT_GRAD.saas};">
-            <div class="bt-mark" style="background:#0B1120;">${c.mark}</div>
+            ${c.logoUrl ? `<img src="${c.logoUrl}" class="bt-mark" style="object-fit:cover;">` : `<div class="bt-mark" style="background:#0B1120;">${c.mark}</div>`}
           </div>
           <div class="feat-body">
             <h4>${c.name}</h4>

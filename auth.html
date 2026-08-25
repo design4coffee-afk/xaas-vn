@@ -177,13 +177,28 @@
         <div class="field"><label>Mật khẩu</label><input type="password" id="liPassword" placeholder="••••••••"></div>
         <div class="row-between">
           <label class="check-row"><input type="checkbox" checked> Ghi nhớ đăng nhập</label>
-          <a href="#" class="link-btn" onclick="event.preventDefault();showToast('Tính năng khôi phục mật khẩu sẽ sớm ra mắt')">Quên mật khẩu?</a>
+          <a href="#" class="link-btn" onclick="event.preventDefault();showForgot();">Quên mật khẩu?</a>
         </div>
         <button class="btn-primary" onclick="doLogin()">Đăng nhập →</button>
 
         <div class="divider">HOẶC DÙNG TÀI KHOẢN DEMO</div>
         <div class="demo-row">
           <button class="demo-btn" onclick="loginAs('user')">Doanh nghiệp demo<span class="role">Nguyễn Văn A — MISA</span></button>
+        </div>
+      </div>
+
+      <!-- ---------- FORGOT PASSWORD ---------- -->
+      <div class="form-view" id="view-forgot">
+        <div class="fw-head">
+          <h1>Quên mật khẩu?</h1>
+          <p>Nhập email đăng nhập, chúng tôi sẽ gửi link đặt lại mật khẩu.</p>
+        </div>
+        <div class="err-msg" id="forgotErr"></div>
+        <div class="ok-msg" id="forgotOk"></div>
+        <div class="field"><label>Email</label><input type="text" id="fgEmail" placeholder="ban@congty.vn"></div>
+        <button class="btn-primary" onclick="doForgotPassword()">Gửi link đặt lại →</button>
+        <div style="text-align:center;margin-top:16px;">
+          <a href="#" class="link-btn" onclick="event.preventDefault();showLogin();">← Quay lại đăng nhập</a>
         </div>
       </div>
 
@@ -242,6 +257,18 @@ function goToDashboard(role){
   if(ok && body && body.role) goToDashboard(body.role);
 })();
 
+// deep-link support: auth.html?tab=register or auth.html#register opens the register tab directly
+(function openRequestedTab(){
+  const params = new URLSearchParams(location.search);
+  const wantsRegister = params.get('tab') === 'register' || location.hash === '#register';
+  if(wantsRegister){
+    document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));
+    document.querySelector('.tab-btn[data-tab="register"]').classList.add('on');
+    document.querySelectorAll('.form-view').forEach(v=>v.classList.remove('on'));
+    document.getElementById('view-register').classList.add('on');
+  }
+})();
+
 function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('on');
@@ -281,6 +308,33 @@ function loginAs(role){
   // cho admin (đã gỡ bỏ vì lý do bảo mật: ai cũng bấm được nếu để công khai).
   // Xem README "Tạo tài khoản quản trị viên đầu tiên" để tạo & đăng nhập admin thật.
   loginWith('vana@misa.vn', 'demo123');
+}
+
+/* ---------- forgot password ---------- */
+function showForgot(){
+  document.querySelectorAll('.form-view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('view-forgot').classList.add('on');
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));
+}
+function showLogin(){
+  document.querySelectorAll('.form-view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('view-login').classList.add('on');
+  document.querySelector('.tab-btn[data-tab="login"]').classList.add('on');
+}
+async function doForgotPassword(){
+  const email = document.getElementById('fgEmail').value.trim();
+  const err = document.getElementById('forgotErr');
+  const ok = document.getElementById('forgotOk');
+  err.classList.remove('on'); ok.classList.remove('on');
+  if(!email){ err.textContent = 'Vui lòng nhập email.'; err.classList.add('on'); return; }
+  const { ok: success, body } = await api('/api/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
+  if(!success){
+    err.textContent = (body && body.error) || 'Có lỗi xảy ra, vui lòng thử lại.';
+    err.classList.add('on');
+    return;
+  }
+  ok.textContent = body.message;
+  ok.classList.add('on');
 }
 
 /* ---------- register (business owner accounts only) ---------- */
