@@ -36,6 +36,7 @@
   nav.links > a.on{color:var(--iaas);}
   .cta-btn{background:var(--ink);color:#fff;padding:11px 20px;border-radius:11px;font-weight:700;font-size:14px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
   .cta-btn:hover{background:#1a2340;}
+  .burger{display:none;background:none;border:none;cursor:pointer;padding:6px;}
 
   .hero{padding:70px 0 50px;text-align:center;background:radial-gradient(700px 400px at 50% -10%, var(--paas-soft) 0%, transparent 65%);}
   .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--paas);background:var(--paas-soft);border:1px solid #E2D4FF;padding:7px 14px;border-radius:100px;display:inline-block;margin-bottom:20px;}
@@ -86,6 +87,11 @@
   @media (max-width:900px){
     .mission-grid,.steps,.values-grid,.stats-band{grid-template-columns:1fr 1fr;}
     nav.links{display:none;}
+  .burger{display:block;}
+  .mobile-nav{display:none;flex-direction:column;gap:2px;padding:10px 20px 18px;border-top:1px solid var(--surface-line);background:#fff;}
+  .mobile-nav.on{display:flex;}
+  .mobile-nav a{padding:13px 4px;font-weight:600;font-size:15px;color:var(--ink);border-bottom:1px solid var(--surface-line);}
+  .mobile-nav a:last-of-type{border-bottom:none;}
   }
   @media (max-width:640px){
     .wrap{padding:0 20px;}
@@ -106,6 +112,16 @@
       <a href="gioi-thieu.html" class="on">Giới thiệu</a>
     </nav>
     <a href="auth.html?tab=register" class="cta-btn">Đăng doanh nghiệp</a>
+    <button class="burger" aria-label="Menu" onclick="toggleMobileNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="category.html">Danh mục</a>
+    <a href="gioi-thieu.html">Giới thiệu</a>
+    <a href="lien-he.html">Liên hệ</a>
+    <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-top:8px;">Đăng doanh nghiệp</a>
   </div>
 </header>
 
@@ -217,5 +233,10 @@
   © 2026 XaaS.vn — Thư mục doanh nghiệp dịch vụ đám mây tại Việt Nam.
 </footer>
 
+<script>
+function toggleMobileNav(){
+  document.getElementById('mobileNav').classList.toggle('on');
+}
+</script>
 </body>
 </html>

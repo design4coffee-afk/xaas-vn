@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liên hệ — XaaS.vn</title>
+<meta name="description" content="Liên hệ đội ngũ XaaS.vn — thư mục doanh nghiệp SaaS, PaaS, IaaS và AIaaS tại Việt Nam.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1120; --ink-soft:#4A5268; --ink-mute:#8991A8;
+    --paper:#FFFFFF; --surface:#F3F5FC; --surface-line:#E5E8F5;
+    --iaas:#2454FF; --iaas-soft:#EAF0FF;
+    --paas:#7B3FF2; --paas-soft:#F1EBFF;
+    --saas:#0FA968; --saas-soft:#E4F9EF;
+    --ai-1:#FF6B35; --ai-2:#FF3D81;
+    --danger:#E63946; --danger-soft:#FCE9EA; --ok:#0FA968; --ok-soft:#E4F9EF;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Be Vietnam Pro',sans-serif;font-weight:800;letter-spacing:-.02em;margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  button,input,textarea,select{font-family:inherit;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2.5px solid var(--iaas);outline-offset:2px;border-radius:6px;}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--surface-line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px;}
+  .logo{display:flex;align-items:center;gap:9px;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:21px;}
+  .logo .dot-x{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--iaas) 0%,var(--paas) 55%, var(--ai-2) 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:900;}
+  .logo .vn{color:var(--ink-soft);font-weight:600;font-size:15px;margin-left:2px;}
+  nav.links{display:flex;align-items:center;gap:34px;}
+  nav.links > a{font-weight:600;font-size:15px;color:var(--ink);}
+  nav.links > a:hover, nav.links > a.on{color:var(--iaas);}
+  .cta-btn{background:var(--ink);color:#fff;padding:11px 20px;border-radius:11px;font-weight:700;font-size:14px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+  .cta-btn:hover{background:#1a2340;}
+  .burger{display:none;background:none;border:none;cursor:pointer;padding:6px;}
+
+  section[id]{scroll-margin-top:88px;}
+  .hero{padding:60px 0 40px;text-align:center;background:radial-gradient(700px 380px at 50% -10%, var(--iaas-soft) 0%, transparent 65%);}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--iaas);background:var(--iaas-soft);border:1px solid #C9D8FF;padding:7px 14px;border-radius:100px;display:inline-block;margin-bottom:20px;}
+  .hero h1{font-size:38px;line-height:1.15;max-width:620px;margin:0 auto 14px;}
+  .hero p{font-size:16px;color:var(--ink-soft);max-width:520px;margin:0 auto;line-height:1.6;}
+
+  .contact-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:36px;padding:20px 0 70px;align-items:start;}
+  .info-card{background:var(--surface);border:1px solid var(--surface-line);border-radius:18px;padding:26px;}
+  .info-row{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--surface-line);}
+  .info-row:last-child{border-bottom:none;}
+  .info-row .ico{width:38px;height:38px;border-radius:10px;background:#fff;border:1px solid var(--surface-line);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .info-row h4{font-size:14px;margin-bottom:3px;}
+  .info-row p{font-size:13.5px;color:var(--ink-soft);margin:0;line-height:1.5;}
+  .info-row a{color:var(--iaas);font-weight:600;}
+
+  .form-card{background:#fff;border:1px solid var(--surface-line);border-radius:18px;padding:30px;}
+  .form-card h3{font-size:19px;margin-bottom:22px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+  .field label{font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+  .field input,.field select,.field textarea{border:1px solid var(--surface-line);border-radius:10px;padding:12px 14px;font-size:14px;width:100%;box-sizing:border-box;}
+  .field textarea{min-height:130px;resize:vertical;}
+  .btn-primary{background:var(--ink);color:#fff;padding:13px 24px;border-radius:11px;font-weight:700;font-size:14.5px;border:none;cursor:pointer;}
+  .btn-primary:hover{background:#1a2340;}
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;}
+  .msg{border-radius:10px;padding:11px 14px;font-size:13px;font-weight:600;margin-bottom:16px;display:none;}
+  .msg.err{background:var(--danger-soft);color:var(--danger);}
+  .msg.ok{background:var(--ok-soft);color:var(--ok);}
+  .msg.on{display:block;}
+
+  footer{border-top:1px solid var(--surface-line);padding:40px 0;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+  @media (max-width:900px){
+    .contact-grid{grid-template-columns:1fr;}
+    nav.links{display:none;}
+    .burger{display:block;}
+    .mobile-nav{display:none;flex-direction:column;gap:2px;padding:10px 20px 18px;border-top:1px solid var(--surface-line);background:#fff;}
+    .mobile-nav.on{display:flex;}
+    .mobile-nav a{padding:13px 4px;font-weight:600;font-size:15px;color:var(--ink);border-bottom:1px solid var(--surface-line);}
+    .mobile-nav a:last-of-type{border-bottom:none;}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 20px;}
+    .hero h1{font-size:28px;}
+    .field-row{grid-template-columns:1fr;}
+    .form-card{padding:22px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="index.html" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
+    <nav class="links">
+      <a href="index.html">Trang chủ</a>
+      <a href="category.html">Danh mục</a>
+      <a href="gioi-thieu.html">Giới thiệu</a>
+      <a href="lien-he.html" class="on">Liên hệ</a>
+    </nav>
+    <a href="auth.html?tab=register" class="cta-btn">Đăng doanh nghiệp</a>
+    <button class="burger" aria-label="Menu" onclick="toggleMobileNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="category.html">Danh mục</a>
+    <a href="gioi-thieu.html">Giới thiệu</a>
+    <a href="lien-he.html">Liên hệ</a>
+    <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-top:8px;">Đăng doanh nghiệp</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">LIÊN HỆ</span>
+      <h1>Chúng tôi luôn sẵn sàng lắng nghe</h1>
+      <p>Có câu hỏi về doanh nghiệp của bạn, báo lỗi thông tin sai, hay muốn hợp tác? Gửi tin nhắn cho đội ngũ XaaS.vn.</p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="contact-grid">
+      <div class="info-card">
+        <div class="info-row">
+          <div class="ico">✉️</div>
+          <div><h4>Email</h4><p><a href="mailto:hello@xaas.vn">hello@xaas.vn</a></p></div>
+        </div>
+        <div class="info-row">
+          <div class="ico">🏢</div>
+          <div><h4>Đăng doanh nghiệp</h4><p>Tự đăng ký qua <a href="auth.html?tab=register">form đăng ký</a> — không cần liên hệ trước.</p></div>
+        </div>
+        <div class="info-row">
+          <div class="ico">⏱️</div>
+          <div><h4>Thời gian phản hồi</h4><p>Thường trong vòng 1–2 ngày làm việc.</p></div>
+        </div>
+        <div class="info-row">
+          <div class="ico">📍</div>
+          <div><h4>Khu vực phục vụ</h4><p>Việt Nam — thông tin doanh nghiệp trong và ngoài nước phục vụ thị trường Việt.</p></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>Gửi tin nhắn</h3>
+        <div class="msg err" id="ctErr"></div>
+        <div class="msg ok" id="ctOk"></div>
+        <div class="field-row">
+          <div class="field"><label>Họ tên</label><input type="text" id="ctName" placeholder="Nguyễn Văn A"></div>
+          <div class="field"><label>Email</label><input type="text" id="ctEmail" placeholder="ban@congty.vn"></div>
+        </div>
+        <div class="field">
+          <label>Chủ đề</label>
+          <select id="ctSubject">
+            <option value="general">Câu hỏi chung</option>
+            <option value="listing">Về doanh nghiệp đã đăng / báo sai thông tin</option>
+            <option value="partnership">Hợp tác</option>
+            <option value="support">Hỗ trợ kỹ thuật</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Nội dung</label>
+          <textarea id="ctMessage" placeholder="Bạn cần hỗ trợ điều gì?"></textarea>
+        </div>
+        <button class="btn-primary" id="ctSubmit" onclick="submitContact()">Gửi tin nhắn →</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2026 XaaS.vn — Thư mục doanh nghiệp dịch vụ đám mây tại Việt Nam.
+</footer>
+
+<script>
+function toggleMobileNav(){
+  document.getElementById('mobileNav').classList.toggle('on');
+}
+
+// Pre-fill from a deep link, e.g. company-detail.html's "Yêu cầu quản lý trang" button
+(function prefillFromQuery(){
+  const params = new URLSearchParams(location.search);
+  const subject = params.get('subject');
+  const company = params.get('company');
+  const validSubjects = ['general', 'listing', 'partnership', 'support'];
+  if(subject && validSubjects.includes(subject)){
+    document.getElementById('ctSubject').value = subject;
+  }
+  if(company){
+    document.getElementById('ctMessage').value = `Tôi muốn yêu cầu quản lý trang doanh nghiệp "${company}" trên XaaS.vn.`;
+  }
+})();
+
+async function submitContact(){
+  const err = document.getElementById('ctErr');
+  const ok = document.getElementById('ctOk');
+  err.classList.remove('on'); ok.classList.remove('on');
+
+  const name = document.getElementById('ctName').value.trim();
+  const email = document.getElementById('ctEmail').value.trim();
+  const subject = document.getElementById('ctSubject').value;
+  const message = document.getElementById('ctMessage').value.trim();
+
+  if(!name || !email || !message){
+    err.textContent = 'Vui lòng điền đầy đủ họ tên, email và nội dung.';
+    err.classList.add('on');
+    return;
+  }
+
+  const btn = document.getElementById('ctSubmit');
+  btn.disabled = true; btn.textContent = 'Đang gửi...';
+
+  try{
+    const res = await fetch('/api/public/contact', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name, email, subject, message }),
+    });
+    const body = await res.json().catch(()=>null);
+    if(!res.ok) throw new Error((body && body.error) || 'Không thể gửi, vui lòng thử lại.');
+    ok.textContent = body.message || 'Đã gửi! Chúng tôi sẽ phản hồi sớm nhất có thể.';
+    ok.classList.add('on');
+    document.getElementById('ctName').value = '';
+    document.getElementById('ctEmail').value = '';
+    document.getElementById('ctMessage').value = '';
+  }catch(e){
+    err.textContent = e.message;
+    err.classList.add('on');
+  }finally{
+    btn.disabled = false; btn.textContent = 'Gửi tin nhắn →';
+  }
+}
+</script>
+
+</body>
+</html>

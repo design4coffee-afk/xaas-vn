@@ -172,6 +172,10 @@
     .rel-grid{grid-template-columns:1fr 1fr;}
     .foot-grid{grid-template-columns:1fr 1fr;}
     nav.links{display:none;}
+  .mobile-nav{display:none;flex-direction:column;gap:2px;padding:10px 20px 18px;border-top:1px solid var(--surface-line);background:#fff;}
+  .mobile-nav.on{display:flex;}
+  .mobile-nav a{padding:13px 4px;font-weight:600;font-size:15px;color:var(--ink);border-bottom:1px solid var(--surface-line);}
+  .mobile-nav a:last-of-type{border-bottom:none;}
     .burger{display:block;}
   }
   @media (max-width:640px){
@@ -189,23 +193,31 @@
 
 <header>
   <div class="wrap nav">
-    <a href="#" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
+    <a href="index.html" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
     <nav class="links">
-      <a href="#">Trang chủ</a>
-      <a href="#" class="active">Danh mục</a>
-      <a href="#">Doanh nghiệp</a>
+      <a href="index.html">Trang chủ</a>
+      <a href="category.html" class="active">Danh mục</a>
+      <a href="index.html#doanh-nghiep">Doanh nghiệp</a>
       <a href="gioi-thieu.html">Giới thiệu</a>
     </nav>
     <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Đăng doanh nghiệp</a>
-    <button class="burger" aria-label="Menu">
+    <button class="burger" aria-label="Menu" onclick="toggleMobileNav()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="category.html">Danh mục</a>
+    <a href="index.html#doanh-nghiep">Doanh nghiệp</a>
+    <a href="gioi-thieu.html">Giới thiệu</a>
+    <a href="lien-he.html">Liên hệ</a>
+    <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-top:8px;">Đăng doanh nghiệp</a>
   </div>
 </header>
 
 <main>
   <div class="wrap crumb">
-    <a href="#">Trang chủ</a><span class="sep">/</span><a href="#">Danh mục</a><span class="sep">/</span><span class="cur" id="crumbCur">SaaS</span>
+    <a href="index.html">Trang chủ</a><span class="sep">/</span><a href="category.html">Danh mục</a><span class="sep">/</span><span class="cur" id="crumbCur">SaaS</span>
   </div>
 
   <section class="cat-hero wrap">
@@ -298,11 +310,11 @@
       </div>
       <div class="foot-col">
         <h5>Công ty</h5>
-        <a href="gioi-thieu.html">Giới thiệu</a><a href="#">Liên hệ</a><a href="auth.html?tab=register">Đăng doanh nghiệp</a><a href="#">Điều khoản</a>
+        <a href="gioi-thieu.html">Giới thiệu</a><a href="lien-he.html">Liên hệ</a><a href="auth.html?tab=register">Đăng doanh nghiệp</a><a href="dieu-khoan.html">Điều khoản</a>
       </div>
       <div class="foot-col">
         <h5>Kết nối</h5>
-        <a href="#">LinkedIn</a><a href="#">Facebook</a><a href="#">Email</a>
+        <a href="#">LinkedIn</a><a href="#">Facebook</a><a href="mailto:hello@xaas.vn">Email</a>
       </div>
     </div>
     <div class="foot-bottom">
@@ -497,6 +509,10 @@ document.getElementById('searchInput').addEventListener('input', (e)=>{
 
 const initialCat = (location.hash || '#saas').replace('#','');
 render(DATA[initialCat] ? initialCat : 'saas');
+
+function toggleMobileNav(){
+  document.getElementById('mobileNav').classList.toggle('on');
+}
 </script>
 
 </body>

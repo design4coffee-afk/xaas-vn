@@ -32,6 +32,13 @@
 
   /* ---------- sidebar ---------- */
   .sidebar{background:var(--sidebar);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;}
+
+  .mobile-topbar{display:none;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--sidebar);position:sticky;top:0;z-index:120;}
+  .mt-logo{display:flex;align-items:center;gap:8px;color:#fff;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:16px;}
+  .mt-logo .dot-x{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--iaas),var(--paas));display:flex;align-items:center;justify-content:center;font-size:12px;}
+  .mt-burger{background:none;border:none;cursor:pointer;padding:4px;}
+  .sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(11,17,32,0.5);z-index:150;}
+  .sidebar-backdrop.on{display:block;}
   .sb-logo{display:flex;align-items:center;gap:9px;padding:6px 10px 26px;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:18px;}
   .sb-logo .dot-x{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--iaas),var(--paas) 55%,var(--ai-2));display:flex;align-items:center;justify-content:center;font-size:13px;}
   .sb-logo .vn{color:var(--sidebar-soft);font-weight:600;font-size:13px;}
@@ -197,6 +204,17 @@
   /* ---------- reviews ---------- */
   .stars-mini{color:var(--warn);font-size:13px;letter-spacing:1px;}
 
+  /* ---------- contact messages ---------- */
+  .msg-card{background:#fff;border:1px solid var(--surface-line);border-radius:16px;padding:20px 22px;margin-bottom:14px;position:relative;}
+  .msg-card.unread{border-color:var(--iaas);background:var(--iaas-soft);}
+  .msg-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:10px;}
+  .msg-from b{font-size:14.5px;display:block;}
+  .msg-from span{font-size:12.5px;color:var(--ink-soft);}
+  .msg-badges{display:flex;gap:8px;align-items:center;}
+  .msg-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--iaas);flex:0 0 auto;}
+  .msg-body{font-size:13.5px;color:var(--ink-soft);line-height:1.6;white-space:pre-wrap;margin-bottom:14px;}
+  .msg-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+
   /* ---------- settings ---------- */
   .settings-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:720px;}
   .field{display:flex;flex-direction:column;gap:7px;}
@@ -220,7 +238,13 @@
 
   @media (max-width:1080px){
     .app{grid-template-columns:1fr;}
-    .sidebar{display:none;}
+    .sidebar{
+      position:fixed;top:0;left:0;height:100vh;z-index:200;width:252px;
+      transform:translateX(-100%);transition:transform .25s ease;
+    }
+    .sidebar.open{transform:translateX(0);}
+    .mobile-topbar{display:flex;}
+    .content{padding-top:20px;}
     .stat-grid{grid-template-columns:1fr 1fr;}
     .two-col{grid-template-columns:1fr;}
     .cat-cards{grid-template-columns:1fr;}
@@ -237,9 +261,17 @@
 </head>
 <body>
 
+<div class="mobile-topbar" id="mobileTopbar">
+  <div class="mt-logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></div>
+  <button class="mt-burger" aria-label="Menu" onclick="toggleSidebar()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+</div>
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+
 <div class="app">
   <!-- ================= SIDEBAR ================= -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <div class="sb-logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></div>
 
     <div class="sb-section">Chính</div>
@@ -264,6 +296,11 @@
       <a href="#" data-view="reviews">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.2l-5.2 2.8 1-5.8-4.2-4.1 5.8-.8L12 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
         Đánh giá
+      </a>
+      <a href="#" data-view="messages">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        Tin nhắn
+        <span class="sb-badge" id="messagesBadge" style="display:none;">0</span>
       </a>
     </nav>
 
@@ -400,6 +437,14 @@
           <tbody id="revTableBody"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- ---------- CONTACT MESSAGES ---------- -->
+    <div class="view" id="view-messages">
+      <div class="topbar">
+        <div><h1>Tin nhắn liên hệ</h1><div class="sub">Tin nhắn gửi từ form Liên hệ trên site công khai.</div></div>
+      </div>
+      <div id="messagesWrap"></div>
     </div>
 
     <!-- ---------- SETTINGS ---------- -->
@@ -575,6 +620,16 @@ function showToast(msg){
   window._toastTimer = setTimeout(()=>t.classList.remove('on'), 2200);
 }
 
+/* ============ mobile sidebar drawer ============ */
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarBackdrop').classList.toggle('on');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarBackdrop').classList.remove('on');
+}
+
 /* ============ nav switching ============ */
 document.querySelectorAll('.sb-nav a').forEach(a=>{
   a.addEventListener('click', (e)=>{
@@ -584,6 +639,7 @@ document.querySelectorAll('.sb-nav a').forEach(a=>{
     a.classList.add('on');
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
     document.getElementById('view-'+a.dataset.view).classList.add('on');
+    closeSidebar();
   });
 });
 
@@ -914,6 +970,58 @@ async function setReview(id, status){
 /* ============ data loading & render orchestration ============ */
 async function refreshCompanies(){ COMPANIES = await apiGet('/api/companies') || []; }
 async function refreshReviews(){ REVIEWS = await apiGet('/api/reviews') || []; }
+let MESSAGES = [];
+async function refreshMessages(){ MESSAGES = await apiGet('/api/contact') || []; }
+
+function renderMessages(){
+  const unread = MESSAGES.filter(m=>!m.read);
+  const badge = document.getElementById('messagesBadge');
+  badge.textContent = unread.length;
+  badge.style.display = unread.length ? 'inline-block' : 'none';
+
+  const SUBJECT_LABEL = {
+    general: 'Câu hỏi chung', listing: 'Về doanh nghiệp đã đăng / báo sai thông tin',
+    partnership: 'Hợp tác', support: 'Hỗ trợ kỹ thuật',
+  };
+
+  const wrap = document.getElementById('messagesWrap');
+  wrap.innerHTML = MESSAGES.length ? MESSAGES.map(m=>`
+    <div class="msg-card ${m.read ? '' : 'unread'}">
+      <div class="msg-top">
+        <div class="msg-from">
+          <b>${!m.read ? '<span class="msg-unread-dot" style="display:inline-block;margin-right:6px;"></span>' : ''}${m.name}</b>
+          <span>${m.email} · ${SUBJECT_LABEL[m.subject] || m.subject} · ${m.createdAt}</span>
+        </div>
+        <div class="msg-badges">
+          <button class="btn-ghost" style="padding:7px 12px;font-size:12px;" onclick="toggleMessageRead(${m.id})">${m.read ? 'Đánh dấu chưa đọc' : 'Đánh dấu đã đọc'}</button>
+          <button class="ra-btn del" title="Xóa" onclick="deleteMessage(${m.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 7h14M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0v12a1 1 0 001 1h6a1 1 0 001-1V7" stroke="#E63946" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="msg-body">${m.message}</div>
+      <div class="msg-actions">
+        <a class="btn-ghost" style="padding:9px 14px;font-size:12.5px;text-decoration:none;" href="mailto:${m.email}?subject=${encodeURIComponent('Re: '+(SUBJECT_LABEL[m.subject]||''))}">Trả lời qua email ↗</a>
+      </div>
+    </div>
+  `).join('') : `<div class="panel"><div class="panel-body" style="text-align:center;color:var(--ink-soft);">Chưa có tin nhắn liên hệ nào.</div></div>`;
+}
+
+async function toggleMessageRead(id){
+  const updated = await apiPost(`/api/contact/${id}/read`);
+  if(!updated) return;
+  const m = MESSAGES.find(x=>x.id===id);
+  if(m) m.read = updated.read;
+  renderMessages();
+}
+async function deleteMessage(id){
+  if(!confirm('Xóa tin nhắn này?')) return;
+  const ok = await apiDelete(`/api/contact/${id}`);
+  if(!ok) return;
+  MESSAGES = MESSAGES.filter(x=>x.id!==id);
+  renderMessages();
+  showToast('Đã xóa tin nhắn');
+}
 
 async function renderAll(){
   if(SESSION){
@@ -928,6 +1036,7 @@ async function renderAll(){
   renderProductCoSelect();
   await renderProducts();
   renderReviews();
+  renderMessages();
 }
 
 async function saveAccount(){
@@ -972,6 +1081,7 @@ async function saveAccount(){
   if(!SESSION || SESSION.role !== 'admin'){ window.location.href = 'auth.html'; return; }
   await refreshCompanies();
   await refreshReviews();
+  await refreshMessages();
   await renderAll();
 })();
 </script>

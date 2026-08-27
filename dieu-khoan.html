@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Điều khoản dịch vụ — XaaS.vn</title>
+<meta name="description" content="Điều khoản sử dụng dịch vụ của XaaS.vn — thư mục doanh nghiệp SaaS, PaaS, IaaS và AIaaS tại Việt Nam.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1120; --ink-soft:#4A5268;
+    --paper:#FFFFFF; --surface:#F3F5FC; --surface-line:#E5E8F5;
+    --iaas:#2454FF; --iaas-soft:#EAF0FF;
+    --paas:#7B3FF2; --ai-2:#FF3D81;
+    --maxw:800px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2{font-family:'Be Vietnam Pro',sans-serif;font-weight:800;letter-spacing:-.02em;margin:0;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:var(--iaas);text-decoration:none;font-weight:600;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;}
+  a:focus-visible,button:focus-visible{outline:2.5px solid var(--iaas);outline-offset:2px;border-radius:6px;}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--surface-line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;max-width:1240px;margin:0 auto;padding-left:32px;padding-right:32px;}
+  .logo{display:flex;align-items:center;gap:9px;font-family:'Be Vietnam Pro',sans-serif;font-weight:900;font-size:21px;text-decoration:none;color:var(--ink);}
+  .logo .dot-x{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--iaas) 0%,var(--paas) 55%, var(--ai-2) 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:900;}
+  .logo .vn{color:var(--ink-soft);font-weight:600;font-size:15px;margin-left:2px;}
+  nav.links{display:flex;align-items:center;gap:34px;}
+  nav.links > a{font-weight:600;font-size:15px;color:var(--ink);text-decoration:none;}
+  nav.links > a:hover{color:var(--iaas);text-decoration:none;}
+  .cta-btn{background:var(--ink);color:#fff;padding:11px 20px;border-radius:11px;font-weight:700;font-size:14px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;}
+  .cta-btn:hover{background:#1a2340;text-decoration:none;}
+  .burger{display:none;background:none;border:none;cursor:pointer;padding:6px;}
+
+  .hero{padding:56px 0 30px;}
+  .hero .eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);margin-bottom:10px;}
+  .hero h1{font-size:34px;}
+
+  .content{padding:10px 0 70px;font-size:15px;line-height:1.75;color:var(--ink-soft);}
+  .content h2{font-size:19px;color:var(--ink);margin:36px 0 12px;}
+  .content h2:first-child{margin-top:0;}
+  .content p{margin:0 0 14px;}
+  .content ul{margin:0 0 14px;padding-left:20px;}
+  .content li{margin-bottom:8px;}
+  .content strong{color:var(--ink);}
+
+  footer{border-top:1px solid var(--surface-line);padding:40px 0;text-align:center;color:var(--ink-soft);font-size:13px;}
+
+  @media (max-width:900px){
+    nav.links{display:none;}
+    .burger{display:block;}
+    .mobile-nav{display:none;flex-direction:column;gap:2px;padding:10px 20px 18px;border-top:1px solid var(--surface-line);background:#fff;}
+    .mobile-nav.on{display:flex;}
+    .mobile-nav a{padding:13px 4px;font-weight:600;font-size:15px;color:var(--ink);border-bottom:1px solid var(--surface-line);text-decoration:none;}
+    .mobile-nav a:last-of-type{border-bottom:none;}
+  }
+  @media (max-width:640px){
+    .wrap{padding:0 20px;}
+    .hero h1{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a href="index.html" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
+    <nav class="links">
+      <a href="index.html">Trang chủ</a>
+      <a href="category.html">Danh mục</a>
+      <a href="gioi-thieu.html">Giới thiệu</a>
+      <a href="lien-he.html">Liên hệ</a>
+    </nav>
+    <a href="auth.html?tab=register" class="cta-btn">Đăng doanh nghiệp</a>
+    <button class="burger" aria-label="Menu" onclick="toggleMobileNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="category.html">Danh mục</a>
+    <a href="gioi-thieu.html">Giới thiệu</a>
+    <a href="lien-he.html">Liên hệ</a>
+    <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-top:8px;">Đăng doanh nghiệp</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <div class="eyebrow">CẬP NHẬT LẦN CUỐI: 26/08/2026</div>
+    <h1>Điều khoản dịch vụ</h1>
+  </section>
+
+  <section class="content wrap">
+    <h2>1. Giới thiệu</h2>
+    <p>XaaS.vn ("chúng tôi") vận hành một thư mục trực tuyến liệt kê các doanh nghiệp cung cấp dịch vụ SaaS, PaaS, IaaS và AIaaS tại Việt Nam. Bằng việc truy cập hoặc sử dụng XaaS.vn, bạn đồng ý với các điều khoản dưới đây.</p>
+
+    <h2>2. Tài khoản người dùng</h2>
+    <p>Khi đăng ký tài khoản doanh nghiệp, bạn cam kết cung cấp thông tin chính xác và cập nhật. Bạn chịu trách nhiệm bảo mật thông tin đăng nhập của mình và mọi hoạt động diễn ra dưới tài khoản đó.</p>
+
+    <h2>3. Đăng thông tin doanh nghiệp</h2>
+    <ul>
+      <li>Thông tin doanh nghiệp gửi lên phải chính xác, không gây hiểu nhầm và không vi phạm quyền sở hữu trí tuệ của bên thứ ba.</li>
+      <li>Mọi doanh nghiệp mới hoặc chỉnh sửa đều cần được đội ngũ XaaS.vn duyệt trước khi hiển thị công khai. Chúng tôi có quyền từ chối hoặc gỡ bỏ nội dung không phù hợp mà không cần báo trước.</li>
+      <li>Việc hiển thị doanh nghiệp trên XaaS.vn không đồng nghĩa với việc chúng tôi xác nhận, bảo đảm hay chịu trách nhiệm về chất lượng dịch vụ của doanh nghiệp đó.</li>
+    </ul>
+
+    <h2>4. Đánh giá từ người dùng</h2>
+    <p>Đánh giá phải phản ánh trải nghiệm thực tế, trung thực và không mang tính xúc phạm, quảng cáo hay spam. Chúng tôi có quyền kiểm duyệt, ẩn hoặc gỡ bỏ bất kỳ đánh giá nào vi phạm nguyên tắc này. Doanh nghiệp được quyền phản hồi công khai đánh giá về mình nhưng không được chỉnh sửa hay xóa nội dung đánh giá gốc.</p>
+
+    <h2>5. Sử dụng hợp lệ</h2>
+    <p>Bạn không được sử dụng XaaS.vn để:</p>
+    <ul>
+      <li>Đăng tải nội dung sai sự thật, lừa đảo hoặc vi phạm pháp luật Việt Nam.</li>
+      <li>Cố gắng truy cập trái phép vào hệ thống, tài khoản của người khác hoặc cơ sở dữ liệu.</li>
+      <li>Thu thập dữ liệu hàng loạt (scraping) mà không có sự cho phép bằng văn bản.</li>
+      <li>Mạo danh doanh nghiệp hoặc cá nhân khác.</li>
+    </ul>
+
+    <h2>6. Sở hữu trí tuệ</h2>
+    <p>Toàn bộ thiết kế, mã nguồn và thương hiệu XaaS.vn thuộc quyền sở hữu của chúng tôi. Nội dung do doanh nghiệp cung cấp (mô tả, logo, hình ảnh) vẫn thuộc quyền sở hữu của doanh nghiệp đó; bằng việc đăng tải, doanh nghiệp cấp cho XaaS.vn quyền hiển thị nội dung này trên nền tảng.</p>
+
+    <h2>7. Giới hạn trách nhiệm</h2>
+    <p>XaaS.vn cung cấp thông tin "như hiện có", không đảm bảo tính chính xác tuyệt đối hay tính khả dụng liên tục của dịch vụ. Chúng tôi không chịu trách nhiệm cho bất kỳ tổn thất nào phát sinh từ việc sử dụng thông tin trên nền tảng, bao gồm cả giao dịch giữa người dùng và doanh nghiệp được liệt kê.</p>
+
+    <h2>8. Thay đổi điều khoản</h2>
+    <p>Chúng tôi có thể cập nhật điều khoản này theo thời gian. Phiên bản mới nhất luôn được đăng tại trang này kèm ngày cập nhật. Việc tiếp tục sử dụng dịch vụ sau khi thay đổi đồng nghĩa với việc bạn chấp nhận điều khoản mới.</p>
+
+    <h2>9. Liên hệ</h2>
+    <p>Nếu có câu hỏi về điều khoản này, vui lòng liên hệ qua <a href="lien-he.html">trang Liên hệ</a> hoặc email <a href="mailto:hello@xaas.vn">hello@xaas.vn</a>.</p>
+  </section>
+</main>
+
+<footer>
+  © 2026 XaaS.vn — Thư mục doanh nghiệp dịch vụ đám mây tại Việt Nam.
+</footer>
+
+<script>
+function toggleMobileNav(){
+  document.getElementById('mobileNav').classList.toggle('on');
+}
+</script>
+
+</body>
+</html>

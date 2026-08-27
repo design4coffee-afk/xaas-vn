@@ -10,14 +10,16 @@ chung 1 thư mục gốc — deploy 1 lần là có cả site lẫn API.
 |---|---|---|
 | `index.html` | Trang chủ | Stack diagram, danh mục (số liệu thật), doanh nghiệp nổi bật (dữ liệu thật) |
 | `category.html` | Danh mục (archive) | 1 template dùng chung cho cả IaaS/PaaS/SaaS/AIaaS, tìm kiếm thật, dữ liệu thật |
-| `company-detail.html` | Chi tiết công ty | Đọc `?id=`, dữ liệu thật: mô tả, sản phẩm + bảng giá lọc AJAX, đánh giá, lưu/chia sẻ |
+| `company-detail.html` | Chi tiết công ty | Đọc `?id=`, dữ liệu thật: mô tả, sản phẩm + bảng giá lọc AJAX, đánh giá (viết được thật), lưu/chia sẻ |
 | `gioi-thieu.html` | Giới thiệu | Sứ mệnh, cách hoạt động, cam kết, CTA đăng ký |
+| `lien-he.html` | Liên hệ | Form liên hệ thật — lưu vào D1 (`contact_messages`), tùy chọn email cho admin qua Resend |
+| `dieu-khoan.html` | Điều khoản dịch vụ | Nội dung điều khoản đầy đủ |
 | `auth.html` | Đăng nhập / Đăng ký | Gọi API thật, hỗ trợ `?tab=register`, quên mật khẩu, tự chuyển vào dashboard theo role |
 | `reset-password.html` | Đặt lại mật khẩu | Trang đích của link trong email quên mật khẩu |
-| `admin-dashboard.html` | Bảng quản trị | Toàn quyền: duyệt/từ chối, xác minh, preview, upload logo, sản phẩm & giá, kiểm duyệt đánh giá, đổi tài khoản |
-| `user-dashboard.html` | Bảng điều khiển doanh nghiệp | Chỉ quản lý listing của chính mình: tạo/sửa/gửi duyệt, upload logo, trả lời đánh giá, đổi tài khoản |
+| `admin-dashboard.html` | Bảng quản trị | Toàn quyền: duyệt/từ chối, xác minh, preview, upload logo, sản phẩm & giá, kiểm duyệt đánh giá, đổi tài khoản; drawer menu mobile |
+| `user-dashboard.html` | Bảng điều khiển doanh nghiệp | Chỉ quản lý listing của chính mình: tạo/sửa/gửi duyệt, upload logo, trả lời đánh giá, đổi tài khoản; drawer menu mobile |
 
-Toàn bộ 7 trang đều đọc/ghi dữ liệu thật từ D1 — không còn trang nào dùng
+Toàn bộ 10 trang đều đọc/ghi dữ liệu thật từ D1 — không còn trang nào dùng
 mock data hay `localStorage` cho dữ liệu nghiệp vụ (riêng "Lưu vào danh
 sách" trên trang chi tiết vẫn dùng `localStorage` có chủ đích, vì đó là
 tính năng ẩn danh không cần tài khoản).
@@ -33,6 +35,7 @@ lưu logo doanh nghiệp.
 ```
 xaas-vn-complete/
 ├── index.html, category.html, company-detail.html, gioi-thieu.html   # trang công khai (dữ liệu thật)
+├── lien-he.html, dieu-khoan.html                                     # Liên hệ (form thật), Điều khoản
 ├── auth.html, reset-password.html                                    # xác thực
 ├── admin-dashboard.html, user-dashboard.html                         # đã nối API thật
 ├── robots.txt                     # cho phép crawl + trỏ sitemap
@@ -67,9 +70,17 @@ xaas-vn-complete/
         │   └── [[path]].js         # GET /api/images/* — phục vụ ảnh từ R2
         ├── public/
         │   ├── categories.js       # GET /api/public/categories
+        │   ├── contact.js          # POST /api/public/contact
         │   └── companies/
         │       ├── index.js        # GET /api/public/companies
         │       └── [id].js         # GET /api/public/companies/:id
+        │       └── [id]/
+        │           └── reviews.js  # POST /api/public/companies/:id/reviews
+        ├── contact/
+        │   ├── index.js            # GET /api/contact (admin)
+        │   ├── [id].js             # DELETE /api/contact/:id (admin)
+        │   └── [id]/
+        │       └── read.js         # POST /api/contact/:id/read (admin)
         └── reviews/
             ├── index.js            # GET /api/reviews
             └── [id]/
@@ -232,6 +243,11 @@ wrangler d1 execute xaas_vn_db --remote \
 | GET    | `/api/images/*`                    | công khai — phục vụ logo từ R2 |
 | GET    | `/sitemap.xml`                     | công khai — tự sinh từ danh sách công ty đã duyệt |
 | GET    | `/company/:id`                     | công khai — trang chia sẻ có OG tags, redirect vào `company-detail.html` |
+| POST   | `/api/public/companies/:id/reviews` | công khai — gửi đánh giá mới (trạng thái `pending`, chờ admin duyệt) |
+| POST   | `/api/public/contact`               | công khai — form Liên hệ, lưu vào `contact_messages` |
+| GET    | `/api/contact`                      | admin — danh sách tin nhắn liên hệ |
+| POST   | `/api/contact/:id/read`             | admin — đánh dấu đã đọc/chưa đọc |
+| DELETE | `/api/contact/:id`                  | admin — xóa tin nhắn |
 | POST   | `/api/auth/register`               | công khai                       |
 | POST   | `/api/auth/login`                  | công khai — khóa 15 phút sau 5 lần sai |
 | POST   | `/api/auth/logout`                 | đã đăng nhập                    |
@@ -297,3 +313,9 @@ ngày) — không cần header `Authorization` thủ công, `fetch(..., {credent
 - Sao lưu D1 định kỳ: `wrangler d1 export xaas_vn_db --remote --output=backup.sql`.
 - "Đăng doanh nghiệp" hiện chỉ tạo được đúng 1 doanh nghiệp mỗi request qua
   form — nếu cần nhập hàng loạt (bulk import) sẽ cần thêm endpoint riêng.
+- Link mạng xã hội (LinkedIn/Facebook) ở footer vẫn là `#` placeholder —
+  thay bằng link thật khi có tài khoản mạng xã hội chính thức. Link Email
+  đã trỏ thật tới `mailto:hello@xaas.vn`.
+- Tin nhắn liên hệ (`contact_messages`) giờ đã có màn hình riêng trong admin
+  dashboard (mục "Tin nhắn") — xem danh sách, đánh dấu đã đọc/chưa đọc, trả
+  lời qua email (mở sẵn `mailto:`), hoặc xóa.

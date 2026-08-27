@@ -20,6 +20,7 @@
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  section.blk[id]{scroll-margin-top:132px;}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
   h1,h2,h3{font-family:'Be Vietnam Pro',sans-serif;font-weight:800;letter-spacing:-0.02em;margin:0;}
   .mono{font-family:'JetBrains Mono',monospace;}
@@ -238,11 +239,16 @@
     .g2,.g3,.g4,.g5{height:180px;}
     .foot-grid{grid-template-columns:1fr 1fr;}
     nav.links{display:none;}
+  .mobile-nav{display:none;flex-direction:column;gap:2px;padding:10px 20px 18px;border-top:1px solid var(--surface-line);background:#fff;}
+  .mobile-nav.on{display:flex;}
+  .mobile-nav a{padding:13px 4px;font-weight:600;font-size:15px;color:var(--ink);border-bottom:1px solid var(--surface-line);}
+  .mobile-nav a:last-of-type{border-bottom:none;}
     .burger{display:block;}
   }
   @media (max-width:640px){
     .wrap{padding:0 20px;}
     .co-head{flex-direction:column;}
+    .rv-form-row{grid-template-columns:1fr!important;}
     .co-hero-top{flex-direction:column;}
     .co-actions{width:100%;}
     .quickstats{grid-template-columns:1fr 1fr;}
@@ -257,17 +263,25 @@
 
 <header>
   <div class="wrap nav">
-    <a href="#" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
+    <a href="index.html" class="logo"><span class="dot-x">X</span>XaaS<span class="vn">.vn</span></a>
     <nav class="links">
-      <a href="#">Trang chủ</a>
-      <a href="#">Danh mục</a>
-      <a href="#">Doanh nghiệp</a>
+      <a href="index.html">Trang chủ</a>
+      <a href="category.html">Danh mục</a>
+      <a href="index.html#doanh-nghiep">Doanh nghiệp</a>
       <a href="gioi-thieu.html">Giới thiệu</a>
     </nav>
     <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;">Đăng doanh nghiệp</a>
-    <button class="burger" aria-label="Menu">
+    <button class="burger" aria-label="Menu" onclick="toggleMobileNav()">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#0B1120" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Trang chủ</a>
+    <a href="category.html">Danh mục</a>
+    <a href="index.html#doanh-nghiep">Doanh nghiệp</a>
+    <a href="gioi-thieu.html">Giới thiệu</a>
+    <a href="lien-he.html">Liên hệ</a>
+    <a href="auth.html?tab=register" class="cta-btn" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-top:8px;">Đăng doanh nghiệp</a>
   </div>
 </header>
 
@@ -418,10 +432,34 @@
   </section>
 
   <section class="blk wrap" id="danh-gia" style="border-bottom:none;">
-    <div class="blk-head reveal">
-      <span class="tag">Đánh giá</span>
-      <h2 id="revHeading">Người dùng nói gì về MISA</h2>
+    <div class="blk-head reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;">
+      <div><span class="tag">Đánh giá</span><h2 id="revHeading">Người dùng nói gì về MISA</h2></div>
+      <button class="btn-primary" style="background:var(--cat);" onclick="toggleReviewForm()">Viết đánh giá</button>
     </div>
+
+    <div class="reveal" id="reviewForm" style="display:none;background:var(--surface);border-radius:16px;padding:22px;margin-bottom:30px;">
+      <div id="reviewFormErr" style="display:none;background:var(--danger-soft);color:var(--danger);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:14px;"></div>
+      <div id="reviewFormOk" style="display:none;background:var(--ok-soft);color:var(--ok);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:14px;"></div>
+      <div class="rv-form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div>
+          <label style="font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:7px;">Tên của bạn</label>
+          <input type="text" id="rvName" placeholder="Nguyễn Văn A" style="width:100%;border:1px solid var(--surface-line);border-radius:10px;padding:11px 13px;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:7px;">Số sao</label>
+          <div id="rvStars" style="display:flex;gap:6px;font-size:26px;line-height:1;padding-top:4px;cursor:pointer;">
+            <span data-v="1">☆</span><span data-v="2">☆</span><span data-v="3">☆</span><span data-v="4">☆</span><span data-v="5">☆</span>
+          </div>
+        </div>
+      </div>
+      <label style="font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:7px;">Nội dung đánh giá</label>
+      <textarea id="rvText" placeholder="Chia sẻ trải nghiệm của bạn với dịch vụ này..." style="width:100%;border:1px solid var(--surface-line);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;min-height:90px;box-sizing:border-box;resize:vertical;"></textarea>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px;">
+        <button class="btn-ghost" style="background:#fff;border:1px solid var(--surface-line);border-radius:10px;padding:11px 18px;font-weight:700;font-size:13.5px;cursor:pointer;" onclick="toggleReviewForm()">Hủy</button>
+        <button class="btn-primary" style="background:var(--cat);" onclick="submitReview()">Gửi đánh giá</button>
+      </div>
+    </div>
+
     <div class="rev-summary reveal" id="revSummary">
       <div class="rev-score">
         <b id="revAvg">4.6</b>
@@ -447,7 +485,7 @@
         <h3 id="ctaHeading">Bạn đại diện cho MISA hoặc muốn cập nhật thông tin?</h3>
         <p>Yêu cầu quyền quản lý trang doanh nghiệp để cập nhật mô tả, hình ảnh và trả lời đánh giá.</p>
       </div>
-      <a href="#" class="btn-primary">Yêu cầu quản lý trang</a>
+      <a href="lien-he.html" class="btn-primary" id="claimBtn">Yêu cầu quản lý trang</a>
     </div>
   </section>
 </main>
@@ -465,11 +503,11 @@
       </div>
       <div class="foot-col">
         <h5>Công ty</h5>
-        <a href="gioi-thieu.html">Giới thiệu</a><a href="#">Liên hệ</a><a href="auth.html?tab=register">Đăng doanh nghiệp</a><a href="#">Điều khoản</a>
+        <a href="gioi-thieu.html">Giới thiệu</a><a href="lien-he.html">Liên hệ</a><a href="auth.html?tab=register">Đăng doanh nghiệp</a><a href="dieu-khoan.html">Điều khoản</a>
       </div>
       <div class="foot-col">
         <h5>Kết nối</h5>
-        <a href="#">LinkedIn</a><a href="#">Facebook</a><a href="#">Email</a>
+        <a href="#">LinkedIn</a><a href="#">Facebook</a><a href="mailto:hello@xaas.vn">Email</a>
       </div>
     </div>
     <div class="foot-bottom">
@@ -655,6 +693,7 @@
     document.getElementById('qsHQ').textContent = data.headquarters || 'Chưa cập nhật';
     document.getElementById('qsTeam').textContent = data.teamSize || 'Chưa cập nhật';
     document.getElementById('qsFromPrice').textContent = PRODUCTS[0]?.from || 'Liên hệ';
+    document.getElementById('claimBtn').href = `lien-he.html?subject=listing&company=${encodeURIComponent(data.name)}&id=${data.id}`;
 
     document.getElementById('overviewHeading').textContent = `Về ${data.name}`;
     document.getElementById('overviewDesc').innerHTML = `<p>${data.desc || 'Doanh nghiệp chưa cập nhật mô tả chi tiết.'}</p>`;
@@ -733,7 +772,60 @@
     }
   }
 
+  /* ============ Review form (real submission — pending until admin approves) ============ */
+  let selectedRating = 0;
+  document.querySelectorAll('#rvStars span').forEach(star=>{
+    star.addEventListener('click', ()=>{
+      selectedRating = parseInt(star.dataset.v, 10);
+      document.querySelectorAll('#rvStars span').forEach(s=>{
+        s.textContent = parseInt(s.dataset.v, 10) <= selectedRating ? '★' : '☆';
+        s.style.color = parseInt(s.dataset.v, 10) <= selectedRating ? '#F5A623' : 'var(--ink-mute)';
+      });
+    });
+  });
+
+  function toggleReviewForm(){
+    const form = document.getElementById('reviewForm');
+    const isOpen = form.style.display !== 'none';
+    form.style.display = isOpen ? 'none' : 'block';
+    if(!isOpen) form.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  async function submitReview(){
+    const err = document.getElementById('reviewFormErr');
+    const ok = document.getElementById('reviewFormOk');
+    err.style.display = 'none'; ok.style.display = 'none';
+
+    const user = document.getElementById('rvName').value.trim();
+    const text = document.getElementById('rvText').value.trim();
+
+    if(!user){ err.textContent = 'Vui lòng nhập tên của bạn.'; err.style.display = 'block'; return; }
+    if(!selectedRating){ err.textContent = 'Vui lòng chọn số sao.'; err.style.display = 'block'; return; }
+    if(text.length < 10){ err.textContent = 'Nội dung đánh giá cần tối thiểu 10 ký tự.'; err.style.display = 'block'; return; }
+
+    const res = await fetch(`/api/public/companies/${COMPANY.id}/reviews`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ user, rating: selectedRating, text }),
+    });
+    const body = await res.json().catch(()=>null);
+    if(!res.ok){
+      err.textContent = (body && body.error) || 'Không thể gửi đánh giá, vui lòng thử lại.';
+      err.style.display = 'block';
+      return;
+    }
+    ok.textContent = body.message;
+    ok.style.display = 'block';
+    document.getElementById('rvName').value = '';
+    document.getElementById('rvText').value = '';
+    selectedRating = 0;
+    document.querySelectorAll('#rvStars span').forEach(s=>{ s.textContent = '☆'; s.style.color = 'var(--ink-mute)'; });
+  }
+
   loadCompany();
+
+function toggleMobileNav(){
+  document.getElementById('mobileNav').classList.toggle('on');
+}
 </script>
 
 </body>

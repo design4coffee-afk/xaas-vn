@@ -8,6 +8,7 @@
 DROP TABLE IF EXISTS pricing_tiers;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS contact_messages;
 DROP TABLE IF EXISTS companies;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS password_resets;
@@ -117,6 +118,17 @@ CREATE TABLE reviews (
   created_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX idx_reviews_company ON reviews(company_id);
+
+-- ---------- contact form submissions ----------
+CREATE TABLE contact_messages (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  name        TEXT NOT NULL,
+  email       TEXT NOT NULL,
+  subject     TEXT NOT NULL DEFAULT 'general',
+  message     TEXT NOT NULL,
+  is_read     INTEGER NOT NULL DEFAULT 0,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
 
 -- ============================================================
 -- Seed data — mirrors the earlier localStorage prototype
