@@ -16,7 +16,7 @@ bucket_name = "xaas-vn-logos"
 #   wrangler pages secret put ADMIN_BOOTSTRAP_SECRET
 # Do NOT commit a real value here.
 [vars]
-ADMIN_BOOTSTRAP_SECRET = "change-me-before-deploying"
+ADMIN_BOOTSTRAP_SECRET = "1234zxcv"
 
 # Optional — for real password-reset emails via https://resend.com.
 # Without these, forgot-password still works (token is created) but no
