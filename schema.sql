@@ -81,6 +81,7 @@ CREATE TABLE companies (
   headquarters TEXT,                        -- optional: "Hà Nội, VN"
   team_size   TEXT,                         -- optional: "1.000+ nhân sự"
   logo_url    TEXT,                          -- optional: /api/images/<key> (R2-backed)
+  is_demo     INTEGER NOT NULL DEFAULT 0,   -- 1 = seed/demo data, hidden by an admin toggle
   owner_id    TEXT REFERENCES accounts(id),
   reason      TEXT,                          -- rejection reason, if any
   updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
@@ -136,20 +137,20 @@ CREATE TABLE contact_messages (
 --  the API; see README "Tạo tài khoản đầu tiên")
 -- ============================================================
 
-INSERT INTO companies (id,name,mark,category_id,status,verified,rating,website,description,founded,headquarters,team_size,owner_id,reason,updated_at) VALUES
- (1,'MISA','MI','saas','published',1,4.6,'misa.vn','Phần mềm kế toán và quản trị doanh nghiệp.','1994','Hà Nội, VN','1.000+ nhân sự',NULL,NULL,'2026-08-12'),
- (2,'KiotViet','KV','saas','published',1,4.4,'kiotviet.vn','Quản lý bán hàng đa kênh.',NULL,'Hà Nội, VN',NULL,NULL,NULL,'2026-08-10'),
- (3,'FPT Cloud','FC','iaas','published',0,4.3,'fptcloud.com','Hạ tầng điện toán đám mây make in Vietnam.',NULL,'TP.HCM, VN',NULL,NULL,NULL,'2026-08-09'),
- (4,'Vercel','VE','paas','published',1,4.7,'vercel.com','Triển khai frontend tối ưu cho Next.js.',NULL,'Toàn cầu',NULL,NULL,NULL,'2026-08-08'),
- (5,'OpenAI','OA','ai','published',1,4.6,'openai.com','Mô hình ngôn ngữ và API GPT.',NULL,'Toàn cầu',NULL,NULL,NULL,'2026-08-07'),
- (6,'Base.vn','BA','saas','pending',0,0,'base.vn','Bộ ứng dụng quản trị doanh nghiệp.',NULL,'Hà Nội, VN',NULL,NULL,NULL,'2026-08-14'),
- (7,'Bizfly Cloud','BF','iaas','pending',0,0,'bizflycloud.vn','Máy chủ ảo và CDN trong nước.',NULL,'Hà Nội, VN',NULL,NULL,NULL,'2026-08-14'),
- (8,'Anthropic','AN','ai','hidden',1,4.8,'anthropic.com','Mô hình Claude, tập trung AI an toàn.',NULL,'Toàn cầu',NULL,NULL,NULL,'2026-08-02'),
- (9,'Haravan','HV','paas','published',0,4.2,'haravan.com','Nền tảng thương mại đa kênh.',NULL,'TP.HCM, VN',NULL,NULL,NULL,'2026-08-05'),
- (10,'Zalo AI','ZA','ai','pending',0,0,'zalo.ai','AI xử lý ngôn ngữ và giọng nói tiếng Việt.',NULL,'TP.HCM, VN',NULL,NULL,NULL,'2026-08-14'),
- (101,'MISA meInvoice','ME','saas','pending',0,0,'meinvoice.vn','Hóa đơn điện tử tuân thủ quy định thuế mới nhất.',NULL,'Hà Nội, VN',NULL,NULL,NULL,'2026-08-14'),
- (102,'MISA Cloud CRM','MC','saas','rejected',0,0,'crm.misa.vn','Giải pháp CRM cho đội ngũ bán hàng.',NULL,'Hà Nội, VN',NULL,NULL,'Mô tả trùng lặp với sản phẩm AMIS đã đăng — vui lòng làm rõ điểm khác biệt và bổ sung website chính thức.','2026-08-11'),
- (103,'MISA Nhân sự Lite','ML','saas','draft',0,0,'',NULL,NULL,NULL,NULL,NULL,NULL,'2026-08-01');
+INSERT INTO companies (id,name,mark,category_id,status,verified,rating,website,description,founded,headquarters,team_size,is_demo,owner_id,reason,updated_at) VALUES
+ (1,'MISA','MI','saas','published',1,4.6,'misa.vn','Phần mềm kế toán và quản trị doanh nghiệp.','1994','Hà Nội, VN','1.000+ nhân sự',1,NULL,NULL,'2026-08-12'),
+ (2,'KiotViet','KV','saas','published',1,4.4,'kiotviet.vn','Quản lý bán hàng đa kênh.',NULL,'Hà Nội, VN',NULL,1,NULL,NULL,'2026-08-10'),
+ (3,'FPT Cloud','FC','iaas','published',0,4.3,'fptcloud.com','Hạ tầng điện toán đám mây make in Vietnam.',NULL,'TP.HCM, VN',NULL,1,NULL,NULL,'2026-08-09'),
+ (4,'Vercel','VE','paas','published',1,4.7,'vercel.com','Triển khai frontend tối ưu cho Next.js.',NULL,'Toàn cầu',NULL,1,NULL,NULL,'2026-08-08'),
+ (5,'OpenAI','OA','ai','published',1,4.6,'openai.com','Mô hình ngôn ngữ và API GPT.',NULL,'Toàn cầu',NULL,1,NULL,NULL,'2026-08-07'),
+ (6,'Base.vn','BA','saas','pending',0,0,'base.vn','Bộ ứng dụng quản trị doanh nghiệp.',NULL,'Hà Nội, VN',NULL,1,NULL,NULL,'2026-08-14'),
+ (7,'Bizfly Cloud','BF','iaas','pending',0,0,'bizflycloud.vn','Máy chủ ảo và CDN trong nước.',NULL,'Hà Nội, VN',NULL,1,NULL,NULL,'2026-08-14'),
+ (8,'Anthropic','AN','ai','hidden',1,4.8,'anthropic.com','Mô hình Claude, tập trung AI an toàn.',NULL,'Toàn cầu',NULL,1,NULL,NULL,'2026-08-02'),
+ (9,'Haravan','HV','paas','published',0,4.2,'haravan.com','Nền tảng thương mại đa kênh.',NULL,'TP.HCM, VN',NULL,1,NULL,NULL,'2026-08-05'),
+ (10,'Zalo AI','ZA','ai','pending',0,0,'zalo.ai','AI xử lý ngôn ngữ và giọng nói tiếng Việt.',NULL,'TP.HCM, VN',NULL,1,NULL,NULL,'2026-08-14'),
+ (101,'MISA meInvoice','ME','saas','pending',0,0,'meinvoice.vn','Hóa đơn điện tử tuân thủ quy định thuế mới nhất.',NULL,'Hà Nội, VN',NULL,1,NULL,NULL,'2026-08-14'),
+ (102,'MISA Cloud CRM','MC','saas','rejected',0,0,'crm.misa.vn','Giải pháp CRM cho đội ngũ bán hàng.',NULL,'Hà Nội, VN',NULL,1,NULL,'Mô tả trùng lặp với sản phẩm AMIS đã đăng — vui lòng làm rõ điểm khác biệt và bổ sung website chính thức.','2026-08-11'),
+ (103,'MISA Nhân sự Lite','ML','saas','draft',0,0,'',NULL,NULL,NULL,1,NULL,NULL,'2026-08-01');
 
 -- owner_id left NULL above — update once your first accounts exist, e.g.:
 --   UPDATE companies SET owner_id='u1' WHERE id IN (1,101,102,103);

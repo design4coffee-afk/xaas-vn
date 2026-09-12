@@ -274,6 +274,20 @@ Session lưu qua cookie `xaas_session` (HttpOnly, Secure, SameSite=Lax, 7
 ngày) — không cần header `Authorization` thủ công, `fetch(..., {credentials:
 'include'})` là đủ (frontend đã tự cập nhật).
 
+## Ẩn/hiện dữ liệu demo trong admin dashboard
+
+13 doanh nghiệp seed sẵn trong `schema.sql` (MISA, KiotViet, FPT Cloud...)
+đều có cờ `is_demo = 1`. Trong admin dashboard, mục "Doanh nghiệp" có nút
+**"Ẩn dữ liệu demo" / "Hiện dữ liệu demo"** — bấm vào sẽ lọc các công ty
+demo ra khỏi bảng, biểu đồ danh mục, số liệu tổng quan, và bộ chọn công ty
+ở mục Sản phẩm & Giá (không xóa dữ liệu, chỉ ẩn khỏi giao diện admin).
+Trạng thái bật/tắt lưu trong `localStorage` của trình duyệt, không ảnh
+hưởng tới trang công khai (index/category/company-detail vẫn hiển thị đầy
+đủ, kể cả dữ liệu demo, vì đó vẫn là các công ty `published` hợp lệ).
+
+Doanh nghiệp tạo mới qua form (bởi admin hoặc chủ doanh nghiệp) luôn có
+`is_demo = 0` mặc định — không cần làm gì thêm.
+
 ## Bảo mật đã áp dụng
 
 - Mật khẩu hash bằng PBKDF2-SHA256 (100.000 vòng lặp) + salt riêng từng user,

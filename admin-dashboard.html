@@ -117,7 +117,8 @@
   .table-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:16px 22px;border-bottom:1px solid var(--surface-line);}
   .search-box{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--surface-line);border-radius:10px;padding:9px 13px;flex:1;min-width:200px;max-width:320px;}
   .search-box input{border:none;background:none;outline:none;font-size:13.5px;width:100%;}
-  select.f-select{border:1px solid var(--surface-line);background:#fff;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:600;cursor:pointer;}
+  .f-select{border:1px solid var(--surface-line);background:#fff;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink);}
+  .f-select.on{background:var(--ink);color:#fff;border-color:var(--ink);}
 
   /* ---------- data table ---------- */
   table{width:100%;border-collapse:collapse;}
@@ -395,6 +396,7 @@
             <option value="">Tất cả trạng thái</option>
             <option value="published">Đã duyệt</option><option value="pending">Chờ duyệt</option><option value="hidden">Đã ẩn</option>
           </select>
+          <button class="f-select" id="demoToggleBtn" style="cursor:pointer;font-weight:700;" onclick="toggleDemoVisibility()">Ẩn dữ liệu demo</button>
         </div>
         <table>
           <thead><tr><th>Doanh nghiệp</th><th>Danh mục</th><th>Trạng thái</th><th>Xác minh</th><th>Đánh giá</th><th>Cập nhật</th><th></th></tr></thead>
@@ -587,6 +589,24 @@ let REVIEWS = [];            // from GET /api/reviews
 let PRODUCTS_CACHE = {};     // companyId -> [{id,name,from,tiers:[{id,name,price}]}]
 let editingCompanyId = null;
 
+/* ============ demo data visibility toggle ============ */
+const DEMO_TOGGLE_KEY = 'xaas_admin_show_demo';
+let SHOW_DEMO = localStorage.getItem(DEMO_TOGGLE_KEY) !== 'hidden'; // default: show
+function visibleCompanies(){ return SHOW_DEMO ? COMPANIES : COMPANIES.filter(c=>!c.isDemo); }
+function updateDemoToggleButton(){
+  const btn = document.getElementById('demoToggleBtn');
+  if(!btn) return;
+  btn.textContent = SHOW_DEMO ? 'Ẩn dữ liệu demo' : 'Hiện dữ liệu demo';
+  btn.classList.toggle('on', !SHOW_DEMO);
+}
+function toggleDemoVisibility(){
+  SHOW_DEMO = !SHOW_DEMO;
+  localStorage.setItem(DEMO_TOGGLE_KEY, SHOW_DEMO ? 'shown' : 'hidden');
+  updateDemoToggleButton();
+  renderAll();
+  showToast(SHOW_DEMO ? 'Đang hiện dữ liệu demo' : 'Đã ẩn dữ liệu demo');
+}
+
 /* ============ helpers ============ */
 function companyById(id){ return COMPANIES.find(c=>c.id===id); }
 function catBadge(cat){ const m = CAT_META[cat]; return `<span class="badge ${m.badge}">${m.name}</span>`; }
@@ -645,16 +665,17 @@ document.querySelectorAll('.sb-nav a').forEach(a=>{
 
 /* ============ overview ============ */
 function renderOverview(){
-  document.getElementById('statTotal').textContent = COMPANIES.length + 20;
-  const pending = COMPANIES.filter(c=>c.status==='pending');
+  const vis = visibleCompanies();
+  document.getElementById('statTotal').textContent = vis.length;
+  const pending = vis.filter(c=>c.status==='pending');
   document.getElementById('statPending').textContent = pending.length;
   document.getElementById('pendingBadge').textContent = pending.length;
   document.getElementById('pendingBadge').style.display = pending.length ? 'inline-block' : 'none';
 
   const bars = document.getElementById('chartBars');
-  const max = Math.max(...CATEGORIES.map(c=>COMPANIES.filter(x=>x.cat===c.id).length), 1);
+  const max = Math.max(...CATEGORIES.map(c=>vis.filter(x=>x.cat===c.id).length), 1);
   bars.innerHTML = CATEGORIES.map(c=>{
-    const n = COMPANIES.filter(x=>x.cat===c.id).length;
+    const n = vis.filter(x=>x.cat===c.id).length;
     const h = Math.max(14, Math.round((n/max)*140));
     const m = CAT_META[c.id];
     return `<div class="cb-col">
@@ -680,7 +701,7 @@ function renderOverview(){
 }
 
 function renderApprovedList(){
-  const approved = COMPANIES.filter(c=>c.status==='published').slice(0,6);
+  const approved = visibleCompanies().filter(c=>c.status==='published').slice(0,6);
   const al = document.getElementById('approvedList');
   al.innerHTML = approved.length ? approved.map(c=>`
     <div class="appr-row">
@@ -742,7 +763,7 @@ function renderCompanies(){
   const q = document.getElementById('coSearch').value.trim().toLowerCase();
   const fc = document.getElementById('coFilterCat').value;
   const fs = document.getElementById('coFilterStatus').value;
-  const rows = COMPANIES.filter(c=>
+  const rows = visibleCompanies().filter(c=>
     (!q || c.name.toLowerCase().includes(q)) &&
     (!fc || c.cat===fc) &&
     (!fs || c.status===fs)
@@ -750,7 +771,7 @@ function renderCompanies(){
   document.getElementById('coCount').textContent = `${rows.length} doanh nghiệp`;
   document.getElementById('coTableBody').innerHTML = rows.map(c=>`
     <tr>
-      <td><div class="co-cell">${avatarHtml(c, "co-mark")}<div><b>${c.name}</b><span>${c.website}</span></div></div></td>
+      <td><div class="co-cell">${avatarHtml(c, "co-mark")}<div><b>${c.name}${c.isDemo ? ' <span class="mono" style="font-size:10px;color:var(--ink-mute);font-weight:700;">DEMO</span>' : ''}</b><span>${c.website}</span></div></div></td>
       <td>${catBadge(c.cat)}</td>
       <td>${statusPill(c.status)}</td>
       <td>${verifiedBadge(c)}</td>
@@ -844,9 +865,10 @@ async function saveCompany(){
 
 /* ============ categories (local metadata; counts computed from live COMPANIES) ============ */
 function renderCategories(){
+  const vis = visibleCompanies();
   document.getElementById('catCards').innerHTML = CATEGORIES.map(c=>{
     const m = CAT_META[c.id];
-    const count = COMPANIES.filter(x=>x.cat===c.id).length;
+    const count = vis.filter(x=>x.cat===c.id).length;
     return `<div class="cat-mgr-card">
       <div class="cat-mgr-top">
         <div class="cat-mgr-icon" style="background:linear-gradient(120deg,${m.color2},${m.color})">${m.name[0]}</div>
@@ -866,8 +888,9 @@ function renderCategories(){
 function renderProductCoSelect(){
   const sel = document.getElementById('prodCoSelect');
   const prev = sel.value;
-  sel.innerHTML = COMPANIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  sel.value = prev && COMPANIES.some(c=>String(c.id)===prev) ? prev : (COMPANIES[0] ? COMPANIES[0].id : '');
+  const vis = visibleCompanies();
+  sel.innerHTML = vis.map(c=>`<option value="${c.id}">${c.name}${c.isDemo ? ' (demo)' : ''}</option>`).join('');
+  sel.value = prev && vis.some(c=>String(c.id)===prev) ? prev : (vis[0] ? vis[0].id : '');
 }
 async function loadProductsFor(coId){
   if(!coId) return [];
@@ -1030,6 +1053,7 @@ async function renderAll(){
     document.getElementById('acctName').value = SESSION.name || '';
     document.getElementById('acctEmail').value = SESSION.email || '';
   }
+  updateDemoToggleButton();
   renderOverview();
   renderCompanies();
   renderCategories();

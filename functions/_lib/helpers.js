@@ -101,6 +101,7 @@ function companyRowToJson(row) {
     headquarters: row.headquarters || null,
     teamSize: row.team_size || null,
     logoUrl: row.logo_url || null,
+    isDemo: !!row.is_demo,
     owner: row.owner_id,
     reason: row.reason,
     updated: row.updated_at,
